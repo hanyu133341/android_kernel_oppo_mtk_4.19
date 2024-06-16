@@ -978,6 +978,6 @@ static void __exit oplus_tempntc_exit(void)
 }
 module_exit(oplus_tempntc_exit);
 
-MODULE_AUTHOR("shuai.sun");
+MODULE_AUTHOR("shuai.sun <sunshuai.@oplus.com>");
 MODULE_DESCRIPTION("oplus Device Driver");
 MODULE_LICENSE("GPL");

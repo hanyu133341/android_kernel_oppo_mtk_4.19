@@ -22,6 +22,7 @@
 #include <linux/types.h>
 
 #include "hi1336mipiraw_Sensor.h"
+#include "imgsensor_common.h"
 #define MAX_TIME1 655706 // 6004 * 0xfff7 / PCLK   us  (PCLK @ 600MHz)
 #define MAX_TIME2 20000000  // 6004 * 0x1E8480 / PCLK us  (PCLK @ 600MHz)
 
@@ -35,6 +36,10 @@
 #define per_frame 1
 
 static DEFINE_SPINLOCK(imgsensor_drv_lock);
+static kal_uint8 deviceInfo_register_value = 0x00;
+extern enum IMGSENSOR_RETURN Eeprom_DataInit(
+            enum IMGSENSOR_SENSOR_IDX sensor_idx,
+            kal_uint32 sensorID);
 
 static struct imgsensor_info_struct imgsensor_info = {
 	.sensor_id = HI1336_SENSOR_ID_BLADE,
@@ -3414,6 +3419,10 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 			if (*sensor_id == imgsensor_info.sensor_id) {
 				pr_err("i2c write id : 0x%x, sensor id: 0x%x\n",
 				imgsensor.i2c_write_id, *sensor_id);
+				if(deviceInfo_register_value == 0x00){
+						Eeprom_DataInit(0, HI1336_SENSOR_ID_BLADE);
+						deviceInfo_register_value = 0x01;
+				}
 				return ERROR_NONE;
 			}
 			retry--;

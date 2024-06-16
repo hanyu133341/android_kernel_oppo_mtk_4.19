@@ -198,6 +198,8 @@ struct sgm7220_chip {
 	int chip_id;
 };
 
+extern int register_device_proc(char *name, char *version, char *vendor);
+
 /* i2c operate interfaces */
 static int sgm7220_read_reg(struct i2c_client *i2c, u8 reg, u8 *dest)
 {
@@ -1183,6 +1185,22 @@ static int sgm7220_check_revision(struct i2c_client *client)
 	return ret;
 }
 
+static void register_typec_devinfo(void)
+{
+#ifndef CONFIG_DISABLE_OPLUS_FUNCTION
+	int ret = 0;
+	char *version;
+	char *manufacture;
+
+	version = "sgm7220";
+	manufacture = "SG Micro Corp.";
+
+	ret = register_device_proc("typec", version, manufacture);
+	if (ret)
+		pr_err("register_typec_devinfo fail\n");
+#endif
+}
+
 static int sgm7220_i2c_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
@@ -1225,6 +1243,8 @@ static int sgm7220_i2c_probe(struct i2c_client *client,
 	chip_id = sgm7220_check_revision(client);
 	if (chip_id < 0)
 		return chip_id;
+
+	register_typec_devinfo();
 
 	ret = device_create_file(&client->dev, &dev_attr_sgm7220_regdump);
 	if (ret < 0) {

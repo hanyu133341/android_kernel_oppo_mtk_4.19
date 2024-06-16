@@ -33,6 +33,7 @@
 #include "kd_imgsensor_define.h"
 #include "kd_imgsensor_errcode.h"
 #include "imgsensor_common.h"
+#include "imgsensor_hwcfg_custom.h"
 
 #include "gc02m1mipiraw22693_Sensor.h"
 /************************** Modify Following Strings for Debug **************************/
@@ -42,7 +43,7 @@
 extern enum IMGSENSOR_RETURN Eeprom_DataInit(
             enum IMGSENSOR_SENSOR_IDX sensor_idx,
             kal_uint32 sensorID);
-
+extern struct CAMERA_DEVICE_INFO gImgEepromInfo;
 #define LOG_INF(format, args...)    pr_debug(PFX "[%s] " format, __func__, ##args)
 
 #define MULTI_WRITE    1
@@ -694,21 +695,23 @@ static void slim_video_setting(void)
 
 static kal_uint32 set_test_pattern_mode(kal_bool enable)
 {
-	LOG_INF("enable: %d\n", enable);
+	printk("qydebug enable: %d\n", enable);
 
-	if (enable) {
-		write_cmos_sensor(0xfe, 0x01);
-		write_cmos_sensor(0x8c, 0x11);
-		write_cmos_sensor(0xfe, 0x00);
-	} else {
-		write_cmos_sensor(0xfe, 0x01);
-		write_cmos_sensor(0x8c, 0x10);
-		write_cmos_sensor(0xfe, 0x00);
-	}
-	spin_lock(&imgsensor_drv_lock);
-	imgsensor.test_pattern = enable;
-	spin_unlock(&imgsensor_drv_lock);
-	return ERROR_NONE;
+    if (enable) {
+        write_cmos_sensor(0xfe, 0x01);
+        write_cmos_sensor(0x8c, 0x11);
+        write_cmos_sensor(0x8d, 0x0c);
+        write_cmos_sensor(0xfe, 0x00);
+    } else {
+        write_cmos_sensor(0xfe, 0x01);
+        write_cmos_sensor(0x8c, 0x10);
+        write_cmos_sensor(0x8d, 0x04);
+        write_cmos_sensor(0xfe, 0x00);
+    }
+    spin_lock(&imgsensor_drv_lock);
+    imgsensor.test_pattern = enable;
+    spin_unlock(&imgsensor_drv_lock);
+    return ERROR_NONE;
 }
 
 static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
@@ -719,6 +722,8 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 	while (imgsensor_info.i2c_addr_table[i] != 0xff) {
 		spin_lock(&imgsensor_drv_lock);
 		imgsensor.i2c_write_id = imgsensor_info.i2c_addr_table[i];
+		gImgEepromInfo.i4CurSensorIdx = 3;
+		gImgEepromInfo.i4CurSensorId = imgsensor_info.sensor_id;
 		spin_unlock(&imgsensor_drv_lock);
 		do {
 			*sensor_id = (return_sensor_id());

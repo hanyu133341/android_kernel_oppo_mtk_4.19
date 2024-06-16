@@ -541,7 +541,7 @@ static int mtk_chg_mos_get_temp(struct thermal_zone_device *thermal, int *t)
 			if (temp_uv > CHG_MOS_Temperature_Table[i].temperaturer) {
 			} else {
 				i = (i + 1) <= 120 ? (i + 1) : 120;
-				now_temp_idx = (i - 1) > 0 ? (i - 1) : 0;
+				now_temp_idx = i - 1;
 				next_volt = CHG_MOS_Temperature_Table[i].temperaturer;
 				now_volt = CHG_MOS_Temperature_Table[now_temp_idx].temperaturer;
 				real_temp = (now_volt - temp_uv) * 1000/(now_volt - next_volt) + CHG_MOS_Temperature_Table[now_temp_idx].ntc_temp * 1000;

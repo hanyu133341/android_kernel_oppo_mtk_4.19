@@ -1,5 +1,5 @@
 /***********************************************************
- * ** Copyright (C), 2008-2016, OPLUS Mobile Comm Corp., Ltd.
+ * ** Copyright (C), 2008-2016, OPPO Mobile Comm Corp., Ltd.
  * ** ODM_HQ_EDIT
  * ** File: - otp_insensor_dev.c
  * ** Description: Source file for CBufferList.

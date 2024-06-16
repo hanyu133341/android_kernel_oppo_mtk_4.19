@@ -1393,7 +1393,7 @@ int msdc_of_parse(struct platform_device *pdev, struct mmc_host *mmc)
 	}
 
 	// Add get_boot_type check and return ENODEV if not eMMC boot in msdc0
-	// Warning only UFS for MT6779 OPLUS project.
+	// Warning only UFS for MT6779 OPPO project.
 	//boot_type = get_boot_type();
 	boot_type = BOOTDEV_UFS;
 	if ((boot_type != BOOTDEV_SDMMC) && (id == 0))

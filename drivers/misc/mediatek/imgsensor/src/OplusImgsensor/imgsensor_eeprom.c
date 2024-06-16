@@ -799,6 +799,11 @@ enum IMGSENSOR_RETURN Eeprom_SensorInfoValid(
         return IMGSENSOR_RETURN_ERROR;
     }
 
+    if ((is_project(0x2260B) || is_project(22669) || is_project(0x2266A) || is_project(22609))
+        && (sensorID == pCamDeviceObj->pCamModuleInfo[sensor_idx + 1].i4Sensorid)) {
+        return IMGSENSOR_RETURN_SUCCESS;
+    }
+
     if (sensorID != pCamDeviceObj->pCamModuleInfo[sensor_idx].i4Sensorid) {
         pr_info("[%s] sensorID:%d mismatch i4Sensorid: %d",
                 __func__, sensorID, pCamDeviceObj->pCamModuleInfo[sensor_idx].i4Sensorid);

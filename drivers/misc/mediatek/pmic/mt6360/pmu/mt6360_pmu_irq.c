@@ -13,6 +13,7 @@
 #include <linux/irq.h>
 
 #include "../inc/mt6360_pmu.h"
+#include "../../../../power/oplus/oplus_chg_track.h"
 #ifdef OPLUS_FEATURE_CHG_BASIC
 extern bool mt6360_get_vbus_status(void);
 extern int mt6360_chg_enable(bool en);
@@ -80,11 +81,12 @@ static irqreturn_t mt6360_pmu_irq_handler(int irq, void *data)
 				else {
 					if (i == 7) {
 						vbus_status = mt6360_get_vbus_status();
+						oplus_chg_track_check_wired_charging_break(vbus_status);
 						printk(KERN_ERR "!!!!! mt6360_pmu_irq_handler: [%d]\n", vbus_status);
 						mt6360_chg_enable_wdt(vbus_status);
 						if (oplus_vooc_get_fastchg_started() == true
 								&& oplus_vooc_get_adapter_update_status() != 1) {
-							printk(KERN_ERR "[OPLUS_CHG] %s oplus_vooc_get_fastchg_started = true!\n", __func__);
+							printk(KERN_ERR "[OPPO_CHG] %s oplus_vooc_get_fastchg_started = true!\n", __func__);
 							if (vbus_status) {
 								/*vooc adapters MCU vbus reset time is about 800ms(default standard),
 								 * but some adapters reset time is about 350ms, so when vbus plugin irq

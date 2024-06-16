@@ -43,7 +43,7 @@
 
 static DEFINE_SPINLOCK(imgsensor_drv_lock);
 
-/*add by zhangyang for lost of bsp oplus proect, should be remove if normal publish.*/
+/*add by zhangyang for lost of bsp oppo proect, should be remove if normal publish.*/
 
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
 #include <soc/oplus/system/oplus_project.h>

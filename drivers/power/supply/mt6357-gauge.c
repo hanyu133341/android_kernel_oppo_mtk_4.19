@@ -19,6 +19,9 @@
 #include "mtk_battery.h"
 #include "mtk_gauge.h"
 
+#ifdef OPLUS_FEATURE_CHG_BASIC
+#include <soc/oplus/device_info.h>
+#endif
 
 /* ============================================================ */
 /* pmic control start*/
@@ -2650,6 +2653,25 @@ static int reset_set(struct mtk_gauge *gauge,
 	return 0;
 }
 
+static void register_gauge_devinfo(struct mtk_gauge *gauge){
+#ifndef CONFIG_DISABLE_OPLUS_FUNCTION
+	int ret = 0;
+	char *version;
+	char *manufacture;
+
+	if(!gauge) {
+		bm_err("[%s]No device found\n", __func__);
+		return;
+	}
+	version = "mt6357";
+	manufacture = "Mediatek";
+	ret = register_device_proc("gauge",version,manufacture);
+	if (ret) {
+		pr_err("register_gauge_devinfo failed\n");
+	}
+#endif
+}
+
 static int vbat_lt_set(struct mtk_gauge *gauge,
 	struct mtk_gauge_sysfs_field_info *attr, int threshold)
 {
@@ -3292,6 +3314,7 @@ static int mt6357_gauge_probe(struct platform_device *pdev)
 	bat_create_netlink(pdev);
 	battery_init(pdev);
 	adc_cali_cdev_init(pdev);
+	register_gauge_devinfo(gauge);
 
 	bm_err("%s: done\n", __func__);
 

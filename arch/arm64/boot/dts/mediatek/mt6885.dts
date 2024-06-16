@@ -456,6 +456,20 @@ page_owner=on loop.max_part=7";
 		vib-supply = <&mt_pmic_vibr_ldo_reg>;
 	};
 
+// #ifdef OPLUS_FEATURE_POWER_THERMAL
+	shell_front {
+		compatible = "oplus,shell-temp";
+	};
+
+	shell_frame {
+		compatible = "oplus,shell-temp";
+	};
+
+	shell_back {
+		compatible = "oplus,shell-temp";
+	};
+// #endif /* OPLUS_FEATURE_POWER_THERMAL */
+
 	mtk_lpm: mtk_lpm {
 		compatible = "mediatek,mtk-lpm";
 		#address-cells = <2>;
@@ -2607,14 +2621,14 @@ page_owner=on loop.max_part=7";
 		u2port0: usb2-phy0@11e40000 {
 			reg = <0 0x11e40000 0 0x700>;
 			#phy-cells = <1>;
-			mediatek,eye-vrt = <6>; /* 0~7 */
-			mediatek,eye-term = <6>; /* 0~7 */
-			mediatek,eye-rev6 = <1>; /* 0~3 */
-			mediatek,eye-disc = <7>; /* 0~8 */
+			mediatek,eye-vrt = <7>; /* 0~7 */
+			mediatek,eye-term = <7>; /* 0~7 */
+			mediatek,eye-rev6 = <2>; /* 0~3 */
+			mediatek,eye-disc = <0xB>; /* 0~8 */
 			mediatek,host-eye-vrt = <6>; /* 0~7 */
 			mediatek,host-eye-term = <6>; /* 0~7 */
-			mediatek,host-eye-rev6 = <1>; /* 0~3 */
-			mediatek,host-eye-disc = <7>; /* 0~8 */
+			mediatek,host-eye-rev6 = <2>; /* 0~3 */
+			mediatek,host-eye-disc = <0xB>; /* 0~8 */
 			status = "okay";
 		};
 
@@ -2683,13 +2697,22 @@ page_owner=on loop.max_part=7";
 			<&infracfg_ao_clk CLK_IFRAO_UFS>,
 			<&infracfg_ao_clk CLK_IFRAO_UNIPRO_SYSCLK>,
 			<&infracfg_ao_clk CLK_IFRAO_UFS_MP_SAP_BCLK>,
-			<&infracfg_ao_clk CLK_IFRAO_AES>;
+			<&infracfg_ao_clk CLK_IFRAO_AES>,
+			<&topckgen_clk CLK_TOP_AES_UFSFDE_SEL>,
+			<&topckgen_clk CLK_TOP_UNIVPLL_D6>,
+			<&topckgen_clk CLK_TOP_MAINPLL_D4>;
 		clock-names =
 			"ufs-clk",
 			"ufs-unipro-clk",
 			"ufs-mp-clk",
-			"ufs-crypto-clk";
+			"ufs-crypto-clk",
+			"ufs-vendor-crypto-clk-mux",
+			"ufs-vendor-crypto-normal-parent-clk",
+			"ufs-vendor-crypto-perf-parent-clk";
 		freq-table-hz =
+			<0 0>,
+			<0 0>,
+			<0 0>,
 			<0 0>,
 			<0 0>,
 			<0 0>,
@@ -2700,6 +2723,8 @@ page_owner=on loop.max_part=7";
 		mediatek,refclk_ctrl = <2>;
 		vcc-supply = <&mt_pmic_vemc_ldo_reg>;
 		vccq2-supply = <&mt_pmic_vufs_ldo_reg>;
+	/* Performance Mode */
+		mediatek,perf-crypto-vcore = <2>;
 	};
 
 	md_ccif2@1023d000 {
@@ -8104,17 +8129,6 @@ page_owner=on loop.max_part=7";
 		ibus_err = <14>;
 		vsys_watt = <5000000>;
 	};
-
-	/* 2019/9/27, Add for phy_tuning */
-	phy_tuning: phy_tuning {
-		compatible = "mediatek,phy_tuning";
-		u2_vrt_ref = <6>;
-		u2_term_ref = <6>;
-                u2_enhance = <1>;
-                host_u2_vrt_ref = <6>;
-                host_u2_term_ref = <6>;
-                host_u2_enhance = <2>;
-    };
 
 	pd_adapter: pd_adapter {
 		compatible = "mediatek,pd_adapter";

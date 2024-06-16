@@ -103,7 +103,7 @@
 
 		touchpanel,max-num-support = <10>;
 		touchpanel,tx-rx-num = <16 34>;
-		touchpanel,panel-coords = <4320 9600>;
+		touchpanel,panel-coords = <8640 19200>;
 		touchpanel,display-coords = <1080 2400>;
 		touchpanel,touchmajor-limit = <0 216>;
 		touchpanel,report-rate = <120 180>;
@@ -118,7 +118,8 @@
 
 		/* SW Support Feature Control */
 		black_gesture_support;
-		//black_gesture_indep_support;
+		black_gesture_indep_support;
+		sportify_aod_gesture_support;
 		fw_edge_limit_support;
 		pressure_report_support;
 		charger_pump_support;
@@ -130,6 +131,7 @@
 		//irq_need_dev_resume_ok;
 		health_monitor_v2_support;
 		high_resolution_support;
+		high_resolution_support_x8;
 		//esd_handle_support;
 		lcd_tp_refresh_support;
 		/*
@@ -666,7 +668,7 @@
 	};
 /* sensor end */
 
-/* OPLUS_BUG_STABILITY oplus project start */
+/* OPLUS_BUG_STABILITY oppo project start */
 	oplus_project:oplus_project {
 		compatible = "oplus,oplus_project";
 	};
@@ -691,7 +693,7 @@
 			match-projects = <21711 21712>;
         };
 	};
-/* OPLUS_BUG_STABILITY oplus project end */
+/* OPLUS_BUG_STABILITY oppo project end */
 
 	mediatek_mtp_interface:mediatek_mtp_interface {
 		mtp_interface {
@@ -699,19 +701,6 @@
 			InterfaceClass = <255>;
 			InterfaceSubClass = <255>;
 			InterfaceProtocol = <0>;
-	};
-};
-	mediatek_phy_tuning:mediatek_phy_tuning {
-		phy_tuning {
-			compatible = "mediatek,phy_tuning";
-			u2_vrt_ref = <7>;
-			u2_term_ref = <7>;
-			u2_enhance = <2>;
-			u2_discth = <0xE>;
-			host_u2_vrt_ref = <5>;
-			host_u2_term_ref = <5>;
-			host_u2_enhance = <3>;
-			host_u2_discth = <0xA>;
 	};
 };
 
@@ -748,6 +737,20 @@
 
 };
 
+&u2port0 {
+	mediatek,eye-vrt = <7>; /* 0~7 */
+	mediatek,eye-term = <7>; /* 0~7 */
+	mediatek,eye-rev6 = <2>; /* 0~3 */
+	mediatek,eye-disc = <0xE>; /* 0~8 */
+	mediatek,host-eye-vrt = <5>; /* 0~7 */
+	mediatek,host-eye-term = <5>; /* 0~7 */
+	mediatek,host-eye-rev6 = <3>; /* 0~3 */
+	mediatek,host-eye-disc = <0xA>; /* 0~8 */
+};
+
+&extcon_usb {
+	vbus-current = <1300000>;
+};
 
 &swtp {
     compatible = "mediatek, swtp-eint";

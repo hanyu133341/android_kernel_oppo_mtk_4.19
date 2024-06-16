@@ -1,5 +1,5 @@
 /***********************************************************
-** Copyright (C), 2008-2016, OPLUS Mobile Comm Corp., Ltd.
+** Copyright (C), 2008-2016, OPPO Mobile Comm Corp., Ltd.
 ** ODM_WT_EDIT
 ** File: - oplus20361_boe_htl9882n_hdp_dsi_vdo.c
 ** Description: source file for lcm boe_htl9882n in kernel stage

@@ -1425,9 +1425,9 @@ static char aw8697_rtp_name_19065_226Hz[][AW8697_RTP_NAME_MAX] = {
 	{ "aw8697_reserved_160.bin" },
 
 	/* oplus ringtone start */
-	{ "aw8697_reserved_161.bin" },
-	{ "aw8697_reserved_162.bin" },
-	{ "aw8697_reserved_163.bin" },
+	{"aw8697_its_RTP_161_226Hz.bin"},
+	{"aw8697_tune_RTP_162_226Hz.bin"},
+	{"aw8697_jingle_RTP_163_226Hz.bin"},
 	{ "aw8697_reserved_164.bin" },
 	{ "aw8697_reserved_165.bin" },
 	{ "aw8697_reserved_166.bin" },
@@ -1618,9 +1618,9 @@ static char aw8697_rtp_name_19065_230Hz[][AW8697_RTP_NAME_MAX] = {
 	{ "aw8697_reserved_160.bin" },
 
 	/* oplus ringtone start */
-	{ "aw8697_reserved_161.bin" },
-	{ "aw8697_reserved_162.bin" },
-	{ "aw8697_reserved_163.bin" },
+	{ "aw8697_its_RTP_161_230Hz.bin" },
+	{ "aw8697_tune_RTP_162_230Hz.bin" },
+	{ "aw8697_jingle_RTP_163_230Hz.bin" },
 	{ "aw8697_reserved_164.bin" },
 	{ "aw8697_reserved_165.bin" },
 	{ "aw8697_reserved_166.bin" },
@@ -1812,9 +1812,9 @@ static char aw8697_rtp_name_19065_234Hz[][AW8697_RTP_NAME_MAX] = {
 	{ "aw8697_reserved_160.bin" },
 
 	/* oplus ringtone start */
-	{ "aw8697_reserved_161.bin" },
-	{ "aw8697_reserved_162.bin" },
-	{ "aw8697_reserved_163.bin" },
+	{ "aw8697_its_RTP_161_234Hz.bin" },
+	{ "aw8697_tune_RTP_162_234Hz.bin" },
+	{ "aw8697_jingle_RTP_163_234Hz.bin" },
 	{ "aw8697_reserved_164.bin" },
 	{ "aw8697_reserved_165.bin" },
 	{ "aw8697_reserved_166.bin" },
@@ -2005,9 +2005,9 @@ static char aw8697_rtp_name_19065_237Hz[][AW8697_RTP_NAME_MAX] = {
 	{ "aw8697_reserved_160.bin" },
 
 	/* real me ringtone start */
-	{ "aw8697_reserved_161.bin" },
-	{ "aw8697_reserved_162.bin" },
-	{ "aw8697_reserved_163.bin" },
+	{ "aw8697_its_RTP_161_237Hz.bin" },
+	{ "aw8697_tune_RTP_162_237Hz.bin" },
+	{ "aw8697_jingle_RTP_163_237Hz.bin" },
 	{ "aw8697_reserved_164.bin" },
 	{ "aw8697_reserved_165.bin" },
 	{ "aw8697_reserved_166.bin" },
@@ -5099,7 +5099,7 @@ static void haptic_clean_buf(struct aw8697 *aw8697, int status)
 	}
 }
 
-static inline unsigned int aw8697_get_sys_msecs()
+static inline unsigned int aw8697_get_sys_msecs(void)
 {
 	struct timespec64 ts64 = current_kernel_time64();
 	return jiffies_to_msecs(timespec64_to_jiffies(&ts64));
@@ -5201,6 +5201,12 @@ static long aw8697_file_unlocked_ioctl(struct file *file, unsigned int cmd,
 		break;
 	case RICHTAP_RTP_MODE:
 		aw8697_haptic_stop(aw8697);
+		if (RICHTAP_MMAP_BUF_SIZE * RICHTAP_MMAP_BUF_SUM > sizeof(aw8697->rtp_ptr)) {
+			return -EFAULT;
+		}
+		if (aw8697->rtp_ptr == NULL || (void __user *)arg == NULL) {
+			return -EFAULT;
+		}
 		if (copy_from_user(aw8697->rtp_ptr, (void __user *)arg,
 				   RICHTAP_MMAP_BUF_SIZE *
 					   RICHTAP_MMAP_BUF_SUM)) {
@@ -6407,7 +6413,7 @@ static ssize_t aw8697_rtp_store(struct device *dev,
 	if (((val >= RINGTONES_START_INDEX && val <= RINGTONES_END_INDEX) ||
 	     (val >= NEW_RING_START && val <= NEW_RING_END) ||
 	     (val >= OS12_NEW_RING_START && val <= OS12_NEW_RING_END) ||
-	     (val >= OPLUS_RING_START && val <= OPLUS_RING_END) ||
+	     (val >= REALME_RING_START && val <= REALME_RING_END) ||
 	     (val >= OPLUS_NEW_RING_1_START && val <= OPLUS_NEW_RING_1_END) ||
 	     (val >= OPLUS_NEW_RING_2_START && val <= OPLUS_NEW_RING_2_END) ||
 	     val == RINGTONES_SIMPLE_INDEX || val == RINGTONES_PURE_INDEX ||

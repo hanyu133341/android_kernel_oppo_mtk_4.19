@@ -342,6 +342,17 @@
 	};
 };
 
+&odm {
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <0>;
+		track,wired_max_power = <10000>;
+		track,wired_fast_chg_scheme = <6>;
+	};
+};
+
 /*#ifdef OPLUS_FEATURE_CHG_BASIC*/
 &lk_charger{
         support_tuv_authentication;
@@ -486,6 +497,17 @@
 
 	//GPIO config:
 	qcom,dischg-gpio = <&pio 134 0x00>;
+};
+
+&u2port0 {
+	mediatek,eye-vrt = <7>; /* 0~7 */
+	mediatek,eye-term = <7>; /* 0~7 */
+	mediatek,eye-rev6 = <3>; /* 0~3 */
+	mediatek,eye-disc = <0xF>; /* 0~8 */
+	mediatek,host-eye-vrt = <7>; /* 0~7 */
+	mediatek,host-eye-term = <7>; /* 0~7 */
+	mediatek,host-eye-rev6 = <3>; /* 0~3 */
+	mediatek,host-eye-disc = <0xB>; /* 0~8 */
 };
 
 &bat_gm30 {
@@ -1401,9 +1423,9 @@ oplus_fp: fingerprint@0 {
 		reset-gpio = <&pio 15 0>;
 		report_rate_limit = <60>;
 
-		platform_support_project = <20015 20016 20108 20109 20651 20652 20653 20654 20307>;
-		platform_support_project_dir = <20015 20016 20108 20109 20651 20652 20653 20654 20307>;
-		platform_support_project_commandline = "default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline";
+		platform_support_project = <20015 20013 20016 20108 20109 20651 20652 20653 20654 20307>;
+		platform_support_project_dir = <20015 20013 20016 20108 20109 20651 20652 20653 20654 20307>;
+		platform_support_project_commandline = "default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline","default_commandline";
 
 		touchpanel,max-num-support = <10>;
 		touchpanel,tx-rx-num = <18 32>;
@@ -1427,6 +1449,7 @@ oplus_fp: fingerprint@0 {
 		smart_gesture_support;
 		pressure_report_support;
 		fw_update_app_support;
+		exception_upload_support;
 		touchpanel,button-type = <4>;
 	};
 };

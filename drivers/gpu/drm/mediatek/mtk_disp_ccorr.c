@@ -978,41 +978,44 @@ int disp_ccorr_set_color_matrix(struct mtk_ddp_comp *comp,
 	// only when set identity matrix and not gpu overlay, open display color
 	DDPINFO("hint: %d, identity: %d, fte_flag: %d, bypass: color0:%d color1:%d",
 		hint, identity_matrix, fte_flag, bypass_color0, bypass_color1);
-	if (((hint == 0) || ((hint == 1) && identity_matrix)) && (!fte_flag)) {
-		if (id == 0) {
-			if (bypass_color0 == true) {
-				struct mtk_ddp_comp *comp_color0 =
-					priv->ddp_comp[DDP_COMPONENT_COLOR0];
-				ddp_color_bypass_color(comp_color0, false, handle);
-				bypass_color0 = false;
-			}
-		} else if (id == 1) {
-			if (bypass_color1 == true) {
-				struct mtk_ddp_comp *comp_color1 =
-					priv->ddp_comp[DDP_COMPONENT_COLOR1];
-				ddp_color_bypass_color(comp_color1, false, handle);
-				bypass_color1 = false;
-			}
-		} else {
-			DDPINFO("%s, id is invalid!\n", __func__);
-		}
-	} else {
-		if (id == 0) {
-			if (bypass_color0 == false) {
-				struct mtk_ddp_comp *comp_color0 =
-					priv->ddp_comp[DDP_COMPONENT_COLOR0];
-				ddp_color_bypass_color(comp_color0, true, handle);
-				bypass_color0 = true;
-			}
-		} else if (id == 1) {
-			if (bypass_color1 == false) {
-				struct mtk_ddp_comp *comp_color1 =
-					priv->ddp_comp[DDP_COMPONENT_COLOR1];
-				ddp_color_bypass_color(comp_color1, true, handle);
-				bypass_color1 = true;
+	if (!mtk_crtc->panel_ext->params->oplus_bypass_color_flag) {
+		DDPINFO("%s, bypass color!\n", __func__);
+		if (((hint == 0) || ((hint == 1) && identity_matrix)) && (!fte_flag)) {
+			if (id == 0) {
+				if (bypass_color0 == true) {
+					struct mtk_ddp_comp *comp_color0 =
+						priv->ddp_comp[DDP_COMPONENT_COLOR0];
+					ddp_color_bypass_color(comp_color0, false, handle);
+					bypass_color0 = false;
+				}
+			} else if (id == 1) {
+				if (bypass_color1 == true) {
+					struct mtk_ddp_comp *comp_color1 =
+						priv->ddp_comp[DDP_COMPONENT_COLOR1];
+					ddp_color_bypass_color(comp_color1, false, handle);
+					bypass_color1 = false;
+				}
+			} else {
+				DDPINFO("%s, id is invalid!\n", __func__);
 			}
 		} else {
-			DDPINFO("%s, id is invalid!\n", __func__);
+			if (id == 0) {
+				if (bypass_color0 == false) {
+					struct mtk_ddp_comp *comp_color0 =
+						priv->ddp_comp[DDP_COMPONENT_COLOR0];
+					ddp_color_bypass_color(comp_color0, true, handle);
+					bypass_color0 = true;
+				}
+			} else if (id == 1) {
+				if (bypass_color1 == false) {
+					struct mtk_ddp_comp *comp_color1 =
+						priv->ddp_comp[DDP_COMPONENT_COLOR1];
+					ddp_color_bypass_color(comp_color1, true, handle);
+					bypass_color1 = true;
+				}
+			} else {
+				DDPINFO("%s, id is invalid!\n", __func__);
+			}
 		}
 	}
 

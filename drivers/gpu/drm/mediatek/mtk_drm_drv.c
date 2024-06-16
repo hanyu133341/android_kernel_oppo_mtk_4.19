@@ -3969,7 +3969,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
 	pr_err("oplus_boot_mode=%d, get_boot_mode() is %d\n", oplus_boot_mode, get_boot_mode());
 	if ((oplus_boot_mode == OPLUS_SILENCE_BOOT)
 			||(get_boot_mode() == OPLUS_SAU_BOOT)) {
-		pr_err("%s OPLUS_SILENCE_BOOT set silence_mode to 1\n", __func__);
+		pr_err("%s OPPO_SILENCE_BOOT set silence_mode to 1\n", __func__);
 		silence_mode = 1;
 	}
 #endif

@@ -64,6 +64,7 @@ static void cabc_switch(void *dsi, dcs_write_gce cb,
 /* #endif */
 static int backlight_gamma = 0;
 extern int g_shutdown_flag;
+static int dimming_on = 0;
 
 
 struct lcm {
@@ -462,7 +463,7 @@ static int lcm_prepare(struct drm_panel *panel)
 		lcd_queue_load_tp_fw();
 	}
 	lcm_panel_init(ctx);
-
+	dimming_on = 0;
 	ret = ctx->error;
 	if (ret < 0)
 		lcm_unprepare(panel);
@@ -620,7 +621,7 @@ static int lcm_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	cb(dsi, handle, bl_tb0, ARRAY_SIZE(bl_tb0));*/
 
 	char bl_tb0[] = {0x51, 0xFF, 0xFF};
-	//char bl_tb1[] = {0x55, 0x00};
+	char bl_tb1[] = {0x53, 0x24};
 	//char bl_tb2[] = {0xFF, 0x98, 0x83, 0x00};
 	char bl_tb3[] = {0x53, 0x2C};
 #if 0
@@ -657,8 +658,15 @@ static int lcm_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	esd_brightness = level;
 	if (!cb)
 		return -1;
-	if (last_brightness == 0)
-		usleep_range(15000, 15010);
+	if (dimming_on == 1) {
+		cb(dsi, handle, bl_tb3, ARRAY_SIZE(bl_tb3));
+		dimming_on = 0;
+	}
+	if (last_brightness == 0 || level == 0) {
+		cb(dsi, handle, bl_tb1, ARRAY_SIZE(bl_tb1));
+		usleep_range(31000, 31010);
+		dimming_on = 1;
+	}
 	pr_err("%s SYQ bl_tb0[1]=%x, bl_tb0[2]=%x\n", __func__, bl_tb0[1], bl_tb0[2]);
 	//cb(dsi, handle, bl_tb2, ARRAY_SIZE(bl_tb2));
 	cb(dsi, handle, bl_tb0, ARRAY_SIZE(bl_tb0));

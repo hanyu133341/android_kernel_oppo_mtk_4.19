@@ -903,7 +903,7 @@
 #define ATHENSC_IMX471_SENSOR_ID                      0x472
 #define IMX471_SENSOR_ID_20633                        0x471
 
-#define GC02M1_SENSOR_ID_APOLLOT                      0x02ec
+#define GC02M1_SENSOR_ID_APOLLOT                      0x02ee
 #define SENSOR_DRVNAME_GC02M1_MIPI_RAW_APOLLOT        "gc02m1_mipi_raw_apollot"
 
 #define SENSOR_DRVNAME_IMX471_MIPI_RAW_ANNA         "imx471_mipi_raw_anna"
@@ -1106,11 +1106,11 @@
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
 #define OV64B_SENSOR_ID_20619                         0x5667 /*0x5665+2*/
 #define SENSOR_DRVNAME_OV64B_MIPI_RAW_20619           "ov64b_mipi_raw_20619"
-#define IMX471_SENSOR_ID_20619                        0x20003 /*0x20000+3*/
+#define IMX471_SENSOR_ID_20619                        0x20004 /*0x20000+4*/
 #define SENSOR_DRVNAME_IMX471_MIPI_RAW_20619          "imx471_mipi_raw_20619"
 #define HI846_SENSOR_ID_20619                         0x0849 /*0x0846+2*/
 #define SENSOR_DRVNAME_HI846_MIPI_RAW_20619           "hi846_mipi_raw_20619"
-#define OV02B10_SENSOR_ID_20619                       0x0033 /*0x002B+8*/
+#define OV02B10_SENSOR_ID_20619                       0x0038 /*0x002B+13*/
 #define SENSOR_DRVNAME_OV02B10_MIPI_RAW_20619         "ov02b10_mipi_raw_20619"
 #endif /*OPLUS_FEATURE_CAMERA_COMMON*/
 

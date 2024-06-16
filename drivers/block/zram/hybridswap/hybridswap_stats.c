@@ -141,6 +141,23 @@ int hybridswap_psi_show(struct seq_file *m, void *v)
 	return 0;
 }
 
+unsigned long hybridswap_get_zram_used_pages(void)
+{
+	struct hybridswap_stat *stat = NULL;
+
+	if (!hybridswap_core_enabled())
+		return 0;
+
+	stat = hybridswap_get_stat_obj();
+	if (unlikely(!stat)) {
+		hybp(HYB_ERR, "can't get stat obj!\n");
+
+		return 0;
+	}
+
+	return atomic64_read(&stat->zram_stored_pages);
+}
+
 unsigned long long hybridswap_get_zram_pagefault(void)
 {
 	struct hybridswap_stat *stat = NULL;
@@ -324,7 +341,7 @@ ssize_t hybridswap_report_show(struct device *dev,
 	return hybridswap_fail_record_show(buf);
 }
 
-static inline meminfo_show(struct hybridswap_stat *stat, char *buf, ssize_t len)
+static inline int meminfo_show(struct hybridswap_stat *stat, char *buf, ssize_t len)
 {
 	unsigned long eswap_total_pages = 0, eswap_compressed_pages = 0;
 	unsigned long eswap_used_pages = 0;

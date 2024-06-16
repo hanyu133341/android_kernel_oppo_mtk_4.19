@@ -987,8 +987,10 @@ static int st21nfc_probe(struct i2c_client *client,
   struct device_node *np = dev->of_node;
 #endif  // ST21NFCD_MTK
 
+    //#ifdef VENDOR_EDIT
    //Add for : ST NXP chip common software
     CHECK_NFC_CHIP(ST21H);
+   //#endif /* VENDOR_EDIT */
 
   if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
     pr_err("%s : need I2C_FUNC_I2C\n", __func__);

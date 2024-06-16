@@ -63,6 +63,7 @@ static kal_uint8 deviceInfo_register_value = 0x00;
 extern enum IMGSENSOR_RETURN Eeprom_DataInit(
             enum IMGSENSOR_SENSOR_IDX sensor_idx,
             kal_uint32 sensorID);
+
 static struct imgsensor_info_struct imgsensor_info = {
      .sensor_id = HI5021SQT_SENSOR_ID_BLADE,
 
@@ -7025,10 +7026,10 @@ LOG_INF("=====================hi5021q dump xgceeprom data end===================
              }
              // add main camera hi5021q otp code
 #endif
-                 if(deviceInfo_register_value == 0x00){
-                     Eeprom_DataInit(0, HI5021SQT_SENSOR_ID_BLADE);
-                     deviceInfo_register_value = 0x01;
-                 }
+                if(deviceInfo_register_value == 0x00){
+                        Eeprom_DataInit(0, HI5021SQT_SENSOR_ID_BLADE);
+                        deviceInfo_register_value = 0x01;
+                }
              return ERROR_NONE;
              }
 

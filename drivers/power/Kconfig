@@ -137,7 +137,7 @@ config OPLUS_CALL_MODE_SUPPORT
 	bool "OPLUS call mode support"
 	default n
 	help
-	  Say Y to enable support for the oplus call mode.
+	  Say Y to enable support for the oppo call mode.
 
 config OPLUS_SHIP_MODE_SUPPORT
 	bool "OPLUS ship mode support"

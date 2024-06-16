@@ -297,6 +297,16 @@
 		status = "okay";
 	};
 /* keypad end*/
+	pmic_history_count:pmic_history_count {
+	};
+	pmic_history0:pmic_history0 {
+	};
+	pmic_history1:pmic_history1 {
+	};
+	pmic_history2:pmic_history2 {
+	};
+	pmic_history3:pmic_history3 {
+	};
 
 /*OPLUS_BUG_STABILITY oplus project start */
 	oplus_boardid:oplus_boardid {
@@ -322,6 +332,7 @@
         };
     };
 /*endif*/
+    
 
 //#ifdef OPLUS_FEATURE_NFC_CONSOFT
     nfc_chipset:nfc_chipset {
@@ -337,6 +348,14 @@
         gpio-irq-std = <&pio 2 0x0>;
     };
 //#endif /* OPLUS_FEATURE_NFC_CONSOFT */
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <30000>;
+		track,wired_fast_chg_scheme = <4>;
+	};
 };
 
 /* OPLUS_BUG_STABILITY add pinctrl state for a-board match*/
@@ -944,7 +963,7 @@
 		tp_type = <8>;
 		platform_support_project = <20291 20292 20293 20294 20295>;
 		platform_support_project_dir = <20291 20291 20291 20291 20291>;
-		platform_support_project_commandline = "oplus20291_samsung_ams643xy01_1080p_dsi_vdo","oplus20291_samsung_ams643xy01_1080p_dsi_vdo","oplus20291_samsung_ams643xy01_1080p_dsi_vdo","oplus20291_samsung_ams643xy01_1080p_dsi_vdo","oplus20291_samsung_ams643xy01_1080p_dsi_vdo";
+		platform_support_project_commandline = "oppo20291_samsung_ams643xy01_1080p_dsi_vdo","oppo20291_samsung_ams643xy01_1080p_dsi_vdo","oppo20291_samsung_ams643xy01_1080p_dsi_vdo","oppo20291_samsung_ams643xy01_1080p_dsi_vdo","oppo20291_samsung_ams643xy01_1080p_dsi_vdo";
 
 
 		touchpanel,max-num-support = <10>;

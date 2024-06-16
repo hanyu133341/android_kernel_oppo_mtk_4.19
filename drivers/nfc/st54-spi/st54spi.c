@@ -1066,8 +1066,10 @@ static int st54spi_probe(struct spi_device *spi)
 #ifdef ST21NFCD_MTK
 	struct mtk_chip_config *chip_config = spi->controller_data;
 #endif
+        //#ifdef VENDOR_EDIT
        //Add for : ST NXP chip common software
        CHECK_NFC_CHIP(ST54H);
+      //#endif /* VENDOR_EDIT */
 
 	/*
 	 * st54spi should never be referenced in DT without a specific
@@ -1141,6 +1143,7 @@ static int st54spi_probe(struct spi_device *spi)
 	// If no specific method required, you can comment above line.
 #endif
 
+  //#ifndef VENDOR_EDIT
   //Modify for : fix coverity 85484
   // if (status == 0)
   //   spi_set_drvdata(spi, st54spi);
@@ -1153,6 +1156,7 @@ static int st54spi_probe(struct spi_device *spi)
     kfree(st54spi);
     return -ENODEV;
   }
+  //#endif /* VENDOR_EDIT */
 
 	(void)st54spi_parse_dt(&spi->dev, st54spi);
 

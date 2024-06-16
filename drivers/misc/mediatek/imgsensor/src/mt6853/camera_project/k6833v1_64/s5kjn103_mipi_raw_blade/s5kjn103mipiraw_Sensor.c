@@ -124,17 +124,17 @@ static struct imgsensor_info_struct imgsensor_info = {
 		.max_framerate = 300,
 	},
 
-	.hs_video = {
+	    .hs_video = { /* 2000x1132@120fps */
 		.pclk = 600000000,
-		.linelength = 2096,
-		.framelength = 2384,
-		.startx =0,
+		.linelength = 4256,
+		.framelength = 1174,
+		.startx = 0,
 		.starty = 0,
-		.grabwindow_width = 1280,
-		.grabwindow_height = 720,
+		.grabwindow_width = 1920,
+		.grabwindow_height = 1080,
 		.mipi_data_lp2hs_settle_dc = 85,
+		.mipi_pixel_rate = 192000000,
 		.max_framerate = 1200,
-		.mipi_pixel_rate = 547200000,
 	},
 	.slim_video = { /* 4080*2296@30fps */
 		.pclk = 560000000,
@@ -233,7 +233,7 @@ static struct SENSOR_WINSIZE_INFO_STRUCT imgsensor_winsize_info[7] = {
 	{4080, 3072,  0, 0, 4080, 3072, 4080, 3072, 0, 0, 4080, 3072, 0, 0, 4080, 3072}, /* Preview*/
 	{4080, 3072,  0, 0, 4080, 3072, 4080, 3072, 0, 0, 4080, 3072, 0, 0, 4080, 3072}, /* capture */
 	{4080, 3072,  0, 388, 4080, 2296, 4080, 2296, 0, 0, 4080, 2296, 0, 0, 4080, 2296}, /* normal video */
-    {4080, 3072,  760, 816, 2560, 1440, 1280, 720, 0, 0, 1280, 720, 0, 0, 1280, 720}, /* hs_video */
+	{4080, 3072,   120,    456,   3840, 2160, 1920, 1080,  0, 0, 1920, 1080,     0,    0, 1920,  1080}, /* hs_video */
 	{4080, 3072,  0, 388, 4080, 2296, 4080, 2296, 0, 0, 4080, 2296, 0, 0, 4080, 2296}, /* slim video */
 	{4080, 3072,  0, 0, 4080, 3072, 4080, 3072, 0, 0, 4080, 3072, 0, 0, 4080, 3072}, /* custom1 */
 	{4080, 3072,  408, 312, 3264, 2448, 3264, 2448, 0, 0, 3264, 2448, 0, 0, 3264, 2448}, /* custom2 */
@@ -1947,9 +1947,9 @@ static kal_uint16 parkerb_shinetech_s5kjn103_hs_video_setting[] = {
 	0x602A, 0x0874,
 	0x6F12, 0x1100,
 	0x602A, 0x09C0,
-	0x6F12, 0x1803,
+	0x6F12, 0x9800,
 	0x602A, 0x09C4,
-	0x6F12, 0x1803,
+	0x6F12, 0x9800,
 	0x602A, 0x19FE,
 	0x6F12, 0x0E1C,
 	0x602A, 0x4D92,
@@ -1972,11 +1972,11 @@ static kal_uint16 parkerb_shinetech_s5kjn103_hs_video_setting[] = {
 	0x602A, 0x3570,
 	0x6F12, 0x0000,
 	0x602A, 0x3574,
-	0x6F12, 0x3801,
+	0x6F12, 0x9400,
 	0x602A, 0x21E4,
 	0x6F12, 0x0400,
 	0x602A, 0x21EC,
-	0x6F12, 0x6801,
+	0x6F12, 0x4F01,
 	0x602A, 0x2080,
 	0x6F12, 0x0100,
 	0x6F12, 0x7F00,
@@ -2024,17 +2024,17 @@ static kal_uint16 parkerb_shinetech_s5kjn103_hs_video_setting[] = {
 	0x602A, 0x06FA,
 	0x6F12, 0x1000,
 	0x602A, 0x4A94,
-	0x6F12, 0x1600,
+	0x6F12, 0x0C00,
 	0x6F12, 0x0000,
-	0x6F12, 0x1000,
-	0x6F12, 0x0000,
-	0x6F12, 0x0000,
+	0x6F12, 0x0600,
 	0x6F12, 0x0000,
 	0x6F12, 0x0000,
 	0x6F12, 0x0000,
-	0x6F12, 0x1000,
 	0x6F12, 0x0000,
-	0x6F12, 0x1600,
+	0x6F12, 0x0000,
+	0x6F12, 0x0600,
+	0x6F12, 0x0000,
+	0x6F12, 0x0C00,
 	0x6F12, 0x0000,
 	0x6F12, 0x0000,
 	0x6F12, 0x0000,
@@ -2101,12 +2101,12 @@ static kal_uint16 parkerb_shinetech_s5kjn103_hs_video_setting[] = {
 	0x6F12, 0x0000,
 	0x6028, 0x4000,
 	0xF46A, 0xAE80,
-	0x0344, 0x05F0,
-	0x0346, 0x0660,
-	0x0348, 0x1A0F,
-	0x034A, 0x11BF,
-	0x034C, 0x0500,
-	0x034E, 0x02D0,
+	0x0344, 0x00F0,
+	0x0346, 0x0390,
+	0x0348, 0x1F0F,
+	0x034A, 0x148F,
+	0x034C, 0x0780,
+	0x034E, 0x0438,
 	0x0350, 0x0004,
 	0x0352, 0x0004,
 	0x0900, 0x0144,
@@ -2127,17 +2127,17 @@ static kal_uint16 parkerb_shinetech_s5kjn103_hs_video_setting[] = {
 	0x030A, 0x0001,
 	0x030C, 0x0000,
 	0x030E, 0x0004,
-	0x0310, 0x0072,
+	0x0310, 0x00A5,
 	0x0312, 0x0000,
 	0x080E, 0x0000,
-	0x0340, 0x0950,
-	0x0342, 0x0830,
+	0x0340, 0x0496,
+	0x0342, 0x10A0,
 	0x0702, 0x0000,
 	0x0202, 0x0100,
 	0x0200, 0x0100,
 	0x0D00, 0x0101,
 	0x0D02, 0x0001,
-	0x0D04, 0x0002,
+	0x0D04, 0x0102,
 	0x011E, 0x0000,
 	0x6226, 0x0000,
 };
@@ -3264,7 +3264,7 @@ static kal_uint32 close(void)
 {
 	LOG_INF("E\n");
 	/* No Need to implement this function */
-	streaming_control(KAL_FALSE);
+	//streaming_control(KAL_FALSE);
 	return ERROR_NONE;
 } /* close */
 
@@ -4196,7 +4196,7 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
 			*(MUINT32 *)(uintptr_t)(*(feature_data+1)) = 1;
 			break;
 		case MSDK_SCENARIO_ID_CUSTOM1:
-			*(MUINT32 *)(uintptr_t)(*(feature_data+1)) = 1;
+			*(MUINT32 *)(uintptr_t)(*(feature_data+1)) = 0;
 			break;
 		case MSDK_SCENARIO_ID_CUSTOM2:
 			*(MUINT32 *)(uintptr_t)(*(feature_data+1)) = 1;

@@ -617,7 +617,7 @@
 		track,general_chg_break_t_thd = <200>;
 		track,voocphy_type = <2>;
 		track,wired_max_power = <330000>;
-		track,wired_fast_chg_scheme = <1>;
+		track,wired_fast_chg_scheme = <4>;
 	};
 };
 

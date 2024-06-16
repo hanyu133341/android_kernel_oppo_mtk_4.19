@@ -1169,6 +1169,7 @@ static int mtkfb_ioctl(struct fb_info *info, unsigned int cmd,
 		* add resume to doze for tp gesture.
 		*/
 		notify_suspend_to_tp(info,aod_pm);
+		//#endif /* VENDOR_EDIT */
 		ret = mtkfb_aod_mode_switch(arg);
 		break;
 	}

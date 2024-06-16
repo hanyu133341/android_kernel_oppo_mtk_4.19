@@ -1,5 +1,5 @@
 /***********************************************************
-** Copyright (C), 2008-2016, OPLUS Mobile Comm Corp., Ltd.
+** Copyright (C), 2008-2016, OPPO Mobile Comm Corp., Ltd.
 ** ODM_WT_EDIT
 ** File: - virtual_dsi_vdo_default.c
 ** Description: source file for virtual panel in kernel stage

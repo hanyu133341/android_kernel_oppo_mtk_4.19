@@ -1673,8 +1673,8 @@ aa 0b 00 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	dischg_enable: dischg_enable {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;
-			slew-rate = <1>;
-			bias-pull-up;
+			output-enable;
+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
 			output-high;
 		};
 	};
@@ -1682,8 +1682,8 @@ aa 0b 00 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	dischg_disable: dischg_disable {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;
-			slew-rate = <1>;
-			bias-pull-down;
+			output-enable;
+			bias-pull-down = <MTK_PUPD_SET_R1R0_01>;
 			output-low;
 		};
 	};

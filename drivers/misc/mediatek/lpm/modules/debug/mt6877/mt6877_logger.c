@@ -16,7 +16,10 @@
 #include <mt6877_cond.h>
 #include <mtk_lpm_module.h>
 
+#ifdef CONFIG_MTK_AEE_FEATURE
 #include <aee.h>
+#endif
+
 #include <mtk_lpm.h>
 
 #include <mt6877_spm_comm.h>
@@ -33,10 +36,10 @@
 
 #ifdef OPLUS_FEATURE_CONN_POWER_MONITOR
 //add for mtk connectivity power monitor
+#include <linux/workqueue.h>
+#include <linux/jiffies.h>
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
-
-#define OPLUS_26M_PCT_GAP	50
 #endif /* OPLUS_FEATURE_CONN_POWER_MONITOR */
 
 #define MT6877_LOG_MONITOR_STATE_NAME	"mcusysoff"
@@ -177,7 +180,29 @@ u32 before_ap_slp_duration;
 //add for mtk connectivity power monitor
 #define RET_ERR  1
 #define RET_OK  0
+#define OPLUS_26M_PCT_GAP	50
+#define OPLUS_TIME_GAP	PCM_32K_TICKS_PER_SEC
+
 static struct miscdevice lpm_object;
+static struct workqueue_struct *mQueue = NULL;
+static struct delayed_work mWork;
+static char mUevent[256] = {'\0'};
+static unsigned long mWakeupLast = OPLUS_TIME_GAP;
+
+static void oplusWorkHandler(struct work_struct *data)
+{
+	char *envp[2];
+
+	if (mUevent[0] == '\0')
+		return;
+
+	envp[0] = mUevent;
+	envp[1] = NULL;
+	kobject_uevent_env(
+		&lpm_object.this_device->kobj,
+		KOBJ_CHANGE, envp);
+}
+
 int oplusLpmUeventInit(void)
 {
         u_int8_t ret = RET_OK;
@@ -195,33 +220,30 @@ int oplusLpmUeventInit(void)
                         return RET_ERR;
                 }
         }
+	if (mQueue == NULL) {
+		mQueue = create_singlethread_workqueue("oplus_conn_uevent");
+		INIT_DELAYED_WORK(&mWork, oplusWorkHandler);
+	}
         return ret;
 }
 
 int oplusLpmSendUevent(const char *src)
 {
-        int ret;
-        char *envp[2];
-        char event_string[100];
-
         if (lpm_object.this_device == NULL) {
                 return RET_ERR;
         }
+	if (src == NULL) {
+		return RET_ERR;
+	}
 
-        envp[0] = event_string;
-        envp[1] = NULL;
-        /*send uevent*/
-        strlcpy(event_string, src, sizeof(event_string));
-        if (event_string[0] == '\0') { /*string is null*/
-                return RET_ERR;
-        }
-        ret = kobject_uevent_env(
-                &lpm_object.this_device->kobj,
-                KOBJ_CHANGE, envp);
-        if (ret != RET_OK) {
-                return ret;
-        }
-        return ret;
+	strlcpy(mUevent, src, sizeof(mUevent));
+	if (mQueue) {
+		queue_delayed_work(mQueue, &mWork, msecs_to_jiffies(200));
+	} else {
+		schedule_delayed_work(&mWork, msecs_to_jiffies(200));
+	}
+
+	return RET_OK;
 }
 #endif /* OPLUS_FEATURE_CONN_POWER_MONITOR */
 
@@ -563,29 +585,34 @@ static int mt6877_show_message(struct mt6877_spm_wake_status *wakesrc, int type,
 
 	if (wakesrc->is_abort != 0) {
 		/* add size check for vcoredvfs */
+#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_sram_printk("SPM ABORT (%s), r13 = 0x%x, ",
 			scenario, wakesrc->r13);
+#endif
 		log_size += scnprintf(log_buf + log_size,
 			LOG_BUF_OUT_SZ - log_size,
 			"[SPM] ABORT (%s), r13 = 0x%x, ",
 			scenario, wakesrc->r13);
-
+#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_sram_printk(" debug_flag = 0x%x 0x%x",
 			wakesrc->debug_flag, wakesrc->debug_flag1);
+#endif
 		log_size += scnprintf(log_buf + log_size,
 			LOG_BUF_OUT_SZ - log_size,
 			" debug_flag = 0x%x 0x%x",
 			wakesrc->debug_flag, wakesrc->debug_flag1);
-
+#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_sram_printk(" sw_flag = 0x%x 0x%x",
 			wakesrc->sw_flag0, wakesrc->sw_flag1);
+#endif
 		log_size += scnprintf(log_buf + log_size,
 			LOG_BUF_OUT_SZ - log_size,
 			" sw_flag = 0x%x 0x%x\n",
 			wakesrc->sw_flag0, wakesrc->sw_flag1);
-
+#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_sram_printk(" b_sw_flag = 0x%x 0x%x",
 			wakesrc->b_sw_flag0, wakesrc->b_sw_flag1);
+#endif
 		log_size += scnprintf(log_buf + log_size,
 			LOG_BUF_OUT_SZ - log_size,
 			" b_sw_flag = 0x%x 0x%x",
@@ -736,9 +763,13 @@ static int mt6877_show_message(struct mt6877_spm_wake_status *wakesrc, int type,
 			//add for mtk connectivity power monitor
 			if ((wakesrc->r13 & (R13_CONN_DDR_EN|R13_CONN_STATE|R13_CONN_SRCCKENA|R13_CONN_APSRC_REQ|R13_CONN_SRCCLKENB))
 				&& (spm_26M_off_pct < OPLUS_26M_PCT_GAP)) {
-				char uevent[100] = {'\0'};
-				snprintf(uevent, sizeof(uevent), "lpm=src:%s;r13:%d;timer_out:%d;26M_off_pct:%d;", buf, wakesrc->r13, wakesrc->timer_out, spm_26M_off_pct);
-				oplusLpmSendUevent(uevent);
+				mWakeupLast += wakesrc->timer_out;
+				if (mWakeupLast >= OPLUS_TIME_GAP) {
+					char uevent[100] = {'\0'};
+					snprintf(uevent, sizeof(uevent), "lpm=src:%s;r13:%d;timer_out:%d;26M_off_pct:%d;", buf, wakesrc->r13, wakesrc->timer_out, spm_26M_off_pct);
+					oplusLpmSendUevent(uevent);
+					mWakeupLast = 0;
+				}
 			}
 #endif /* OPLUS_FEATURE_CONN_POWER_MONITOR */
 		}

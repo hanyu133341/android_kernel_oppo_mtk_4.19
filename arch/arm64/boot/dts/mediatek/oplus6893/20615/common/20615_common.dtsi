@@ -7,9 +7,9 @@
 	KEEP_100_PERCENT = <(2)>;
 	EMBEDDED_SEL = <(1)>;
 
-	g_FG_PSEUDO100_T0 = <(98)>;
-	g_FG_PSEUDO100_T1 = <(96)>;
-	g_FG_PSEUDO100_T2 = <(96)>;
+	g_FG_PSEUDO100_T0 = <(97)>;
+	g_FG_PSEUDO100_T1 = <(95)>;
+	g_FG_PSEUDO100_T2 = <(95)>;
 	g_FG_PSEUDO100_T3 = <(93)>;
 	g_FG_PSEUDO100_T4 = <(93)>;
 
@@ -101,6 +101,29 @@
 		match-projects = <20615 20662>;
 	};
 	};
+
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <50000>;
+		track,wired_fast_chg_scheme = <2>;
+	};
+
+        mediatek_phy_tuning: mediatek_phy_tuning {
+                phy_tuning {
+                        compatible = "mediatek,phy_tuning";
+                        eye-vrt = <7>;
+                        eye-term = <7>;
+                        eye-rev6 = <2>;
+                        eye-disc = <0xD>;
+                        host-eye-vrt = <7>;
+                        host-eye-term = <6>;
+                        host-eye-rev6 = <3>;
+                        host-eye-disc = <0xD>;
+                };
+        };
 };
 
 &rear_cct_1 {

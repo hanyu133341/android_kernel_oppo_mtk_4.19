@@ -685,7 +685,14 @@
 	cp_low_current_new_function:cp_low_current_new_function {
 		compatible = "mediatek,  CP_LOW_CURRENT_EINT_NEW_FUNCTION";
 	};*/
-
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <30000>;
+		track,wired_fast_chg_scheme = <5>;
+	};
 };
 
 &charger {
@@ -1145,7 +1152,7 @@
 		// type of tp_dev ,TP-SAMSUNG = 8;
 		platform_support_project = <20391>;
 		platform_support_project_dir = <20391>;
-		platform_support_project_commandline = "20391_samsung_ams643_1080p";
+		platform_support_project_commandline = "oppo20391_samsung_ams643_1080p";
 		//platform_support_project_external_name = "FA272";
 
 		touchpanel,max-num-support = <10>;

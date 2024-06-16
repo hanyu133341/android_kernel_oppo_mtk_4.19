@@ -2092,7 +2092,7 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
 		break;
 	}
     case SENSOR_FEATURE_GET_OFFSET_TO_START_OF_EXPOSURE:
-        *(MINT32 *)(signed long)(*(feature_data + 1)) = -7385000;
+        *(MINT32 *)(signed long)(*(feature_data + 1)) = -2000000;
         break;
     case SENSOR_FEATURE_GET_PIXEL_CLOCK_FREQ_BY_SCENARIO:
         switch (*feature_data) {

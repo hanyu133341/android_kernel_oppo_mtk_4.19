@@ -68,6 +68,11 @@
 		debounce = <32000>;
 		status = "okay";
 	};
+
+	oplus_sim_detect {
+		compatible = "oplus, sim_detect";
+		Hw,sim_det = <&pio 77 0x00>;
+	};
 };
 &keypad {
 	keypad,volume-up	= <&pio 1 0x00>;
@@ -178,6 +183,7 @@
 		health_monitor_v2_support;
 		freq_hop_simulate_support;
 		snr_read_support;
+		exception_upload_support;
 		//fw_update_in_probe_with_headfile;
 
 		touchpanel,button-type = <4>;
@@ -518,6 +524,21 @@
                 };
 
         };
+	panel14@0 {
+		compatible = "oplus21101,boe_bi,ili9883a,dphy,vdo";
+                reg = <2>;
+                reset-gpios = <&pio 86 0>;
+		ldo-gpios = <&pio 136 0>;
+                bias-gpios = <&pio 137 0>,
+                             <&pio 138 0>;
+                pinctrl-names = "default";
+                port {
+                        panel_in14: endpoint {
+                                remote-endpoint = <&dsi_out>;
+                        };
+                };
+
+        };
 	ports {
 		port {
 			dsi_out: endpoint {
@@ -558,18 +579,39 @@
 	 * eint pwm_width, eint pwm_thresh
 	 * eint deb(debounce0, debounce1, debounce2, debounce3), inv_debounce
 	 */
+
+	//Modify for bug 136344
 	headset-mode-setting = <0x500 0x500 1 0x1f0
-				0x800 0x800 0x20 0x44
-				0x4 0x1
-				0x5 0x3 0x3 0x5 0xe>;
+				0x1325 0x800 0x3D4 0x44
+				0x0 0x7
+				0x5 0x9 0x9 0xd 0xe>;
+
+	/*headset-mode-setting = <0x500 0x500 1 0x1f0
+	*                      0x800 0x800 0x20 0x44
+	*                      0x4 0x1
+	*                      0x5 0x3 0x3 0x5 0xe>;
+	*/
+
 	accdet-plugout-debounce = <1>;
 	/*1:ACC mode, 2:low cost without in bias, 6:low cost with in bias*/
 	accdet-mic-mode = <2>;
 	/*0--MD_MAX--UP_MAX--DW_MAX*/
-	headset-three-key-threshold = <0 80 220 400>;
+
+	//Modify for support headset key
+	headset-three-key-threshold = <0 82 170 306>;
+
+	//headset-three-key-threshold = <0 80 220 400>;
+
 	headset-three-key-threshold-CDD = <0 121 192 600>;
 	/*0--MD_MAX--VOICE_MAX--UP_MAX--DW_MAX*/
 	headset-four-key-threshold = <0 58 121 192 400>;
+
+
+        //Modify for support headset hpimpendence test
+	/* moisture HW mode config start. Enable moisture detection or not
+	 * default use HW mode for moisture detection
+	 */
+	moisture_detect_enable = <1>;
 
 	/* select VTH to 2v and 500k, use internal resitance */
 	eint_use_ext_res = <0>;
@@ -606,6 +648,7 @@
 	/* moisture of water resister ohm, SW mode by auxadc*/
 	moisture-water-r = <10000>;
 	/* moisture SW mode config end */
+        //#endif /* VENDOR_EDIT */
 	status = "okay";
 };
 /* accdet end */
@@ -1165,6 +1208,18 @@ oplus_fp: fingerprint@0 {
 };
 /* FINGERPRINT end */
 //#endif /*OPLUS_FEATURE_FINGERPRINT*/
+
+&mmc1 {
+    cd-gpios = <&pio 4 0>;
+    status = "okay";
+    vmmc-supply = <&mt_pmic_vmch_ldo_reg>;
+};
+&mt6360_ldo {
+	sdcard_det_en = <1>;
+	sdcard_hlact = <0>;
+};
+
+
 #include "mediatek/cust_mt6833_camera_21101.dtsi"
 #include <oplus6833_21831/cust.dtsi>
 

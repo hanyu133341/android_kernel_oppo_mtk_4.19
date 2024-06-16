@@ -20,6 +20,7 @@
 #include "imx355mipiraw22693_Sensor.h"
 #include "imgsensor_common.h"
 #include "imgsensor_eeprom.h"
+#include "imgsensor_hwcfg_custom.h"
 
 #define PFX "IMX355_camera_sensor"
 #define LOG_INF(format, args...) pr_debug(PFX "[%s] " format, __func__, ##args)
@@ -31,8 +32,8 @@ static kal_uint32 streaming_control(kal_bool enable);
 static kal_uint8 deviceInfo_register_value = 0x00;
 extern unsigned char imx355_get_module_id(void);
 #define MODULE_ID_OFFSET 0x0000
-//extern Eeprom_DistortionParamsRead(enum IMGSENSOR_SENSOR_IDX sensor_idx, kal_uint16 slaveAddr);
-
+//extern int Eeprom_DistortionParamsRead(enum IMGSENSOR_SENSOR_IDX sensor_idx, kal_uint16 slaveAddr);
+extern struct CAMERA_DEVICE_INFO gImgEepromInfo;
 static DEFINE_SPINLOCK(imgsensor_drv_lock);
 
 static struct imgsensor_info_struct imgsensor_info = {
@@ -47,7 +48,7 @@ static struct imgsensor_info_struct imgsensor_info = {
         .starty = 0,
         .grabwindow_width = 3264,
         .grabwindow_height = 2448,
-        .mipi_pixel_rate = 280800000,
+        .mipi_pixel_rate = 542800000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 300,
     },
@@ -59,7 +60,7 @@ static struct imgsensor_info_struct imgsensor_info = {
         .starty = 0,
         .grabwindow_width = 3264,
         .grabwindow_height = 2448,
-        .mipi_pixel_rate = 280800000,
+        .mipi_pixel_rate = 542800000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 300,
     },
@@ -71,7 +72,7 @@ static struct imgsensor_info_struct imgsensor_info = {
         .starty = 0,
         .grabwindow_width = 3264,
         .grabwindow_height = 1840,
-        .mipi_pixel_rate = 288000000,
+        .mipi_pixel_rate = 562000000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 300,
     },
@@ -95,19 +96,19 @@ static struct imgsensor_info_struct imgsensor_info = {
         .starty = 0,
         .grabwindow_width = 3264,
         .grabwindow_height = 2448,
-        .mipi_pixel_rate = 280800000,
+        .mipi_pixel_rate = 542800000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 300,
     },
     .custom1 = {
-        .pclk = 220800000,
-        .linelength = 1836,
-        .framelength = 5010,
+        .pclk = 201600000,
+        .linelength = 3672,
+        .framelength = 2286,
         .startx = 0,
         .starty = 0,
-        .grabwindow_width = 1632,
-        .grabwindow_height = 1224,
-        .mipi_pixel_rate = 220800000,
+        .grabwindow_width = 2448,
+        .grabwindow_height = 1836,
+        .mipi_pixel_rate = 201600000, //434000000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 240,
     },
@@ -131,7 +132,7 @@ static struct imgsensor_info_struct imgsensor_info = {
         .starty = 0,
         .grabwindow_width = 3264,
         .grabwindow_height = 2448,
-        .mipi_pixel_rate = 280800000,
+        .mipi_pixel_rate = 542800000,
         .mipi_data_lp2hs_settle_dc = 85,
         .max_framerate = 300,
     },
@@ -216,7 +217,7 @@ static struct SENSOR_WINSIZE_INFO_STRUCT imgsensor_winsize_info[] = {
     {3280, 2464,   0, 312,   3280, 1840, 3280, 1840,   8,   0, 3264, 1840, 0, 0, 3264, 1840},//video
     {3280, 2464,   0,   0,   3280, 2464, 1640, 1232, 116, 220, 1408,  792, 0, 0, 1408,  792},//hs
     {3280, 2464,   8,   8,   3264, 2448, 3264, 2448,   0,   0, 3264, 2448, 0, 0, 3264, 2448},//slim
-    {3280, 2464,   8,   8,   3264, 2448, 1632, 1224,   0,   0, 1632, 1224, 0, 0, 1632, 1224},//custom1
+    {3280, 2464,   416, 312, 2448, 1836, 2448, 1836,   0,   0, 2448, 1836, 0, 0, 2448, 1836},//custom1
     {3280, 2464,   0,   0,   3280, 2464, 1640, 1232,   0,   0, 1640, 1232, 0, 0, 1640, 1232},//custom2
     {3280, 2464,   8,   8,   3264, 2448, 3264, 2448,   0,   0, 3264, 2448, 0, 0, 3264, 2448},//custom3
     {3280, 2464,   8, 312,   3264, 1840, 3264, 1840,   0,   0, 3264, 1840, 0, 0, 3264, 1840},//custom4
@@ -620,58 +621,58 @@ static kal_uint16 slim_video_setting_array[] = {
 };
 
 static kal_uint16 custom1_setting_array[] = {
-    0x0112, 0x0A,
-    0x0113, 0x0A,
-    0x0114, 0x03,
-    0x0342, 0x07,
-    0x0343, 0x2C,
-    0x0340, 0x13,
-    0x0341, 0x92,
-    0x0344, 0x00,
-    0x0345, 0x08,
-    0x0346, 0x00,
-    0x0347, 0x08,
-    0x0348, 0x0C,
-    0x0349, 0xC7,
-    0x034A, 0x09,
-    0x034B, 0x97,
-    0x0220, 0x00,
-    0x0222, 0x01,
-    0x0900, 0x01,
-    0x0901, 0x22,
-    0x0902, 0x00,
-    0x034C, 0x06,
-    0x034D, 0x60,
-    0x034E, 0x04,
-    0x034F, 0xC8,
-    0x0301, 0x05,
-    0x0303, 0x01,
-    0x0305, 0x02,
-    0x0306, 0x00,
-    0x0307, 0x78,
-    0x030B, 0x01,
-    0x030D, 0x04,
-    0x030E, 0x00,
-    0x030F, 0x5C,
-    0x0310, 0x00,
-    0x0700, 0x00,
-    0x0701, 0x10,
-    0x0820, 0x08,
-    0x0821, 0xA0,
-    0x3088, 0x04,
-    0x6813, 0x02,
-    0x6835, 0x00,
-    0x6836, 0x00,
-    0x6837, 0x04,
-    0x684D, 0x00,
-    0x684E, 0x00,
-    0x684F, 0x04,
-    0x0202, 0x13,
-    0x0203, 0x88,
-    0x0204, 0x00,
-    0x0205, 0x00,
-    0x020E, 0x01,
-    0x020F, 0x00,
+    0x0112,0x0A,
+    0x0113,0x0A,
+    0x0114,0x03,
+    0x0342,0x0E,
+    0x0343,0x58,
+    0x0340,0x08,
+    0x0341,0xEE,
+    0x0344,0x01,
+    0x0345,0xA0,
+    0x0346,0x01,
+    0x0347,0x38,
+    0x0348,0x0B,
+    0x0349,0x2F,
+    0x034A,0x08,
+    0x034B,0x63,
+    0x0220,0x00,
+    0x0222,0x01,
+    0x0900,0x00,
+    0x0901,0x11,
+    0x0902,0x00,
+    0x034C,0x09,
+    0x034D,0x90,
+    0x034E,0x07,
+    0x034F,0x2C,
+    0x0301,0x05,
+    0x0303,0x01,
+    0x0305,0x02,
+    0x0306,0x00,
+    0x0307,0x78,
+    0x030B,0x01,
+    0x030D,0x02,
+    0x030E,0x00,
+    0x030F,0x2A,
+    0x0310,0x00,
+    0x0700,0x00,
+    0x0701,0x10,
+    0x0820,0x07,
+    0x0821,0xE0,
+    0x3088,0x04,
+    0x6813,0x01,
+    0x6835,0x00,
+    0x6836,0x01,
+    0x6837,0x02,
+    0x684D,0x00,
+    0x684E,0x01,
+    0x684F,0x02,
+    0x0202,0x08,
+    0x0203,0xE4,
+    0x0204,0x00,
+    0x0205,0x00,
+    0x020E,0x01,
+    0x020F,0x00,
 };
 
 static kal_uint16 custom2_setting_array[] = {
@@ -1094,19 +1095,45 @@ static kal_uint16 gain2reg(const kal_uint16 gain)
     return (kal_uint16) reg_gain;
 }
 
-static kal_uint32 set_test_pattern_mode(kal_bool enable)
+static kal_uint32 set_test_pattern_mode(kal_uint8 modes, struct SET_SENSOR_PATTERN_SOLID_COLOR *pTestpatterndata)
 {
-    LOG_INF("enable: %d\n", enable);
+        kal_uint16 Color_R, Color_Gr, Color_Gb, Color_B;
+	if (pTestpatterndata != NULL) {
+		Color_R = (pTestpatterndata->COLOR_R >> 16) & 0xFFFF;
+		Color_Gr = (pTestpatterndata->COLOR_Gr >> 16) & 0xFFFF;
+		Color_B = (pTestpatterndata->COLOR_B >> 16) & 0xFFFF;
+		Color_Gb = (pTestpatterndata->COLOR_Gb >> 16) & 0xFFFF;
+		pr_info("355 set_test_pattern enum: %d\n", modes);
+		pr_info("R %x GR %x B %x GB %x",pTestpatterndata->COLOR_R, pTestpatterndata->COLOR_Gr, pTestpatterndata->COLOR_B, pTestpatterndata->COLOR_Gb);
+		pr_info("SETTING R %x GR %x B %x GB %x", Color_R, Color_Gr,Color_B,Color_Gb);
+	}
 
-    if (enable) {
-        write_cmos_sensor(0x0601, 0x0002); /*100% Color bar*/
-    } else {
-        write_cmos_sensor(0x0601, 0x0000); /*No pattern*/
-    }
-    spin_lock(&imgsensor_drv_lock);
-    imgsensor.test_pattern = enable;
-    spin_unlock(&imgsensor_drv_lock);
-    return ERROR_NONE;
+	if (modes) {
+		write_cmos_sensor_8(0x0600, modes>>4);
+		write_cmos_sensor_8(0x0601, modes);
+		if (modes == 1 && (pTestpatterndata != NULL)) { //Solid Color
+			Color_R = (pTestpatterndata->COLOR_R >> 16) & 0xFFFF;
+			Color_Gr = (pTestpatterndata->COLOR_Gr >> 16) & 0xFFFF;
+			Color_B = (pTestpatterndata->COLOR_B >> 16) & 0xFFFF;
+			Color_Gb = (pTestpatterndata->COLOR_Gb >> 16) & 0xFFFF;
+			write_cmos_sensor_8(0x0602, Color_R >> 8);
+			write_cmos_sensor_8(0x0603, Color_R & 0xFF);
+			write_cmos_sensor_8(0x0604, Color_Gr >> 8);
+			write_cmos_sensor_8(0x0605, Color_Gr & 0xFF);
+			write_cmos_sensor_8(0x0606, Color_B >> 8);
+			write_cmos_sensor_8(0x0607, Color_B & 0xFF);
+			write_cmos_sensor_8(0x0608, Color_Gb >> 8);
+			write_cmos_sensor_8(0x0609, Color_Gb & 0xFF);
+		}
+	} else {
+		write_cmos_sensor(0x0600, 0x0000); /*No pattern*/
+		write_cmos_sensor(0x0601, 0x0000);
+	}
+
+	spin_lock(&imgsensor_drv_lock);
+	imgsensor.test_pattern = modes;
+	spin_unlock(&imgsensor_drv_lock);
+	return ERROR_NONE;
 }
 
 static kal_int32 get_sensor_temperature(void)
@@ -1535,6 +1562,8 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
     while (imgsensor_info.i2c_addr_table[i] != 0xff) {
         spin_lock(&imgsensor_drv_lock);
         imgsensor.i2c_write_id = imgsensor_info.i2c_addr_table[i];
+        gImgEepromInfo.i4CurSensorIdx = 2;
+        gImgEepromInfo.i4CurSensorId = imgsensor_info.sensor_id;
         spin_unlock(&imgsensor_drv_lock);
         do {
             *sensor_id = ((read_cmos_sensor_8(0x0016) << 8)
@@ -2635,7 +2664,7 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
                 (MUINT32 *)(uintptr_t)(*(feature_data+1)));
         break;
     case SENSOR_FEATURE_SET_TEST_PATTERN:
-        set_test_pattern_mode((BOOL)*feature_data);
+        set_test_pattern_mode((UINT8)*feature_data, (struct SET_SENSOR_PATTERN_SOLID_COLOR *)feature_data+1);
         break;
     case SENSOR_FEATURE_GET_TEST_PATTERN_CHECKSUM_VALUE:
         /* for factory mode auto testing */

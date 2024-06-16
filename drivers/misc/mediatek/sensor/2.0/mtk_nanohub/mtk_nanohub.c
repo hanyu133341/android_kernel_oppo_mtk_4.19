@@ -22,7 +22,7 @@
 #include <linux/delay.h>
 #include <uapi/linux/sched/types.h>
 #include <scp.h>
-
+#include <soc/oplus/system/oppo_project.h>
 #include "mtk_nanohub.h"
 #include "comms.h"
 #include "hf_manager.h"
@@ -101,14 +101,14 @@ struct mtk_nanohub_device {
 #endif
 	int32_t pressure_config_data[2];
 	int32_t sar_config_data[4];
-	int32_t ois_config_data[2];
+	int32_t ois_config_data[12];
 #ifdef OPLUS_FEATURE_SENSOR
 	int32_t cct_config_data[6];
 	int32_t rear_als_config_data[1];
 	int32_t sars_config_data[4];
 	struct regulator *power_3v;
 	int infrared_power_ctrl;
-	struct hrtimer infrared_power_timer;
+	struct delayed_work infrared_power_work;
 #endif
 };
 
@@ -712,7 +712,11 @@ static void mtk_nanohub_init_sensor_info(void)
 
 	p = &sensor_state[SENSOR_TYPE_OIS];
 	p->sensorType = SENSOR_TYPE_OIS;
-	p->gain = 1000000;
+	if (is_project(0x2169E) || is_project(0x2169F) || is_project(0x216C9) || is_project(0x216CA)) {
+		p->gain = 100000;
+	} else {
+		p->gain = 1000000;
+	}
 	strlcpy(p->name, "ois", sizeof(p->name));
 	strlcpy(p->vendor, "mtk", sizeof(p->vendor));
 #ifdef OPLUS_FEATURE_SENSOR
@@ -2201,7 +2205,7 @@ static int infrared_set_power(int on,bool boc){
 	}
 	if (on) {
 		//cancel disable infraed power in three seconds
-		hrtimer_cancel(&mtk_nanohub_dev->infrared_power_timer);
+		cancel_delayed_work(&mtk_nanohub_dev->infrared_power_work);
 		if (regulator_count_voltages(device->power_3v) > 0) {
 			ret = regulator_set_voltage(device->power_3v, 3000000, 3104000);
 			if (ret) {
@@ -2225,9 +2229,8 @@ static int infrared_set_power(int on,bool boc){
 	} else {
 		if (power_cnt == 1) {
 			//disable infraed power after 3s later to avoid frequent switching power supply
-			hrtimer_start(&mtk_nanohub_dev->infrared_power_timer,
-				ktime_set(3, 0),
-				HRTIMER_MODE_REL);
+			schedule_delayed_work(&mtk_nanohub_dev->infrared_power_work,
+				msecs_to_jiffies(3000));
 			power_cnt = 0;
 		} else {
 			power_cnt--;
@@ -3020,7 +3023,7 @@ static int mtk_parse_dts(struct mtk_nanohub_device *mtk_ndevice, struct platform
 	return -1;
 };
 
-static enum hrtimer_restart infrared_power_timer_func(struct hrtimer *timer)
+static void infrared_power_timer_func(struct work_struct *dwork)
 {
     int ret = 0;
     pmic_enable_interrupt(INT_VIBR_OC, 0, "vibr");
@@ -3028,10 +3031,11 @@ static enum hrtimer_restart infrared_power_timer_func(struct hrtimer *timer)
     if (ret) {
         printk("Regulator power_3v disable failed\n");
         ret = regulator_enable(mtk_nanohub_dev->power_3v);
-        return ret;
+        printk("regulator_enable power_3v:%d\n", ret);
+        return;
     }
 
-    return HRTIMER_NORESTART;
+    return;
 }
 
 static int mtk_nanohub_probe_info(struct platform_device *pdev)
@@ -3040,8 +3044,7 @@ static int mtk_nanohub_probe_info(struct platform_device *pdev)
 	mtk_nanohub_dev->infrared_power_ctrl = 1;
 	init_infrared_oc_handler(infrared_oc_handler);
 
-	hrtimer_init(&mtk_nanohub_dev->infrared_power_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-	mtk_nanohub_dev->infrared_power_timer.function = infrared_power_timer_func;
+	INIT_DELAYED_WORK(&mtk_nanohub_dev->infrared_power_work, infrared_power_timer_func);
 
 	printk(" ----mtk_nanohub_probe_info %s[%d]----\n", __FUNCTION__, __LINE__);
 	return 0;

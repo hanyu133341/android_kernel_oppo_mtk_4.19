@@ -74,33 +74,11 @@ struct LCM_setting_table {
 };
 
 static struct LCM_setting_table lcm_setbrightness_normal[] = {
-        {REGFLAG_CMD,3, {0x51, 0x00, 0x00}},
-/*	{REGFLAG_CMD,4,{0xFF,0x78,0x38,0x0A}},
-        {REGFLAG_CMD,2,{0x37,0x4F}},
-        {REGFLAG_CMD,2,{0x38,0x48}},
-        {REGFLAG_CMD,4,{0xFF,0x78,0x38,0x00}},
-        {REGFLAG_CMD,2,{0x55,0x00}},*/
-//        {REGFLAG_CMD,6, {0xF0,0x55,0xAA,0x52,0x08,0x00}},
-//        {REGFLAG_CMD,2, {0xB2, 0x11}},
+	{REGFLAG_CMD,3, {0x51, 0x00, 0x00}},
 };
 
 static struct LCM_setting_table lcm_finger_HBM_on_setting[] = {
         {REGFLAG_CMD,3, {0x51, 0x0f, 0xff}},
-/*	{REGFLAG_CMD,4,{0xFF,0x78,0x38,0x0B}},
-        {REGFLAG_CMD,2,{0x17,0xF3}},
-        {REGFLAG_CMD,2,{0x18,0xF3}},
-        {REGFLAG_CMD,2,{0x19,0xF3}},
-        {REGFLAG_CMD,2,{0x1A,0xF3}},
-        {REGFLAG_CMD,2,{0x1B,0xF3}},
-        {REGFLAG_CMD,2,{0x1C,0xF3}},
-        {REGFLAG_CMD,2,{0x1D,0xF3}},
-        {REGFLAG_CMD,4,{0xFF,0x78,0x38,0x0A}},
-        {REGFLAG_CMD,2,{0x37,0x4F}},
-        {REGFLAG_CMD,2,{0x38,0x70}},
-        {REGFLAG_CMD,4,{0xFF,0x78,0x38,0x00}},
-        {REGFLAG_CMD,2,{0x55,0x03}},*/
-//        {REGFLAG_CMD,6, {0xF0,0x55,0xAA,0x52,0x08,0x00}},
-//        {REGFLAG_CMD,2, {0xB2, 0x01}},
 };
 
 
@@ -293,14 +271,28 @@ static int lcm_panel_ldo3_disable(struct device *dev)
 
 static void jdi_panel_init(struct jdi *ctx)
 {
+	//APL Code
+        jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x0B);
+        jdi_dcs_write_seq_static(ctx,0x17,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x18,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x19,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x1A,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x1B,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x1C,0xF3);
+        jdi_dcs_write_seq_static(ctx,0x1D,0xF3);
+        jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x0A);
+        jdi_dcs_write_seq_static(ctx,0x37,0x4F);
+        jdi_dcs_write_seq_static(ctx,0x38,0x70);
+        jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x00);
+        jdi_dcs_write_seq_static(ctx,0x55,0x03);
+
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x08);
 	jdi_dcs_write_seq_static(ctx,0x45,0x4C);
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x02);
 	jdi_dcs_write_seq_static(ctx,0x38,0x13);   //60Hz
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x07);
 	jdi_dcs_write_seq_static(ctx,0x29,0x01);
-	jdi_dcs_write_seq_static(ctx,0x20,0x00,0x00,0x00,0x00,0x00,0x11,0x00,0x00,0xab,0x30,0xA0,0x09,0x6c,0x04,0x38,0x00,0x0c,0x02,0x1c,0x02,0xa3,0x01,0x9a,0x01,0xd8,0x00,0x19,0x01,0x03,0x00,0x0a,0x00,0x0c,0x08,0xbb,0x0a,0x5f,0x16,0x00,0x10,0xec,0x07,0x10,0x20,0x00,0x06,0x0f,0x0f,0x33,0x0e,0x1c,0x2a,0x38,0x46,0x54,0x62,0x69,0x70,0x77,0x79,0x7b,0x7d,0x7e,0x01,0xc2,0x22,0x00,0x2a,0x40,0x32,0xbe,0x3a,0xfc,0x3a,0xfa,0x3a,0xf8,0x3b,0x38,0x3b,0x78,0x3b,0x76,0x4b,0xb6,0x4b,0xb6,0x4b,0xf4,0x5b,0xf4,0x7c,0x34,0x00,0x00,0x00,0x00,0x00,0x00);
- 
+	jdi_dcs_write_seq_static(ctx,0x20,0x00,0x00,0x00,0x00,0x00,0x11,0x00,0x00,0xab,0x30,0x80,0x09,0x6c,0x04,0x38,0x00,0x0c,0x02,0x1c,0x02,0x1c,0x02,0x00,0x02,0x0e,0x00,0x20,0x01,0x1f,0x00,0x07,0x00,0x0c,0x08,0xbb,0x08,0x7a,0x18,0x00,0x10,0xf0,0x07,0x10,0x20,0x00,0x06,0x0f,0x0f,0x33,0x0e,0x1c,0x2a,0x38,0x46,0x54,0x62,0x69,0x70,0x77,0x79,0x7b,0x7d,0x7e,0x02,0x02,0x22,0x00,0x2a,0x40,0x2a,0xbe,0x3a,0xfc,0x3a,0xfa,0x3a,0xf8,0x3b,0x38,0x3b,0x78,0x3b,0xb6,0x4b,0xb6,0x4b,0xf4,0x4b,0xf4,0x6c,0x34,0x84,0x74,0x00,0x00,0x00,0x00,0x00,0x00);
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x00);
 	jdi_dcs_write_seq_static(ctx,0x95,0x10);
 	jdi_dcs_write_seq_static(ctx,0x51,0x00,0x00);
@@ -312,6 +304,8 @@ static void jdi_panel_init(struct jdi *ctx)
 	jdi_dcs_write_seq_static(ctx,0x57,0x25);
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x06);
 	jdi_dcs_write_seq_static(ctx,0xC6,0x01);
+	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x17);
+	jdi_dcs_write_seq_static(ctx,0x20,0x00);
 	jdi_dcs_write_seq_static(ctx,0xFF,0x78,0x38,0x00);
 	jdi_dcs_write_seq_static(ctx,0x29,0x00);
 
@@ -449,9 +443,9 @@ static const struct drm_display_mode performance_mode_120hz = {
 
 #if defined(CONFIG_MTK_PANEL_EXT)
 static struct mtk_panel_params ext_params = {
-	.pll_clk = 251,
+	.pll_clk = 209,
 	.phy_timcon = {
-	    .clk_trail = 12,
+	    .clk_trail = 5,
 	},
 	.cust_esd_check = 0,
 	.esd_check_enable = 1,
@@ -494,22 +488,22 @@ static struct mtk_panel_params ext_params = {
         .bit_per_channel = 10,
         .dsc_line_buf_depth = 11,
         .bp_enable = 1,
-        .bit_per_pixel = 160,
+        .bit_per_pixel = 128,
         .pic_height = 2412,
         .pic_width = 1080,
         .slice_height = 12,
         .slice_width = 540,
-        .chunk_size = 675,
+        .chunk_size = 540,
         .xmit_delay = 512,
-        .dec_delay = 472,
-        .scale_value = 25,
-        .increment_interval = 346,
-        .decrement_interval = 10,
+        .dec_delay = 526,
+        .scale_value = 32,
+        .increment_interval = 287,
+        .decrement_interval = 7,
         .line_bpg_offset = 12,
         .nfl_bpg_offset = 2235,
-        .slice_bpg_offset = 2655,
-        .initial_offset = 5632,
-        .final_offset = 3312,
+        .slice_bpg_offset = 2170,
+        .initial_offset = 6144,
+        .final_offset = 4336,
         .flatness_minqp = 7,
         .flatness_maxqp = 16,
         .rc_model_size = 8192,
@@ -518,8 +512,8 @@ static struct mtk_panel_params ext_params = {
         .rc_quant_incr_limit1 = 15,
         .rc_tgt_offset_hi = 3,
         .rc_tgt_offset_lo = 3,
-		},	
-	.data_rate = 502,
+		},
+	.data_rate = 418,
         .color_vivid_status = true,
         .color_srgb_status = true,
         .color_softiris_status = true,
@@ -531,17 +525,29 @@ static struct mtk_panel_params ext_params = {
 	.oplus_ofp_pre_hbm_off_delay = 0,
 	.oplus_ofp_hbm_off_delay = 17,
 #endif
+	.oplus_osc_hoping_fps_switch = true,
 	//.oplus_wait_te = 0,
 	.oplus_uiready_before_time = 17,
+	.oplus_display_global_dre = 1,
+	.backlight_dsiable_threhold = 3000,
+	.oplus_custom_hdr_color_tmp = true,
+        .oplus_custom_hdr_red = 989,
+        .oplus_custom_hdr_green = 1024,
+        .oplus_custom_hdr_blue = 810,
+	.oplus_panel_use_rgb_gain = true,
 	.dyn_fps = {
 		.switch_en = 1, .vact_timing_fps = 60,
 	},
         .cmd_null_pkt_en = 1,
         .cmd_null_pkt_len = 105,
+	.oplus_display_global_dre = 1,
+	.oplus_ofp_mipi_switch_waite_frame = 1,
+	.oplus_ofp_mipi_switch_config = 1,
+	.oplus_bit_per_channel = 10,
 };
 
 static struct mtk_panel_params ext_params_90hz = {
-	.pll_clk = 485,
+	.pll_clk = 417,
 	.phy_timcon = {
             .clk_trail = 12,
         },
@@ -586,22 +592,22 @@ static struct mtk_panel_params ext_params_90hz = {
         .bit_per_channel = 10,
         .dsc_line_buf_depth = 11,
         .bp_enable = 1,
-        .bit_per_pixel = 160,
+        .bit_per_pixel = 128,
         .pic_height = 2412,
         .pic_width = 1080,
         .slice_height = 12,
         .slice_width = 540,
-        .chunk_size = 675,
+        .chunk_size = 540,
         .xmit_delay = 512,
-        .dec_delay = 472,
-        .scale_value = 25,
-        .increment_interval = 346,
-        .decrement_interval = 10,
+        .dec_delay = 526,
+        .scale_value = 32,
+        .increment_interval = 287,
+        .decrement_interval = 7,
         .line_bpg_offset = 12,
         .nfl_bpg_offset = 2235,
-        .slice_bpg_offset = 2655,
-        .initial_offset = 5632,
-        .final_offset = 3312,
+        .slice_bpg_offset = 2170,
+        .initial_offset = 6144,
+        .final_offset = 4336,
         .flatness_minqp = 7,
         .flatness_maxqp = 16,
         .rc_model_size = 8192,
@@ -611,7 +617,7 @@ static struct mtk_panel_params ext_params_90hz = {
         .rc_tgt_offset_hi = 3,
         .rc_tgt_offset_lo = 3,
 		},
-	.data_rate = 970,
+	.data_rate = 834,
         .color_vivid_status = true,
         .color_srgb_status = true,
         .color_softiris_status = true,
@@ -623,17 +629,29 @@ static struct mtk_panel_params ext_params_90hz = {
         .oplus_ofp_pre_hbm_off_delay = 0,
         .oplus_ofp_hbm_off_delay = 12,
 #endif
+	.oplus_osc_hoping_fps_switch = true,
 	//.oplus_wait_te = 0,
 	.oplus_uiready_before_time = 12,
+	.oplus_display_global_dre = 1,
+	.backlight_dsiable_threhold = 3000,
+	.oplus_custom_hdr_color_tmp = true,
+        .oplus_custom_hdr_red = 989,
+        .oplus_custom_hdr_green = 1024,
+        .oplus_custom_hdr_blue = 810,
+	.oplus_panel_use_rgb_gain = true,
         .dyn_fps = {
                 .switch_en = 1, .vact_timing_fps = 90,
         },
         .cmd_null_pkt_en = 1,
         .cmd_null_pkt_len = 105,
+	.oplus_display_global_dre = 1,
+	.oplus_ofp_mipi_switch_waite_frame = 1,
+	.oplus_ofp_mipi_switch_config = 1,
+	.oplus_bit_per_channel = 10,
 };
 
 static struct mtk_panel_params ext_params_120hz = {
-	.pll_clk = 485,
+	.pll_clk = 417,
 	.phy_timcon = {
             .clk_trail = 12,
         },
@@ -678,22 +696,22 @@ static struct mtk_panel_params ext_params_120hz = {
         .bit_per_channel = 10,
         .dsc_line_buf_depth = 11,
         .bp_enable = 1,
-        .bit_per_pixel = 160,
+        .bit_per_pixel = 128,
         .pic_height = 2412,
         .pic_width = 1080,
         .slice_height = 12,
         .slice_width = 540,
-        .chunk_size = 675,
+        .chunk_size = 540,
         .xmit_delay = 512,
-        .dec_delay = 472,
-        .scale_value = 25,
-        .increment_interval = 346,
-        .decrement_interval = 10,
+        .dec_delay = 526,
+        .scale_value = 32,
+        .increment_interval = 287,
+        .decrement_interval = 7,
         .line_bpg_offset = 12,
         .nfl_bpg_offset = 2235,
-        .slice_bpg_offset = 2655,
-        .initial_offset = 5632,
-        .final_offset = 3312,
+        .slice_bpg_offset = 2170,
+        .initial_offset = 6144,
+        .final_offset = 4336,
         .flatness_minqp = 7,
         .flatness_maxqp = 16,
         .rc_model_size = 8192,
@@ -703,7 +721,7 @@ static struct mtk_panel_params ext_params_120hz = {
         .rc_tgt_offset_hi = 3,
         .rc_tgt_offset_lo = 3,
 		},
-	.data_rate = 970,
+	.data_rate = 834,
         .color_vivid_status = true,
         .color_srgb_status = true,
         .color_softiris_status = true,
@@ -715,13 +733,25 @@ static struct mtk_panel_params ext_params_120hz = {
         .oplus_ofp_pre_hbm_off_delay = 2,
         .oplus_ofp_hbm_off_delay = 0,
 #endif
+	.oplus_osc_hoping_fps_switch = true,
 	//.oplus_wait_te = 1,
 	.oplus_uiready_before_time = 9,
+	.oplus_display_global_dre = 1,
+	.backlight_dsiable_threhold = 3000,
+	.oplus_custom_hdr_color_tmp = true,
+        .oplus_custom_hdr_red = 989,
+        .oplus_custom_hdr_green = 1024,
+        .oplus_custom_hdr_blue = 810,
+	.oplus_panel_use_rgb_gain = true,
         .dyn_fps = {
                 .switch_en = 1, .vact_timing_fps = 120,
         },
         .cmd_null_pkt_en = 1,
         .cmd_null_pkt_len = 105,
+	.oplus_display_global_dre = 1,
+	.oplus_ofp_mipi_switch_waite_frame = 1,
+	.oplus_ofp_mipi_switch_config = 1,
+	.oplus_bit_per_channel = 10,
 };
 
 static int panel_ata_check(struct drm_panel *panel)

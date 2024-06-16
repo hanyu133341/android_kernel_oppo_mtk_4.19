@@ -102,7 +102,7 @@ static enum IMGSENSOR_RETURN wl2864_set(
 		   pin_state > IMGSENSOR_HW_PIN_STATE_LEVEL_HIGH)
 			ret = IMGSENSOR_RETURN_ERROR;
 
-	if (is_project(OPLUS_20682)) {
+	if (is_project(OPPO_20682)) {
 		static int operator = OPERATOR_UNKOWN;
 		operator = get_Operator_Version();
 		if (operator == OPERATOR_20682_SALA_A_ASIA_SIMPLE

@@ -27,9 +27,9 @@
 #include <soc/oplus/device_info.h>
 
 
-//#include <soc/oplus/device_info.h>
-//#include <soc/oplus/oplus_project.h>
-//#include <soc/oplus/boot_mode.h>
+//#include <soc/oppo/device_info.h>
+//#include <soc/oppo/oppo_project.h>
+//#include <soc/oppo/boot_mode.h>
 #include <linux/regmap.h>
 #define FAN53870_PRODUCT_ID_REG  0x00
 #define FAN53870_LDO_ENABLE_REG  0x03
@@ -292,6 +292,12 @@ int fan53870_ldo3_20615_set_voltage(int set_uV)
     int ret;
     unsigned int reg_value = 0x11; /*1.144V*/
     struct fan53870_pw_chip *pchip = fan53870_pchip;
+
+    if (!pchip || !pchip->regmap) {
+        pr_err("pchip or pchip->regmap is NULL\n");
+        ret = -1;
+        goto out;
+    }
 
     pr_err("fan53870_ldo3_set_voltage: voltage = %d!\n", set_uV);
     ret = regmap_write(pchip->regmap, FAN53870_LDO3_VOUT_REG, reg_value);

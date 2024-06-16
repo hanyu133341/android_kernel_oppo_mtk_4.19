@@ -11,7 +11,12 @@
 //#include "mtk_ram_console.h"
 
 #define MT_GPUFREQ_BRINGUP                      0
+#ifdef CONFIG_MTK_PBM
 #define MT_GPUFREQ_KICKER_PBM_READY             1
+#else
+#define MT_GPUFREQ_KICKER_PBM_READY             0
+#endif
+
 #define MT_GPUFREQ_STATIC_PWR_READY2USE         1
 #define MT_GPUFREQ_DYNAMIC_POWER_TABLE_UPDATE   1
 
@@ -165,5 +170,10 @@ extern void mt_gpufreq_power_limit_notify_registerCB(
 typedef void (*gpufreq_input_boost_notify)(unsigned int);
 extern void mt_gpufreq_input_boost_notify_registerCB(
 		gpufreq_input_boost_notify pCB);
+
+/**
+ * GED_SKI_SUPPORT
+ */
+extern int mt_gpufreq_get_gpu_temp(void);
 
 #endif /* ___MT_GPUFREQ_PLAT_H___ */

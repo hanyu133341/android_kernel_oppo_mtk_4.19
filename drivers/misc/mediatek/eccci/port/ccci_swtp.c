@@ -225,6 +225,41 @@ static void swtp_gpio_create_proc(void)
 }
 //#endif  /* OPLUS_FEATURE_SWTP */
 
+//#ifdef VENDOR_EDIT
+//Add for caple detect when SIM plug in
+int ccci_get_swtp_gpio_value(void)
+{
+//#define ARCH_NR_GPIOS     256 //the total gpio numbers 
+//#define GPIOS_MT6893      227 //the total gpio numbers on mt6893
+//#GPIO_NUM                  72 //cable detect gpio number
+//(512-227)+72=101         we will use 101 for dts remapping
+    int sar_gpio=0;
+    int retval = -1;
+    sar_gpio =101;
+    if ((is_project(20615) != 1) && (is_project(21609) != 1) && (is_project(21651) != 1) && (is_project(20619) != 1) && (is_project(20662) != 1)) {
+        pr_info ("not project cupid-A/C/D/E, don't get gpio 72.");
+        return -1;
+    }
+    retval = gpio_get_value(sar_gpio);   //get gpio value
+    if(retval==0)
+    {
+         pr_info("%s: Success to get gpio value %d (code: %d)", __func__, sar_gpio, retval);
+    }
+    else if (retval==1)
+    {
+         pr_info("%s: Success to get gpio value %d (code: %d)", __func__, sar_gpio, retval);
+    }
+    else
+    {
+         //fail case
+         pr_info("%s: Failed to get gpio value %d (code: %d)", __func__, sar_gpio, retval);
+    }
+    swtp_status_value=retval;
+    pr_info("%s: Success to set gpio value %d (swtp_status_value: %d)", __func__, sar_gpio, swtp_status_value);
+    return retval;
+}
+//#endif /* VENDOR_EDIT */
+
 static void swtp_init_delayed_work(struct work_struct *work)
 {
 	struct swtp_t *swtp = container_of(to_delayed_work(work),
@@ -363,5 +398,9 @@ int swtp_init(int md_id)
 
 	CCCI_BOOTUP_LOG(md_id, SYS, "%s end, init_delayed_work scheduled\n",
 		__func__);
+    //#ifdef VENDOR_EDIT
+    //Add for caple detect when reset
+	ccci_get_swtp_gpio_value();
+    //#endif /* VENDOR_EDIT */
 	return 0;
 }

@@ -61,28 +61,28 @@ int oplus_get_typec_sbu_voltage(void)
 }
 EXPORT_SYMBOL(oplus_get_typec_sbu_voltage);
 #ifdef CONFIG_WD_SBU_POLLING
-static void oplus_set_typec_sbu_voltage(int sbu_volt_mv)
+static void oppo_set_typec_sbu_voltage(int sbu_volt_mv)
 {
 	typec_sbu_volt_mv = sbu_volt_mv;
 }
 #endif
 static bool water_detect_feature = false;
-static struct mt6360_chip *oplus_mt6360_chip = NULL;
+static struct mt6360_chip *oppo_mt6360_chip = NULL;
 #ifdef CONFIG_WD_SBU_POLLING
-static int oplus_enable_usbid_polling_init(struct mt6360_chip *chip, bool en);
+static int oppo_enable_usbid_polling_init(struct mt6360_chip *chip, bool en);
 #endif
 void oplus_set_water_detect(bool enable)
 {
 	if (enable) {
-		if (oplus_mt6360_chip)
+		if (oppo_mt6360_chip)
 #ifdef CONFIG_WD_SBU_POLLING
-			oplus_enable_usbid_polling_init(oplus_mt6360_chip, true);
+			oppo_enable_usbid_polling_init(oppo_mt6360_chip, true);
 #endif
 		water_detect_feature = true;
 	} else {
-		if (oplus_mt6360_chip)
+		if (oppo_mt6360_chip)
 #ifdef CONFIG_WD_SBU_POLLING
-			oplus_enable_usbid_polling_init(oplus_mt6360_chip, false);
+			oppo_enable_usbid_polling_init(oppo_mt6360_chip, false);
 #endif
 		water_detect_feature = false;
 	}
@@ -916,7 +916,7 @@ static int mt6360_enable_usbid_polling(struct mt6360_chip *chip, bool en)
 }
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-static int oplus_enable_usbid_polling_init(struct mt6360_chip *chip, bool en)
+static int oppo_enable_usbid_polling_init(struct mt6360_chip *chip, bool en)
 {
 	int ret;
 
@@ -2014,7 +2014,7 @@ static int mt6360_is_water_detected(struct tcpc_device *tcpc)
 
 	if (tcpc->typec_state == typec_attachwait_snk || tcpc->typec_state == typec_attachwait_src) {
 		MT6360_INFO("%s: skip, only do water_detection in unattatched state\n", __func__);
-		oplus_set_typec_sbu_voltage(INVALID_SBU_VOLT);
+		oppo_set_typec_sbu_voltage(INVALID_SBU_VOLT);
 		ret = 0;
 		goto out;
 	}
@@ -2052,7 +2052,7 @@ static int mt6360_is_water_detected(struct tcpc_device *tcpc)
 		MT6360_INFO("%s recheck pl usbid %dmV\n", __func__, usbid);
 		if (usbid > CONFIG_WD_SBU_PL_BOUND) {
 #ifdef OPLUS_FEATURE_CHG_BASIC
-			oplus_set_typec_sbu_voltage(usbid);
+			oppo_set_typec_sbu_voltage(usbid);
 #endif /*OPLUS_FEATURE_CHG_BASIC*/
 			ret = 1;
 			goto out;
@@ -2098,7 +2098,7 @@ static int mt6360_is_water_detected(struct tcpc_device *tcpc)
 	ret = mt6360_get_usbid_adc(tcpc, &usbid);
 	if (ret >= 0) {
 #ifdef OPLUS_FEATURE_CHG_BASIC
-		oplus_set_typec_sbu_voltage(usbid);
+		oppo_set_typec_sbu_voltage(usbid);
 #endif /*OPLUS_FEATURE_CHG_BASIC*/
 		MT6360_INFO("%s recheck usbid %dmV\n", __func__, usbid);
 		if (usbid >= lb && usbid <= ub) {
@@ -2139,7 +2139,7 @@ err:
 	charger_dev_enable_usbid(chip->chgdev, false);
 #ifdef OPLUS_FEATURE_CHG_BASIC
 	if (ret < 0)
-		oplus_set_typec_sbu_voltage(INVALID_SBU_VOLT);
+		oppo_set_typec_sbu_voltage(INVALID_SBU_VOLT);
 #endif /*OPLUS_FEATURE_CHG_BASIC*/
 	__pm_relax(chip->wd_wakeup_src);
 	return ret;
@@ -2860,7 +2860,7 @@ static int mt6360_i2c_probe(struct i2c_client *client,
 #ifdef CONFIG_WATER_DETECTION
 	mt6360_water_calibration(chip->tcpc);
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	oplus_mt6360_chip = chip;
+	oppo_mt6360_chip = chip;
 	charger_dev_enable_usbid(chip->chgdev, false);
 	mt6360_enable_usbid_irq(chip, false);
 #endif /*OPLUS_FEATURE_CHG_BASIC*/

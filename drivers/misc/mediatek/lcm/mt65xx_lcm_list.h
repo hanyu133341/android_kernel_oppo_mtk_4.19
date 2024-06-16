@@ -323,17 +323,17 @@ extern struct LCM_DRIVER sofeg01_fhdplus_dsi_cmd_samsung_lcm_drv;
 extern struct LCM_DRIVER nt36672c_fhdp_dsi_vdo_auo_cphy_90hz_tianma_lcm_drv;
 #endif
 
-extern struct LCM_DRIVER oplus_tianma_td4310_fhdp_dsi_vdo_rt5081_lcm_drv;
+extern struct LCM_DRIVER oppo_tianma_td4310_fhdp_dsi_vdo_rt5081_lcm_drv;
 extern struct LCM_DRIVER nt36672c_fhdp_dsi_vdo_60hz_shenchao_lcm_drv;
 extern struct LCM_DRIVER nt36672c_fhdp_dsi_vdo_90hz_shenchao_lcm_drv;
 extern struct LCM_DRIVER nt36672c_fhdp_dsi_vdo_90hz_shenchao_6382_lcm_drv;
 extern struct LCM_DRIVER r66451_fhdp_dsi_cmd_tianma_lcm_drv;
 
 /* #ifdef OPLUS_BUG_STABILITY */
-extern struct LCM_DRIVER oplus20291_samsung_ams643xy01_1080p_dsi_vdo_lcm_drv;
-extern struct LCM_DRIVER oplus19537_samsung_ams643xf01_1080p_dsi_cmd_lcm_drv;
-extern struct LCM_DRIVER oplus19357_samsung_ams644va04_1080p_dsi_cmd_lcm_drv;
-extern struct LCM_DRIVER oplus19551_samsung_ams644vk01_1080p_dsi_cmd_lcm_drv;
+extern struct LCM_DRIVER oppo20291_samsung_ams643xy01_1080p_dsi_vdo_lcm_drv;
+extern struct LCM_DRIVER oppo19537_samsung_ams643xf01_1080p_dsi_cmd_lcm_drv;
+extern struct LCM_DRIVER oppo19357_samsung_ams644va04_1080p_dsi_cmd_lcm_drv;
+extern struct LCM_DRIVER oppo19551_samsung_ams644vk01_1080p_dsi_cmd_lcm_drv;
 /* #endif */ /* OPLUS_BUG_STABILITY */
 
 extern struct LCM_DRIVER oplus21331_td4160_inx_hdp_dsi_vdo_lcm_drv;

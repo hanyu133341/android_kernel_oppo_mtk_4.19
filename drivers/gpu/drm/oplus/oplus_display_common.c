@@ -214,8 +214,18 @@ int oplus_display_set_cabc_status(void *buf)
 		cabc_true_mode = cabc_back_flag;
 	} else if (cabc_sun_flag == 1) {
 		if (cabc_back_flag == CABC_LEVEL_0 || mtk_crtc->panel_ext->params->oplus_display_global_dre) {
-			disp_aal_set_dre_en(1);
-			printk("%s sun enable dre\n", __func__);
+			if (mtk_crtc->panel_ext->params->backlight_dsiable_threhold) {
+				if (oplus_display_brightness < mtk_crtc->panel_ext->params->backlight_dsiable_threhold) {
+					disp_aal_set_dre_en(0);
+					printk("%s sun disable dre\n", __func__);
+				} else {
+					disp_aal_set_dre_en(1);
+					printk("%s sun enable dre\n", __func__);
+				}
+			} else {
+				disp_aal_set_dre_en(1);
+				printk("%s sun enable dre\n", __func__);
+			}
 		} else {
 			disp_aal_set_dre_en(0);
 			printk("%s sun disable dre\n", __func__);
@@ -226,8 +236,18 @@ int oplus_display_set_cabc_status(void *buf)
 	printk("%s,cabc mode is %d\n", __func__, cabc_true_mode);
 
 	if ((cabc_true_mode == CABC_LEVEL_0 && cabc_back_flag == CABC_LEVEL_0) || mtk_crtc->panel_ext->params->oplus_display_global_dre) {
-		disp_aal_set_dre_en(1);
-		printk("%s enable dre\n", __func__);
+		if (mtk_crtc->panel_ext->params->backlight_dsiable_threhold) {
+			if (oplus_display_brightness < mtk_crtc->panel_ext->params->backlight_dsiable_threhold) {
+				disp_aal_set_dre_en(0);
+				printk("%s disable dre\n", __func__);
+			} else {
+				disp_aal_set_dre_en(1);
+				printk("%s enable dre\n", __func__);
+			}
+		} else {
+			disp_aal_set_dre_en(1);
+			printk("%s sun enable dre\n", __func__);
+		}
 	} else {
 		disp_aal_set_dre_en(0);
 		printk("%s disable dre\n", __func__);

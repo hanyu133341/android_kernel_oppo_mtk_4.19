@@ -151,7 +151,7 @@ extern unsigned long fpd_send_uiready_time;
 extern bool flag_lcd_off;
 extern bool ds_rec_fpd;
 extern bool doze_rec_fpd;
-extern bool oplus_fp_notify_down_delay;
+extern bool oppo_fp_notify_down_delay;
 extern bool oplus_display_fppress_support;
 extern int notify_display_fpd(bool mode);
 extern void fpd_notify(void);
@@ -159,10 +159,10 @@ extern void fpd_notify_init(void);
 extern bool need_update_fpd_fence(struct disp_frame_cfg_t *cfg);
 extern int _read_serial_by_cmdq(char cmd, uint64_t *buf, int num);
 extern int primary_display_set_aod_mode_nolock(unsigned int mode);
-extern void oplus_display_aod_backlight(void);
+extern void oppo_display_aod_backlight(void);
 extern int disp_lcm_aod_from_display_on(struct disp_lcm_handle *plcm);
 extern int disp_lcm_set_aod_mode(struct disp_lcm_handle *plcm, void *handle, unsigned int mode);
-extern int oplus_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level);
+extern int oppo_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level);
 extern int disp_lcm_poweron_before_ulps(struct disp_lcm_handle *plcm);
 extern int disp_lcm_poweroff_after_ulps(struct disp_lcm_handle *plcm);
 int primary_display_set_lcm_hbm(bool en);
@@ -6187,7 +6187,7 @@ skip_resume:
 	if (cur_pm == DOZE_SUSPEND) {
 		/* blocking flush before stop trigger loop */
 		_blocking_flush();
-		oplus_display_aod_backlight();
+		oppo_display_aod_backlight();
 		__pm_relax(pri_wk_lock);
 	}
 //skip_suspend:
@@ -7749,8 +7749,8 @@ out:
 }
 
 //#ifdef OPLUS_FEATURE_DC
-extern int oplus_dc_enable;
-int oplus_dc_enable_real = 0;
+extern int oppo_dc_enable;
+int oppo_dc_enable_real = 0;
 int _set_backlight_by_cmdq(unsigned int level);
 //#endif
 
@@ -7812,8 +7812,8 @@ int primary_display_frame_cfg(struct disp_frame_cfg_t *cfg)
 	#endif
 
 	/* #ifdef OPLUS_FEATURE_DC */
-	if (oplus_dc_enable != oplus_dc_enable_real) {
-		oplus_dc_enable_real = oplus_dc_enable;
+	if (oppo_dc_enable != oppo_dc_enable_real) {
+		oppo_dc_enable_real = oppo_dc_enable;
 		_set_backlight_by_cmdq(dc_level);
 	}
 	/* #endif */
@@ -8968,7 +8968,7 @@ int primary_display_hbm_wait(bool en)
 
 	//#ifdef OPLUS_BUG_SATBILITY
 	if (oplus_display_aod_ramless_support) {
-		if (ramless_dc_wait && oplus_dc_enable && wait_count) {
+		if (ramless_dc_wait && oppo_dc_enable && wait_count) {
 			hbm_notify_init();
 		}
 	}
@@ -8982,7 +8982,7 @@ int primary_display_hbm_wait(bool en)
 		//			 DISP_PATH_EVENT_IF_VSYNC, HZ);
 		//#else
 		if (oplus_display_aod_ramless_support) {
-			if (ramless_dc_wait && oplus_dc_enable) {
+			if (ramless_dc_wait && oppo_dc_enable) {
 				mdelay(3);
 			} else {
 				mdelay(6);
@@ -8998,7 +8998,7 @@ int primary_display_hbm_wait(bool en)
 	//disp_lcm_set_hbm_wait(false, pgc->plcm);
 	//#else
 	if(oplus_display_aod_ramless_support){
-		if (!oplus_dc_enable) {
+		if (!oppo_dc_enable) {
 			primary_display_set_hbm_wait_ramless(false);
 		}
 	} else {
@@ -10588,32 +10588,32 @@ int primary_display_set_scenario(int scenario)
 }
 
 //#ifdef OPLUS_ARCH_EXTENDS
-void oplus_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle)
+void oppo_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle)
 {
 	_cmdq_handle_clear_dirty(cmdq_handle);
 }
 
-void oplus_cmdq_flush_config_handle_mira(void *handle, int blocking)
+void oppo_cmdq_flush_config_handle_mira(void *handle, int blocking)
 {
 	_cmdq_flush_config_handle_mira(handle,blocking);
 }
 
-void oplus_delayed_trigger_kick_set(int params)
+void oppo_delayed_trigger_kick_set(int params)
 {
 	atomic_set(&delayed_trigger_kick, params);
 }
 
-enum DISP_POWER_STATE oplus_primary_set_state(enum DISP_POWER_STATE new_state)
+enum DISP_POWER_STATE oppo_primary_set_state(enum DISP_POWER_STATE new_state)
 {
 	return primary_set_state(new_state);
 }
 
-void oplus_cmdq_reset_config_handle(void)
+void oppo_cmdq_reset_config_handle(void)
 {
 	_cmdq_reset_config_handle();
 }
 
-void oplus_cmdq_build_trigger_loop(void)
+void oppo_cmdq_build_trigger_loop(void)
 {
 	_cmdq_build_trigger_loop();
 }

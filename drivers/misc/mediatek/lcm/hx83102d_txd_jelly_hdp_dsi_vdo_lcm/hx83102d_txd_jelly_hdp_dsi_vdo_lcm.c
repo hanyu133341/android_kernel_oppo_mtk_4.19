@@ -1,5 +1,5 @@
 /***********************************************************
-** Copyright (C), 2008-2016, OPLUS Mobile Comm Corp., Ltd.
+** Copyright (C), 2008-2016, OPPO Mobile Comm Corp., Ltd.
 ** ODM_WT_EDIT
 ** File: - hx83102d_txd_hdp_dsi_vdo_lcm.c
 ** Description: source file for lcm hx83102d_txd in kernel stage

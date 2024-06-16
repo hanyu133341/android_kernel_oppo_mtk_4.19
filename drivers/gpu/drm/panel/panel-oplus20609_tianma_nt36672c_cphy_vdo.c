@@ -445,6 +445,7 @@ static struct mtk_panel_params ext_params = {
 		.hfp = 296,
 		.vfp = 1291,
 	},
+	.oplus_disable_hdr_d65 = 1,
 #ifdef CONFIG_MTK_ROUND_CORNER_SUPPORT
 	.round_corner_en = 1,
 	.corner_pattern_height = ROUND_CORNER_H_TOP,
@@ -452,6 +453,7 @@ static struct mtk_panel_params ext_params = {
 	.corner_pattern_tp_size = sizeof(top_rc_pattern),
 	.corner_pattern_lt_addr = (void *)top_rc_pattern,
 #endif
+	.oplus_display_global_dre = 1,
 };
 static struct mtk_panel_params ext_params_90hz = {
 	.pll_clk = 548,
@@ -476,6 +478,7 @@ static struct mtk_panel_params ext_params_90hz = {
 		.hfp = 296,
 		.vfp = 54,
 	},
+	.oplus_disable_hdr_d65 = 1,
 #ifdef CONFIG_MTK_ROUND_CORNER_SUPPORT
 	.round_corner_en = 1,
 	.corner_pattern_height = ROUND_CORNER_H_TOP,
@@ -483,6 +486,7 @@ static struct mtk_panel_params ext_params_90hz = {
 	.corner_pattern_tp_size = sizeof(top_rc_pattern),
 	.corner_pattern_lt_addr = (void *)top_rc_pattern,
 #endif
+	.oplus_display_global_dre = 1,
 };
 static int map_exp[4096] = {0};
 static void init_global_exp_backlight(void)
@@ -527,7 +531,7 @@ static int tianma_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	last_brightness = level;
 	return 0;
 }
-static int oplus_esd_backlight_check(void *dsi, dcs_write_gce cb,
+static int oppo_esd_backlight_check(void *dsi, dcs_write_gce cb,
                 void *handle)
 {
         char bl_tb0[] = {0x51, 0x07, 0xff};
@@ -591,7 +595,7 @@ static int panel_ext_reset(struct drm_panel *panel, int on)
 static struct mtk_panel_funcs ext_funcs = {
 	.reset = panel_ext_reset,
 	.set_backlight_cmdq = tianma_setbacklight_cmdq,
-	.esd_backlight_recovery = oplus_esd_backlight_check,
+	.esd_backlight_recovery = oppo_esd_backlight_check,
 	.ext_param_set = mtk_panel_ext_param_set,
 	.ext_param_get = mtk_panel_ext_param_get,
 	.panel_poweron = lcm_panel_poweron,

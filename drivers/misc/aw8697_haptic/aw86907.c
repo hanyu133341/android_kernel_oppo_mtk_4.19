@@ -3173,8 +3173,6 @@ static int aw86907_clock_OSC_trim_calibration(unsigned long int theory_time,
 			return DFT_LRA_TRIM_CODE;
 		}
 
-		real_code =
-			32 + ((real_time - theory_time) * 400) / theory_time;
 		real_code = ((real_time - theory_time) * 4000) / theory_time;
 		real_code = ((real_code % 10 < 5) ? 0 : 1) + real_code / 10;
 		real_code = 32 + real_code;
@@ -3190,8 +3188,6 @@ static int aw86907_clock_OSC_trim_calibration(unsigned long int theory_time,
 			       real_time, theory_time);
 			return DFT_LRA_TRIM_CODE;
 		}
-		real_code =
-			32 - ((theory_time - real_time) * 400) / theory_time;
 		real_code = ((theory_time - real_time) * 4000) / theory_time;
 		real_code = ((real_code % 10 < 5) ? 0 : 1) + real_code / 10;
 		real_code = 32 - real_code;
@@ -3517,7 +3513,7 @@ const struct firmware *aw86907_rtp_load_file_accord_f0(struct aw86907 *aw86907)
 
 	return NULL;
 
-	if ((aw86907->rtp_file_num >= RINGTONES_START_INDEX &&
+	/*if ((aw86907->rtp_file_num >= RINGTONES_START_INDEX &&
 	     aw86907->rtp_file_num <= RINGTONES_END_INDEX) ||
 	    (aw86907->rtp_file_num >= NEW_RING_START &&
 	     aw86907->rtp_file_num <= NEW_RING_END) ||
@@ -3575,7 +3571,7 @@ const struct firmware *aw86907_rtp_load_file_accord_f0(struct aw86907 *aw86907)
 		}
 		return rtp_file;
 	}
-	return NULL;
+	return NULL; */
 }
 
 static void aw86907_rtp_work_routine(struct work_struct *work)
@@ -5485,7 +5481,7 @@ static void haptic_clean_buf(struct aw86907 *aw86907, int status)
 	}
 }
 
-static inline unsigned int aw86907_get_sys_msecs()
+static inline unsigned int aw86907_get_sys_msecs(void)
 {
 	struct timespec64 ts64 = current_kernel_time64();
 	return jiffies_to_msecs(timespec64_to_jiffies(&ts64));
@@ -5591,6 +5587,12 @@ static long aw86907_file_unlocked_ioctl(struct file *file, unsigned int cmd,
 		break;
 	case RICHTAP_RTP_MODE:
 		aw86907_haptic_stop(aw86907);
+		if (RICHTAP_MMAP_BUF_SIZE * RICHTAP_MMAP_BUF_SUM > sizeof(aw86907->rtp_ptr)) {
+			return -EFAULT;
+		}
+		if (aw86907->rtp_ptr == NULL || (void __user *)arg == NULL) {
+			return -EFAULT;
+		}
 		if (copy_from_user(aw86907->rtp_ptr, (void __user *)arg,
 				   RICHTAP_MMAP_BUF_SIZE *
 					   RICHTAP_MMAP_BUF_SUM)) {
@@ -6350,7 +6352,7 @@ static ssize_t aw86907_activate_mode_show(struct device *dev,
 	struct aw86907 *aw86907 = container_of(cdev, struct aw86907, cdev);
 #endif
 
-	return snprintf(buf, PAGE_SIZE, "activate_mode=%d\n",
+	return snprintf(buf, PAGE_SIZE, "activate_mode=%c\n",
 			aw86907->activate_mode);
 }
 
@@ -6489,6 +6491,8 @@ static ssize_t aw86907_vmax_store(struct device *dev,
 
 	pr_err("%s: value=%d\n", __FUNCTION__, val);
 
+	if (!aw86907)
+		return -1;
 	mutex_lock(&aw86907->lock);
 #ifdef OPLUS_FEATURE_CHG_BASIC
 	if (val <= 255) {
@@ -6700,7 +6704,7 @@ static ssize_t aw86907_rtp_num_show(struct device *dev,
 	//  unsigned char reg_val = 0;
 	for (i = 0; i < AW86907_RTP_NUM; i++) {
 		len += snprintf(buf + len, PAGE_SIZE - len,
-				"num: %d, serial:%d \n", i,
+				"num: %u, serial:%u \n", i,
 				aw86907->rtp_serial[i]);
 	}
 	return len;
@@ -6799,7 +6803,7 @@ static ssize_t aw86907_rtp_show(struct device *dev,
 	struct aw86907 *aw86907 = container_of(cdev, struct aw86907, cdev);
 #endif
 	ssize_t len = 0;
-	len += snprintf(buf + len, PAGE_SIZE - len, "rtp play: %d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "rtp play: %u\n",
 			aw86907->rtp_cnt);
 
 	return len;
@@ -6847,7 +6851,7 @@ static ssize_t aw86907_rtp_store(struct device *dev,
 	/*OP add for juge rtp on end*/
 	if (((val >= RINGTONES_START_INDEX && val <= RINGTONES_END_INDEX) ||
 	     (val >= NEW_RING_START && val <= NEW_RING_END) ||
-	     (val >= OPLUS_RING_START && val <= OPLUS_RING_END) ||
+	     (val >= REALME_RING_START && val <= REALME_RING_END) ||
 	     (val >= OPLUS_NEW_RING_1_START && val <= OPLUS_NEW_RING_1_END) ||
 	     (val >= OPLUS_NEW_RING_2_START && val <= OPLUS_NEW_RING_2_END) ||
 	     val == RINGTONES_SIMPLE_INDEX || val == RINGTONES_PURE_INDEX ||
@@ -6949,10 +6953,10 @@ static ssize_t aw86907_f0_show(struct device *dev,
 	mutex_unlock(&aw86907->lock);
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n", aw86907->f0);
+	len += snprintf(buf + len, PAGE_SIZE - len, "%u\n", aw86907->f0);
 #else
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"aw86907 lra f0 = %d cont_f0 = %d\n", aw86907->f0,
+			"aw86907 lra f0 = %u cont_f0 = %u\n", aw86907->f0,
 			aw86907->cont_f0);
 #endif
 	return len;
@@ -7019,7 +7023,7 @@ static ssize_t aw86907_cali_show(struct device *dev,
 	aw86907_haptic_get_f0(aw86907);
 	mutex_unlock(&aw86907->lock);
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"aw86907 lra_f0 = %d cont_f0 = %d\n", aw86907->f0,
+			"aw86907 lra_f0 = %u cont_f0 = %u\n", aw86907->f0,
 			aw86907->cont_f0);
 	return len;
 }
@@ -7063,7 +7067,7 @@ static ssize_t aw86907_cont_show(struct device *dev,
 #endif
 	ssize_t len = 0;
 	aw86907_haptic_read_cont_f0(aw86907);
-	len += snprintf(buf + len, PAGE_SIZE - len, "aw86907 cont_f0 = %d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "aw86907 cont_f0 = %u\n",
 			aw86907->cont_f0);
 	return len;
 }
@@ -7274,7 +7278,7 @@ static ssize_t aw86907_vbat_monitor_show(struct device *dev,
 	mutex_lock(&aw86907->lock);
 	aw86907_haptic_stop(aw86907);
 	aw86907_haptic_get_vbat(aw86907);
-	len += snprintf(buf + len, PAGE_SIZE - len, "vbat=%dmV\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "vbat=%umV\n",
 			aw86907->vbat);
 	mutex_unlock(&aw86907->lock);
 
@@ -7340,7 +7344,7 @@ static ssize_t aw86907_lra_resistance_show(struct device *dev,
 	aw86907->lra = (lra_code * 678 * 1000) / (1024 * 10);
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n", aw86907->lra);
+	len += snprintf(buf + len, PAGE_SIZE - len, "%u\n", aw86907->lra);
 #else
 	len += snprintf(buf + len, PAGE_SIZE - len, "r_lra=%dmohm\n",
 			aw86907->lra);
@@ -7376,7 +7380,7 @@ static ssize_t aw86907_auto_boost_show(struct device *dev,
 #endif
 	ssize_t len = 0;
 
-	len += snprintf(buf + len, PAGE_SIZE - len, "auto_boost=%d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "auto_boost=%c\n",
 			aw86907->auto_boost);
 
 	return len;
@@ -7465,7 +7469,7 @@ static ssize_t aw86907_ram_vbat_comp_show(struct device *dev,
 #endif
 	ssize_t len = 0;
 
-	len += snprintf(buf + len, PAGE_SIZE - len, "ram_vbat_comp=%d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "ram_vbat_comp=%c\n",
 			aw86907->ram_vbat_comp);
 
 	return len;
@@ -7513,7 +7517,7 @@ static ssize_t aw86907_f0_data_show(struct device *dev,
 #endif
 	ssize_t len = 0;
 
-	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "%u\n",
 			aw86907->clock_system_f0_cali_lra);
 	return len;
 }
@@ -7588,7 +7592,7 @@ static ssize_t aw86907_osc_cali_show(struct device *dev,
 
 	printk("aw86907_osc_cali_show: 2018_microsecond:%ld \n",
 	       aw86907->microsecond);
-	len += snprintf(buf + len, PAGE_SIZE - len, "%ld\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "%lu\n",
 			aw86907->microsecond);
 
 	return len;
@@ -7645,7 +7649,7 @@ static ssize_t aw86907_haptic_audio_show(struct device *dev,
 	struct aw86907 *aw86907 = container_of(cdev, struct aw86907, cdev);
 #endif
 	ssize_t len = 0;
-	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "%c\n",
 			aw86907->haptic_audio.ctr.cnt);
 	return len;
 }
@@ -7788,12 +7792,12 @@ static ssize_t aw86907_haptic_audio_tp_time_show(struct device *dev,
 	struct tp *tp = &(aw86907->haptic_audio.tp);
 	ssize_t len = 0;
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"tp->press_delay_min=%dus\n", tp->press_delay_min);
+			"tp->press_delay_min=%uus\n", tp->press_delay_min);
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"tp->press_delay_max=%dus\n", tp->press_delay_max);
+			"tp->press_delay_max=%uus\n", tp->press_delay_max);
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"tp->release_delay_max=%dus\n", tp->release_delay_max);
-	len += snprintf(buf + len, PAGE_SIZE - len, "tp->no_play_cnt_max=%d\n",
+			"tp->release_delay_max=%uus\n", tp->release_delay_max);
+	len += snprintf(buf + len, PAGE_SIZE - len, "tp->no_play_cnt_max=%u\n",
 			tp->no_play_cnt_max);
 	return len;
 }
@@ -8227,7 +8231,7 @@ static ssize_t aw86907_haptic_audio_tp_size_show(struct device *dev,
 
 	tp_size = &(aw86907->haptic_audio.tp_size);
 
-	len += snprintf(buf + len, PAGE_SIZE - len, "tp_size: x=%04d, y=%04d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "tp_size: x=%04hu, y=%04hu\n",
 			tp_size->x, tp_size->y);
 
 	return len;
@@ -8321,7 +8325,7 @@ static ssize_t aw86907_haptic_audio_hap_cnt_max_outside_tz_show(
 #endif
 	ssize_t len = 0;
 	len += snprintf(buf + len, PAGE_SIZE - len,
-			"hap_cnt_max_outside_tz=%d\n",
+			"hap_cnt_max_outside_tz=%u\n",
 			aw86907->haptic_audio.hap_cnt_max_outside_tz);
 	return len;
 }
@@ -8352,7 +8356,7 @@ aw86907_haptic_audio_hap_cnt_max_outside_tz_store(struct device *dev,
 }
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-static void oplus_motor_old_test_work(struct work_struct *work)
+static void oppo_motor_old_test_work(struct work_struct *work)
 {
 	struct aw86907 *aw86907 =
 		container_of(work, struct aw86907, motor_old_test_work);
@@ -8486,7 +8490,7 @@ static ssize_t aw86907_motor_old_test_store(struct device *dev,
 			pr_err("%s: motor_old_test_mode = %d.\n", __func__,
 			       aw86907->motor_old_test_mode);
 			schedule_work(
-				&aw86907->motor_old_test_work); //oplus_motor_old_test_work
+				&aw86907->motor_old_test_work); //oppo_motor_old_test_work
 		}
 	}
 
@@ -8552,7 +8556,7 @@ static ssize_t aw86907_osc_data_show(struct device *dev,
 	pr_err("%s: lra_rtim_code = %d, code=%d\n", __FUNCTION__, lra_rtim_code,
 	       aw86907->clock_standard_osc_lra_rtim_code);
 
-	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",
+	len += snprintf(buf + len, PAGE_SIZE - len, "%u\n",
 			aw86907->clock_standard_osc_lra_rtim_code);
 	return len;
 }
@@ -8602,11 +8606,11 @@ static ssize_t aw86907_haptic_ram_test_show(struct device *dev,
 	//len += snprintf(buf+len, PAGE_SIZE-len, "aw86907->ram_test_flag_1=%d  0:pass,!0= failed\n", aw86907->ram_test_flag_1 );
 	if (aw86907->ram_test_flag_0 != 0 || aw86907->ram_test_flag_1 != 0) {
 		ram_test_result = 1; // failed
-		len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",
+		len += snprintf(buf + len, PAGE_SIZE - len, "%u\n",
 				ram_test_result);
 	} else {
 		ram_test_result = 0; // pass
-		len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",
+		len += snprintf(buf + len, PAGE_SIZE - len, "%u\n",
 				ram_test_result);
 	}
 	return len;
@@ -9599,7 +9603,7 @@ static int aw86907_i2c_probe(struct i2c_client *i2c,
 
 	aw86907_ram_init(aw86907);
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	INIT_WORK(&aw86907->motor_old_test_work, oplus_motor_old_test_work);
+	INIT_WORK(&aw86907->motor_old_test_work, oppo_motor_old_test_work);
 	aw86907->motor_old_test_mode = 0;
 	atomic_set(&aw86907->qos_cnt, 0);
 #endif

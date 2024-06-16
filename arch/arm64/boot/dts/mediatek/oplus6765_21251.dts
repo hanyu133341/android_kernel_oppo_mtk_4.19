@@ -346,17 +346,17 @@
         };
 
 /*sensor end */
-/*VNDOR_EDIT oplus project start */
-/* 2019/10/09, Add for oplus project & devinfo*/
+/*VNDOR_EDIT oppo project start */
+/* 2019/10/09, Add for oppo project & devinfo*/
 	opluse_project:oplus_sim_detect {
 		compatible = "oplus, sim_detect";
 		Hw,sim_det = <&pio 1 0x00>;
 	};
 
 	oplus_project:oplus_project {
-		compatible = "oplus,oplus_project";
+		compatible = "oppo,oplus_project";
 	};
-	oplus_devinfo:oplus_devinfo {
+	oppo_devinfo:oppo_devinfo {
 		compatible = "oplus-devinfo";
                 main-sub {
                         aboard-gpio0 = <&pio 160 0x00>;
@@ -385,15 +385,15 @@
 //#ifdef OPLUS_ARCH_EXTENDS
 //2021/05/10  add for thermal shell temp
 	shell_front {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 
 	shell_frame {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 
 	shell_back {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 //#endif
 
@@ -416,8 +416,20 @@
 	};
 //#endif /*OPLUS_BUG_STABILITY*/
 
+	pmic_history_count:pmic_history_count {
+        };
+        pmic_history0:pmic_history0 {
+        };
+        pmic_history1:pmic_history1 {
+        };
+        pmic_history2:pmic_history2 {
+        };
+        pmic_history3:pmic_history3 {
+        };
+
+
 //#ifdef OPLUS_FEATURE_NFC_CONSOFT
-// 2020/12/25, add for: add oplus nfc chipset for FC CONSOFT
+// 2020/12/25, add for: add oppo nfc chipset for FC CONSOFT
     nfc_chipset:nfc_chipset {
         compatible = "oplus-nfc-chipset";
         chipset-20376 = "PN557";
@@ -463,7 +475,7 @@
         };
 };
 //#endif /*OPLUS_BUG_STABILITY*/
-&oplus_devinfo {
+&oppo_devinfo {
         pinctrl-names = "default", "aboard_gpio0_sleep", "aboard_gpio0_active";
         pinctrl-0 = <&hw_pins_default>;
         pinctrl-1 = <&aboard_pin_gpio0_sleep>;
@@ -731,6 +743,7 @@
 
 &lk_charger{
 	support_tuv_authentication;
+	max_charger_voltage = <10000000>;
 };
 
 &uart0 {
@@ -926,7 +939,7 @@
   	touchscreen@0 {
 		compatible = "oplus,tp_noflash";
 		reg = <0>; //Same as CS ID
-		chip-name = "OPLUS_TP_NOFLASH";
+		chip-name = "OPPO_TP_NOFLASH";
 		status = "ok";
 
 		spi-max-frequency = <9600000>;
@@ -1245,13 +1258,13 @@
 	oplus,one_gpio_for_three_ic = <1>;
 	goodix_3626 {
 		oplus,fp-id = <1>; /* fp id mapping table */
-		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "G_3626";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};
 	FP_FPC_1542 {
 		oplus,fp-id = <0>; /* fp id mapping table */
-		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "F_1542";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};
@@ -1641,6 +1654,15 @@
 		pinctrl-3 = <&ntc_switch2_ctrl_high>;
 		pinctrl-4 = <&ntc_switch2_ctrl_low>;
 		status = "okay";
+	};
+
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <0>;
+		track,wired_max_power = <18000>;
+		track,wired_fast_chg_scheme = <6>;
 	};
 };
 

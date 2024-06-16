@@ -1780,25 +1780,14 @@ static kal_uint16 gain2reg(const kal_uint16 gain)
 
 static kal_uint32 set_test_pattern_mode(kal_uint8 modes, struct SET_SENSOR_PATTERN_SOLID_COLOR *pTestpatterndata)
 {
-    kal_uint16 Color_R, Color_Gr, Color_Gb, Color_B;
     pr_debug("set_test_pattern enum: %d\n", modes);
 
     if (modes) {
         write_cmos_sensor_8(0x0600, modes>>4);
         write_cmos_sensor_8(0x0601, modes);
         if (modes == 1 && (pTestpatterndata != NULL)) { //Solid Color
-            Color_R = (pTestpatterndata->COLOR_R >> 16) & 0xFFFF;
-            Color_Gr = (pTestpatterndata->COLOR_Gr >> 16) & 0xFFFF;
-            Color_B = (pTestpatterndata->COLOR_B >> 16) & 0xFFFF;
-            Color_Gb = (pTestpatterndata->COLOR_Gb >> 16) & 0xFFFF;
-            write_cmos_sensor_8(0x0602, Color_R >> 8);
-            write_cmos_sensor_8(0x0603, Color_R & 0xFF);
-            write_cmos_sensor_8(0x0604, Color_Gr >> 8);
-            write_cmos_sensor_8(0x0605, Color_Gr & 0xFF);
-            write_cmos_sensor_8(0x0606, Color_B >> 8);
-            write_cmos_sensor_8(0x0607, Color_B & 0xFF);
-            write_cmos_sensor_8(0x0608, Color_Gb >> 8);
-            write_cmos_sensor_8(0x0609, Color_Gb & 0xFF);
+            write_cmos_sensor_8(0x0600, 0x0000);
+            write_cmos_sensor_8(0x0601, 0x01);
         }
     } else {
         write_cmos_sensor(0x0600, 0x0000); /*No pattern*/

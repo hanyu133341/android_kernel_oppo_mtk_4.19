@@ -413,7 +413,7 @@ static void read_EepromQSC(void)
     for(i = 2; i < 8; i++) {
        gImgEepromInfo_21625.CamNormdata[0][i] = Eeprom_1ByteDataRead(0x04+i, 0xA0);
     }
-    for (i = 0; i < OPLUS_CAMERASN_LENS; i ++) {
+    for (i = 0; i < OPPO_CAMERASN_LENS; i ++) {
        gImgEepromInfo_21625.CamNormdata[0][8+i] = Eeprom_1ByteDataRead(0xB0+i, 0xA0);
     }
     Dac_mac = (Eeprom_1ByteDataRead(0x93, 0xA0) << 8) | Eeprom_1ByteDataRead(0x92, 0xA0);

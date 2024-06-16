@@ -99,5 +99,5 @@ arch_initcall(oplus_criticallog_init);
 
 MODULE_DESCRIPTION("OPLUS critical log");
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("John.Xu");
+MODULE_AUTHOR("John.Xu <xuzhaoan@oppo.com>");
 //#endif /*OPLUS_FEATURE_MODEM_MINIDUMP*/

@@ -5109,13 +5109,33 @@ static int mt6359_codec_dai_vow_hw_params(struct snd_pcm_substream *substream,
 		 substream->number);
 
 	priv->vow_channel = channel;
-	priv->vow_enable = 1; //enter vow enable flow.
 
 	return 0;
 }
 
+static int mt6359_codec_dai_vow_startup(struct snd_pcm_substream *substream,
+					struct snd_soc_dai *dai)
+{
+	struct snd_soc_component *cmpnt = dai->component;
+	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
+	priv->vow_enable = 1;
+
+	return 0;
+}
+
+static void mt6359_codec_dai_vow_shutdown(struct snd_pcm_substream *substream,
+					  struct snd_soc_dai *dai)
+{
+	struct snd_soc_component *cmpnt = dai->component;
+	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
+
+	priv->vow_enable = 0;
+}
+
 static const struct snd_soc_dai_ops mt6359_codec_dai_vow_ops = {
 	.hw_params = mt6359_codec_dai_vow_hw_params,
+	.startup = mt6359_codec_dai_vow_startup,
+	.shutdown = mt6359_codec_dai_vow_shutdown,
 };
 
 #define MT6359_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\

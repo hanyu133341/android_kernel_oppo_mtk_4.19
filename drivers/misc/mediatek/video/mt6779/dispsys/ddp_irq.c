@@ -44,7 +44,7 @@ extern int hbm_sof_flag;
 #include "ddp_manager.h"
 extern bool fingerprint_layer;
 extern int ramless_dc_wait;
-extern int oplus_dc_enable;
+extern int oppo_dc_enable;
 int dim_count = 0;
 //#endif
 /* IRQ log print kthread */
@@ -401,7 +401,7 @@ irqreturn_t disp_irq_handler(int irq, void *dev_id)
 						hbm_sof_flag = 0;
 					}
 
-					if (ramless_dc_wait && oplus_dc_enable && fingerprint_layer) {
+					if (ramless_dc_wait && oppo_dc_enable && fingerprint_layer) {
 						dim_count = dim_count + 1;
 						if (dim_count == 2) {
 							hbm_notify();

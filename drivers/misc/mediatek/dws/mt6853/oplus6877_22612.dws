@@ -328,7 +328,7 @@
                 <inpull_en>true</inpull_en>
                 <inpull_selhigh>false</inpull_selhigh>
                 <def_dir>OUT</def_dir>
-                <out_high>true</out_high>
+                <out_high>false</out_high>
                 <varName0>GPIO_DMIC_CLK</varName0>
                 <smt>false</smt>
                 <ies>true</ies>
@@ -1820,11 +1820,11 @@
                 <ies>true</ies>
             </gpio162>
             <gpio163>
-                <eint_mode>true</eint_mode>
+                <eint_mode>false</eint_mode>
                 <def_mode>0</def_mode>
                 <inpull_en>true</inpull_en>
                 <inpull_selhigh>true</inpull_selhigh>
-                <def_dir>IN</def_dir>
+                <def_dir>OUT</def_dir>
                 <out_high>false</out_high>
                 <varName0>GPIO_CAM_PMIC_IRQB_EINT_PIN</varName0>
                 <smt>false</smt>
@@ -2365,7 +2365,7 @@
                 <pullPushEn>false</pullPushEn>
             </i2c_bus8>
             <i2c_bus9>
-                <speed_kbps>400</speed_kbps>
+                <speed_kbps>1000</speed_kbps>
                 <pullPushEn>false</pullPushEn>
             </i2c_bus9>
             <i2c_bus10>

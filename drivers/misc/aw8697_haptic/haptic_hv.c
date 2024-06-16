@@ -644,11 +644,11 @@ static char aw_rtp_name_165Hz[][AW_RTP_NAME_MAX] = {
 	{"aw8697_reserved_158.bin"},
 	{"aw8697_reserved_159.bin"},
 	{"aw8697_reserved_160.bin"},
-	
+
 	/* rea lme ringtone start */
-	{"aw8697_reserved_161.bin"},
-	{"aw8697_reserved_162.bin"},
-	{"aw8697_reserved_163.bin"},
+	{"aw8697_its_RTP_161_165Hz.bin"},
+	{"aw8697_tune_RTP_162_165Hz.bin"},
+	{"aw8697_jingle_RTP_163_165Hz.bin"},
 	{"aw8697_reserved_164.bin"},
 	{"aw8697_reserved_165.bin"},
 	{"aw8697_reserved_166.bin"},
@@ -844,9 +844,9 @@ static char aw_rtp_name[][AW_RTP_NAME_MAX] = {
 	{"aw8697_reserved_160.bin"},
 
 /* oplus ringtone start */
-	{"aw8697_reserved_161.bin"},
-	{"aw8697_reserved_162.bin"},
-	{"aw8697_reserved_163.bin"},
+	{"aw8697_its_RTP_161_170Hz.bin"},
+	{"aw8697_tune_RTP_162_170Hz.bin"},
+	{"aw8697_jingle_RTP_163_170Hz.bin"},
 	{"aw8697_reserved_164.bin"},
 	{"aw8697_reserved_165.bin"},
 	{"aw8697_reserved_166.bin"},
@@ -1068,9 +1068,9 @@ static char aw_rtp_name_175Hz[][AW_RTP_NAME_MAX] = {
 	{"aw8697_reserved_159.bin"},
 	{"aw8697_reserved_160.bin"},
 	/* rea lme ringtone start */
-	{"aw8697_reserved_161.bin"},
-	{"aw8697_reserved_162.bin"},
-	{"aw8697_reserved_163.bin"},
+	{"aw8697_its_RTP_161_175Hz.bin"},
+	{"aw8697_tune_RTP_162_175Hz.bin"},
+	{"aw8697_jingle_RTP_163_175Hz.bin"},
 	{"aw8697_reserved_164.bin"},
 	{"aw8697_reserved_165.bin"},
 	{"aw8697_reserved_166.bin"},
@@ -2559,6 +2559,64 @@ static int f0_cali(struct aw_haptic *aw_haptic)
 	aw_haptic->func->upload_lra(aw_haptic, AW_F0_CALI_LRA);
 	/* restore standby work mode */
 	aw_haptic->func->play_stop(aw_haptic);
+	return ret;
+}
+
+static int second_get_f0_cali_lra(struct aw_haptic *aw_haptic)
+{
+	char f0_cali_lra = 0;
+	uint32_t f0_limit = 0;
+	uint32_t f0_cali_min = aw_haptic->info.f0_pre *
+				(100 - aw_haptic->info.f0_cali_percent) / 100;
+	uint32_t f0_cali_max = aw_haptic->info.f0_pre *
+				(100 + aw_haptic->info.f0_cali_percent) / 100;
+	int ret = 0;
+	int f0_cali_step = 0;
+
+	aw_dev_info("%s: enter\n", __func__);
+
+	/* max and min limit */
+	f0_limit = aw_haptic->f0;
+	aw_dev_info("%s: f0_pre = %d, f0_cali_min = %d, f0_cali_max = %d, f0 = %d\n",
+			__func__, aw_haptic->info.f0_pre,
+			f0_cali_min, f0_cali_max, aw_haptic->f0);
+
+	if ((aw_haptic->f0 < f0_cali_min) ||
+		aw_haptic->f0 > f0_cali_max) {
+		aw_dev_err("%s: f0 calibration out of range = %d!\n",
+			   __func__, aw_haptic->f0);
+		f0_limit = aw_haptic->info.f0_pre;
+		return -ERANGE;
+	}
+	aw_dev_info("%s: f0_limit = %d\n", __func__,
+			(int)f0_limit);
+	/* calculate cali step */
+	f0_cali_step = 100000 * ((int)f0_limit -
+			   (int)aw_haptic->info.f0_pre) /
+			   ((int)f0_limit * AW_OSC_CALI_ACCURACY);
+	aw_dev_info("%s: f0_cali_step = %d\n", __func__,
+			f0_cali_step);
+	if (f0_cali_step >= 0) {	/*f0_cali_step >= 0 */
+		if (f0_cali_step % 10 >= 5)
+			f0_cali_step = 32 + (f0_cali_step / 10 + 1);
+		else
+			f0_cali_step = 32 + f0_cali_step / 10;
+	} else {	/* f0_cali_step < 0 */
+		if (f0_cali_step % 10 <= -5)
+			f0_cali_step = 32 + (f0_cali_step / 10 - 1);
+		else
+			f0_cali_step = 32 + f0_cali_step / 10;
+	}
+	if (f0_cali_step > 31)
+		f0_cali_lra = (char)f0_cali_step - 32;
+	else
+		f0_cali_lra = (char)f0_cali_step + 32;
+	/* update cali step */
+	aw_haptic->f0_cali_data = (int)f0_cali_lra;
+
+	aw_dev_info("%s: f0_cali_data = 0x%02X\n",
+			__func__, aw_haptic->f0_cali_data);
+
 	return ret;
 }
 
@@ -4860,7 +4918,10 @@ static ssize_t f0_data_store(struct device *dev,
 	if (rc < 0)
 		return rc;
 	mutex_lock(&aw_haptic->lock);
-	aw_haptic->f0_cali_data = val;
+	if (!val)
+		second_get_f0_cali_lra(aw_haptic);
+	else
+		aw_haptic->f0_cali_data = val;
 	aw_haptic->func->upload_lra(aw_haptic, AW_F0_CALI_LRA);
 	mutex_unlock(&aw_haptic->lock);
 	return count;
@@ -5950,6 +6011,14 @@ static long aw_file_unlocked_ioctl(struct file *file, unsigned int cmd,
 		break;
 	case RICHTAP_RTP_MODE:
 		aw_haptic->func->play_stop(aw_haptic);
+
+		if (RICHTAP_MMAP_BUF_SIZE * RICHTAP_MMAP_BUF_SUM > sizeof(aw_haptic->rtp_ptr)) {
+			return -EFAULT;
+		}
+		if (aw_haptic->rtp_ptr == NULL || (void __user *)arg == NULL) {
+			return -EFAULT;
+		}
+
 		if (copy_from_user(aw_haptic->rtp_ptr, (void __user *)arg,
 		   RICHTAP_MMAP_BUF_SIZE * RICHTAP_MMAP_BUF_SUM)) {
 			ret = -EFAULT;
@@ -6121,9 +6190,12 @@ static ssize_t proc_vibration_style_write(struct file *filp, const char __user *
 	int rc = 0;
 	int val;
 
-	if (count > 5)
+	if (count > sizeof(buffer)) {
 		return -EFAULT;
-
+	}
+	if (buffer == NULL || buf == NULL) {
+		return -EFAULT;
+	}
 	if (copy_from_user(buffer, buf, count)) {
 		aw_dev_err("%s: error.\n", __func__);
 		return -EFAULT;

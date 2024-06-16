@@ -51,10 +51,11 @@ static int i2c_read(u8 a_u2Addr, u8 *a_puBuff)
 {
 	int i4RetValue = 0;
 	char puReadCmd[1] = { (char)(a_u2Addr) };
-
+	g_pstAF_I2Cclient->addr = AF_I2C_SLAVE_ADDR;
+	g_pstAF_I2Cclient->addr = g_pstAF_I2Cclient->addr >> 1;
 	i4RetValue = i2c_master_send(g_pstAF_I2Cclient, puReadCmd, 1);
-	if (i4RetValue != 2) {
-		LOG_INF(" I2C write failed!!\n");
+	if (i4RetValue < 0) {
+		LOG_INF(" I2C failed!!\n");
 		return -1;
 	}
 
@@ -132,7 +133,7 @@ static int initdrv(void)
 	int i4RetValue = 0;
 	char puSendCmdArray[7][2] = {
 	{0x02, 0x01}, {0x02, 0x00}, {0xFE, 0xFE},
-	{0x02, 0x02}, {0x06, 0x40}, {0x07, 0x60}, {0xFE, 0xFE},
+	{0x02, 0x02}, {0x06, 0x80}, {0x07, 0x7E}, {0xFE, 0xFE},
 	};
 	unsigned char cmd_number;
 
@@ -149,7 +150,7 @@ static int initdrv(void)
 			if (i4RetValue < 0)
 				return -1;
 		} else {
-			udelay(100);
+			udelay(2000);
 		}
 	}
 
@@ -242,8 +243,26 @@ long DW9800WAF_Ioctl_Main(struct file *a_pstFile,
 /* Q1 : Try release multiple times. */
 int DW9800WAF_Release_Main(struct inode *a_pstInode, struct file *a_pstFile)
 {
-	LOG_INF("Start\n");
+    LOG_INF("Start\n");
 
+    if (g_u4CurrPosition > g_u4AF_INF && g_u4CurrPosition <= g_u4AF_MACRO) {
+        while (g_u4CurrPosition > 512) {
+            if(g_u4CurrPosition < 582) {
+                g_u4CurrPosition += -15;
+                if (512 > g_u4CurrPosition)
+                    g_u4CurrPosition = 512;
+                }
+                else
+                    g_u4CurrPosition += -50;
+                if (s4AF_WriteReg(g_u4CurrPosition) != 0) {
+                    LOG_INF("AF FP5513E4AF_Release I2C failed");
+                }
+                LOG_INF("FP5513E4AF_S5KJN103_Release p%d", g_u4CurrPosition);
+                udelay(1000);
+            }
+            s4AF_WriteReg(512);
+            udelay(1000);
+    }
 	if (*g_pAF_Opened == 2)
 		LOG_INF("Wait\n");
 

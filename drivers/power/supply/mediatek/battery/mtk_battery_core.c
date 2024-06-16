@@ -688,7 +688,7 @@ void fgauge_get_profile_id(void)
 #else
 void fgauge_get_profile_id(void)
 {
-#ifdef OPLUS_FEATURE_CHG_BASIC
+#if defined CONFIG_OPLUS_CHARGER_MTK6893 || defined CONFIG_OPLUS_CHARGER_MTK6833
 	if (is_fuelgauge_apply() == true)
 		battery_type_check();
 	else

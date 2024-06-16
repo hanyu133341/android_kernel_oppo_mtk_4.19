@@ -1,8 +1,8 @@
 /***************************************************************
 ** Copyright (C),  2018,  OPLUS Mobile Comm Corp.,  Ltd
 ** OPLUS_BUG_STABILITY
-** File : oplus_display_private_api.h
-** Description : oplus display private api implement
+** File : oppo_display_private_api.h
+** Description : oppo display private api implement
 ** Version : 1.0
 ** Date : 2018/03/20
 **
@@ -23,12 +23,12 @@
 //#include <soc/oplus/system/oplus_mm_kevent_fb.h>
 #endif /* OPLUS_FEATURE_MM_FEEDBACK */
 #include <linux/delay.h>
-/* #include <soc/oplus/oplus_project.h> */
+/* #include <soc/oppo/oppo_project.h> */
 #include "ddp_dsi.h"
 #include "fbconfig_kdebug.h"
 /*
- * we will create a sysfs which called /sys/kernel/oplus_display,
- * In that directory, oplus display private api can be called
+ * we will create a sysfs which called /sys/kernel/oppo_display,
+ * In that directory, oppo display private api can be called
  */
 
 #define LCM_ID_READ_LEN 1
@@ -37,7 +37,7 @@
 #define PANEL_REG_READ_LEN   16
 
 unsigned long oplus_display_brightness = 0;
-unsigned int oplus_set_brightness = 0;
+unsigned int oppo_set_brightness = 0;
 extern unsigned int aod_light_mode;
 bool oplus_display_hbm_support;
 bool oplus_display_elevenbits_support;
@@ -53,8 +53,8 @@ bool oplus_display_twelvebits_support;
 bool oplus_display_local_dre_support = 0;
 unsigned int oplus_display_normal_max_brightness;
 
-/*bool oplus_display_ffl_support;*/
-/*bool oplus_display_cabc_support;*/
+/*bool oppo_display_ffl_support;*/
+/*bool oppo_display_cabc_support;*/
 
 /* #ifdef OPLUS_FEATURE_RAMLESS_AOD */
 bool oplus_display_aod_ramless_support;
@@ -77,7 +77,7 @@ extern int primary_display_set_cabc_mode(unsigned int level);
 extern char *  mtkfb_find_lcm_driver(void);
 #endif
 extern int primary_display_read_lcm_id(char cmd, uint32_t *buf, int num);
-int oplus_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level);
+int oppo_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level);
 #if 0
 int disp_lcm_aod_from_display_on(struct disp_lcm_handle *plcm);
 int disp_lcm_set_aod_mode(struct disp_lcm_handle *plcm, void *handle, unsigned int mode);
@@ -109,7 +109,7 @@ void get_panel_state(void) {
 	pr_err("[LCD] func:%s, is_dvt_panel = %d \n", __func__, is_dvt_panel);
 }
 
-static ssize_t oplus_display_get_brightness(struct  kobject *kobj,
+static ssize_t oppo_display_get_brightness(struct  kobject *kobj,
                                 struct kobj_attribute *attr, char *buf)
 {
 	if (oplus_display_brightness > LED_FULL || oplus_display_brightness < LED_OFF) {
@@ -119,32 +119,32 @@ static ssize_t oplus_display_get_brightness(struct  kobject *kobj,
 	return sprintf(buf, "%lu\n", oplus_display_brightness);
 }
 
-static ssize_t oplus_display_set_brightness(struct kobject *kobj,
+static ssize_t oppo_display_set_brightness(struct kobject *kobj,
 		struct kobj_attribute *attr, const char *buf, size_t num)
 {
 	int ret;
 
-	ret = kstrtouint(buf, 10, &oplus_set_brightness);
+	ret = kstrtouint(buf, 10, &oppo_set_brightness);
 
-	printk("%s %d\n", __func__, oplus_set_brightness);
+	printk("%s %d\n", __func__, oppo_set_brightness);
 
-	if (oplus_set_brightness > LED_FULL || oplus_set_brightness < LED_OFF) {
+	if (oppo_set_brightness > LED_FULL || oppo_set_brightness < LED_OFF) {
 		return num;
 	}
 
 	_primary_path_switch_dst_lock();
 	_primary_path_lock(__func__);
-	primary_display_setbacklight_nolock(oplus_set_brightness);
+	primary_display_setbacklight_nolock(oppo_set_brightness);
 	_primary_path_unlock(__func__);
 	_primary_path_switch_dst_unlock();
 
 	return num;
 }
 
-static ssize_t oplus_display_get_max_brightness(struct kobject *kobj,
+static ssize_t oppo_display_get_max_brightness(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
-	//printk(KERN_INFO "oplus_display_get_max_brightness = %d\n",LED_FULL);
+	//printk(KERN_INFO "oppo_display_get_max_brightness = %d\n",LED_FULL);
 #ifdef OPLUS_FEATURE_DISPLAY
 /* add for limu project adapt to 2 backlight levels */
 	if (!strcmp(mtkfb_find_lcm_driver(), "oplus22261_ili9883c_hlt_hdp_dsi_vdo_lcm") ||
@@ -164,15 +164,15 @@ static ssize_t oplus_display_get_max_brightness(struct kobject *kobj,
 		return sprintf(buf, "%u\n", oplus_display_normal_max_brightness);
 }
 
-static ssize_t oplus_get_aod_light_mode(struct kobject *kobj,
+static ssize_t oppo_get_aod_light_mode(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf) {
 
-	printk(KERN_INFO "oplus_get_aod_light_mode = %u\n", aod_light_mode);
+	printk(KERN_INFO "oppo_get_aod_light_mode = %u\n", aod_light_mode);
 
 	return sprintf(buf, "%u\n", aod_light_mode);
 }
 
-static ssize_t oplus_set_aod_light_mode(struct kobject *kobj,
+static ssize_t oppo_set_aod_light_mode(struct kobject *kobj,
 		struct kobj_attribute *attr,
 		const char *buf, size_t count) {
 	unsigned int temp_save = 0;
@@ -182,20 +182,20 @@ static ssize_t oplus_set_aod_light_mode(struct kobject *kobj,
 		ret = kstrtouint(buf, 10, &temp_save);
 
 		if (primary_display_get_fp_hbm_state()) {
-			printk(KERN_INFO "oplus_set_aod_light_mode = %d return on hbm\n",temp_save);
+			printk(KERN_INFO "oppo_set_aod_light_mode = %d return on hbm\n",temp_save);
 			return count;
 		}
 		aod_light_mode = temp_save;
 		ret = primary_display_aod_backlight(aod_light_mode);
-		printk(KERN_INFO "oplus_set_aod_light_mode = %d\n",temp_save);
+		printk(KERN_INFO "oppo_set_aod_light_mode = %d\n",temp_save);
 	}
 
 	return count;
 }
 
 
-int oplus_panel_alpha = 0;
-int oplus_underbrightness_alpha = 0;
+int oppo_panel_alpha = 0;
+int oppo_underbrightness_alpha = 0;
 int alpha_save = 0;
 struct ba {
 	u32 brightness;
@@ -277,61 +277,61 @@ int brightness_to_alpha(int brightness)
 	return alpha;
 }
 
-int oplus_get_panel_brightness_to_alpha(void)
+int oppo_get_panel_brightness_to_alpha(void)
 {
-	if (oplus_panel_alpha)
-		return oplus_panel_alpha;
+	if (oppo_panel_alpha)
+		return oppo_panel_alpha;
 
 	return brightness_to_alpha(oplus_display_brightness);
 }
 
-static ssize_t oplus_display_get_dim_alpha(struct kobject *kobj,
+static ssize_t oppo_display_get_dim_alpha(struct kobject *kobj,
                                 struct kobj_attribute *attr, char *buf)
 {
 	if (!primary_display_get_fp_hbm_state())
 		return sprintf(buf, "%d\n", 0);
 
-	oplus_underbrightness_alpha = oplus_get_panel_brightness_to_alpha();
+	oppo_underbrightness_alpha = oppo_get_panel_brightness_to_alpha();
 
-	return sprintf(buf, "%d\n", oplus_underbrightness_alpha);
+	return sprintf(buf, "%d\n", oppo_underbrightness_alpha);
 }
 
-static ssize_t oplus_display_set_dim_alpha(struct kobject *kobj,
+static ssize_t oppo_display_set_dim_alpha(struct kobject *kobj,
                                struct kobj_attribute *attr,
                                const char *buf, size_t count)
 {
-	sscanf(buf, "%x", &oplus_panel_alpha);
+	sscanf(buf, "%x", &oppo_panel_alpha);
 	return count;
 }
 
 
-extern int oplus_dc_alpha;
-extern int oplus_dc_enable;
-static ssize_t oplus_display_get_dc_enable(struct kobject *kobj,
+extern int oppo_dc_alpha;
+extern int oppo_dc_enable;
+static ssize_t oppo_display_get_dc_enable(struct kobject *kobj,
                                 struct kobj_attribute *attr, char *buf)
 {
-	return sprintf(buf, "%d\n", oplus_dc_enable);
+	return sprintf(buf, "%d\n", oppo_dc_enable);
 }
 
-static ssize_t oplus_display_set_dc_enable(struct kobject *kobj,
+static ssize_t oppo_display_set_dc_enable(struct kobject *kobj,
                                struct kobj_attribute *attr,
                                const char *buf, size_t count)
 {
-	sscanf(buf, "%x", &oplus_dc_enable);
+	sscanf(buf, "%x", &oppo_dc_enable);
 	return count;
 }
 
-static ssize_t oplus_display_get_dim_dc_alpha(struct kobject *kobj,
+static ssize_t oppo_display_get_dim_dc_alpha(struct kobject *kobj,
                                 struct kobj_attribute *attr, char *buf)
 {
-	return sprintf(buf, "%d\n", oplus_dc_alpha);
+	return sprintf(buf, "%d\n", oppo_dc_alpha);
 }
 
-static ssize_t oplus_display_set_dim_dc_alpha(struct kobject *kobj,
+static ssize_t oppo_display_set_dim_dc_alpha(struct kobject *kobj,
                                struct kobj_attribute *attr,
                                const char *buf, size_t count)
 {
-	sscanf(buf, "%x", &oplus_dc_alpha);
+	sscanf(buf, "%x", &oppo_dc_alpha);
 	return count;
 }
 
@@ -342,7 +342,7 @@ extern struct timespec hbm_time_off;
 extern long hbm_on_start;
 
 /* #ifdef OPLUS_FEATURE_RAMLESS_AOD */
-struct panel_aod_area oplus_aod_area[RAMLESS_AOD_AREA_NUM];
+struct panel_aod_area oppo_aod_area[RAMLESS_AOD_AREA_NUM];
 unsigned char aod_area_cmd[RAMLESS_AOD_PAYLOAD_SIZE];
 
 /* aod area debug command(for 1080*2400):
@@ -352,7 +352,7 @@ echo 444 400 292 330 0 2 0 255 : \
 	315 921 550 75 0 2 0 255 : \
 	403 2065 304 254 0 3 0 255 > /sys/kernel/oplus_display/aod_area
 */
-static ssize_t oplus_display_set_aod_area(struct kobject *kobj,
+static ssize_t oppo_display_set_aod_area(struct kobject *kobj,
 		struct kobj_attribute *attr,
 		const char *buf, size_t count) {
 	char *bufp = (char *)buf;
@@ -365,11 +365,11 @@ static ssize_t oplus_display_set_aod_area(struct kobject *kobj,
 		return count;
 	}
 
-	memset(oplus_aod_area, 0, sizeof(struct panel_aod_area) * RAMLESS_AOD_AREA_NUM);
+	memset(oppo_aod_area, 0, sizeof(struct panel_aod_area) * RAMLESS_AOD_AREA_NUM);
 
 	pr_err(" %s \n", __func__);
 	while ((token = strsep(&bufp, ":")) != NULL) {
-		struct panel_aod_area *area = &oplus_aod_area[cnt];
+		struct panel_aod_area *area = &oppo_aod_area[cnt];
 		if (!*token) {
 			continue;
 		}
@@ -388,7 +388,7 @@ static ssize_t oplus_display_set_aod_area(struct kobject *kobj,
 	memset(aod_area_cmd, 0, RAMLESS_AOD_PAYLOAD_SIZE);
 
 	for (i = 0; i < RAMLESS_AOD_AREA_NUM; i++) {
-		struct panel_aod_area *area = &oplus_aod_area[i];
+		struct panel_aod_area *area = &oppo_aod_area[i];
 
 		aod_area_cmd[0] |= (!!area_enable) << (RAMLESS_AOD_AREA_NUM - i - 1);
 		if (area_enable) {
@@ -479,12 +479,12 @@ int oplus_display_panel_set_aod_area(void *buf)
 		return -1;
 	}
 
-	memset(oplus_aod_area, 0, sizeof(struct panel_aod_area) * RAMLESS_AOD_AREA_NUM);
+	memset(oppo_aod_area, 0, sizeof(struct panel_aod_area) * RAMLESS_AOD_AREA_NUM);
 
 	pr_err(" %s \n", __func__);
 
 	for (i = 0; i < para->size; i++) {
-		struct panel_aod_area *area = &oplus_aod_area[cnt];
+		struct panel_aod_area *area = &oppo_aod_area[cnt];
 
 		area->x = para->aod_area[i].x;
 		area->y = para->aod_area[i].y;
@@ -504,7 +504,7 @@ int oplus_display_panel_set_aod_area(void *buf)
 	memset(aod_area_cmd, 0, RAMLESS_AOD_PAYLOAD_SIZE);
 
 	for (i = 0; i < RAMLESS_AOD_AREA_NUM; i++) {
-		struct panel_aod_area *area = &oplus_aod_area[i];
+		struct panel_aod_area *area = &oppo_aod_area[i];
 
 		aod_area_cmd[0] |= (!!area_enable) << (RAMLESS_AOD_AREA_NUM - i - 1);
 		if (area_enable) {
@@ -592,8 +592,8 @@ static ssize_t LCM_HBM_store(struct kobject *kobj,
 {
 	int ret;
 	//unsigned char payload[100] = "";
-	//printk("oplus_display_hbm_support = %d\n", oplus_display_hbm_support);
-	//if (oplus_display_hbm_support) {
+	//printk("oppo_display_hbm_support = %d\n", oppo_display_hbm_support);
+	//if (oppo_display_hbm_support) {
 		HBM_pre_mode = HBM_mode;
 		ret = kstrtoul(buf, 10, &HBM_mode);
 		printk("%s HBM_mode=%ld\n", __func__, HBM_mode);
@@ -610,8 +610,8 @@ static ssize_t LCM_HBM_store(struct kobject *kobj,
 		else if (HBM_pre_mode == 8 && HBM_mode != 8) {
 			get_monotonic_boottime(&hbm_time_off);
 			scnprintf(payload, sizeof(payload), "EventID@@%d$$hbm@@hbm state on time = %ld sec$$ReportLevel@@%d",
-				OPLUS_MM_DIRVER_FB_EVENT_ID_HBM,(hbm_time_off.tv_sec - hbm_on_start),OPLUS_MM_DIRVER_FB_EVENT_REPORTLEVEL_LOW);
-			upload_mm_kevent_fb_data(OPLUS_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
+				OPPO_MM_DIRVER_FB_EVENT_ID_HBM,(hbm_time_off.tv_sec - hbm_on_start),OPPO_MM_DIRVER_FB_EVENT_REPORTLEVEL_LOW);
+			upload_mm_kevent_fb_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
 		}
 		#endif
 	//}
@@ -635,8 +635,8 @@ static ssize_t FFL_SET_store(struct kobject *kobj,
 {
 	int ret;
 	unsigned char payload[32] = "";
-	printk("oplus_display_ffl_support = %d\n", oplus_display_ffl_support);
-	if (oplus_display_ffl_support) {
+	printk("oppo_display_ffl_support = %d\n", oppo_display_ffl_support);
+	if (oppo_display_ffl_support) {
 		ret = kstrtouint(buf, 10, &ffl_set_mode);
 		printk("%s ffl_set_mode=%d\n", __func__, ffl_set_mode);
 		if (ffl_trigger_finish && (ffl_backlight_on == 1) && (ffl_set_mode == 1)) {
@@ -644,8 +644,8 @@ static ssize_t FFL_SET_store(struct kobject *kobj,
 		}
 
 		if (ffl_set_mode == 1) {
-			ret = scnprintf(payload, sizeof(payload), "EventID@@%d$$fflset@@%d",OPLUS_MM_DIRVER_FB_EVENT_ID_FFLSET,ffl_set_mode);
-			upload_mm_kevent_fb_data(OPLUS_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
+			ret = scnprintf(payload, sizeof(payload), "EventID@@%d$$fflset@@%d",OPPO_MM_DIRVER_FB_EVENT_ID_FFLSET,ffl_set_mode);
+			upload_mm_kevent_fb_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
 		}
 	}
 	return num;
@@ -766,8 +766,8 @@ static ssize_t silence_store(struct kobject *kobj,
 }
 
 bool flag_lcd_off = false;
-bool oplus_fp_notify_down_delay = false;
-bool oplus_fp_notify_up_delay = false;
+bool oppo_fp_notify_down_delay = false;
+bool oppo_fp_notify_up_delay = false;
 bool ds_rec_fpd;
 bool doze_rec_fpd;
 
@@ -800,9 +800,9 @@ static ssize_t fingerprint_notify_trigger(struct kobject *kobj,
 			return num;
 		}
 		if (fingerprint_op_mode == 1) {
-			oplus_fp_notify_down_delay = true;
+			oppo_fp_notify_down_delay = true;
 		} else {
-			oplus_fp_notify_up_delay = true;
+			oppo_fp_notify_up_delay = true;
 			ds_rec_fpd = false;
 			doze_rec_fpd = false;
 		}
@@ -901,7 +901,7 @@ static ssize_t LCM_CABC_store(struct kobject *kobj,
 * add for samsung lcd hbm node
 */
 
-int oplus_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level)
+int oppo_disp_lcm_set_hbm(struct disp_lcm_handle *plcm, void *handle, unsigned int hbm_level)
 {
 	struct LCM_DRIVER *lcm_drv = NULL;
 
@@ -943,24 +943,24 @@ int _set_hbm_mode_by_cmdq(unsigned int level)
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 2);
 		cmdqRecReset(cmdq_handle_HBM_mode);
-		ret = oplus_disp_lcm_set_hbm(pgc->plcm,cmdq_handle_HBM_mode,level);
+		ret = oppo_disp_lcm_set_hbm(pgc->plcm,cmdq_handle_HBM_mode,level);
 		//_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
 		DISPCHECK("[BL]_set_HBM_mode_by_cmdq ret=%d\n",ret);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_HBM_mode);
 		cmdqRecWait(cmdq_handle_HBM_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_HBM_mode);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_HBM_mode);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_HBM_mode);
-		ret = oplus_disp_lcm_set_hbm(pgc->plcm,cmdq_handle_HBM_mode,level);
+		ret = oppo_disp_lcm_set_hbm(pgc->plcm,cmdq_handle_HBM_mode,level);
 		cmdqRecSetEventToken(cmdq_handle_HBM_mode, CMDQ_SYNC_TOKEN_CONFIG_DIRTY);
 		cmdqRecSetEventToken(cmdq_handle_HBM_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 4);
 		//_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_HBM_mode, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 6);
 		DISPCHECK("[BL]_set_HBM_mode_by_cmdq ret=%d\n",ret);
@@ -1005,7 +1005,7 @@ int primary_display_set_hbm_mode(unsigned int level)
 				_set_hbm_mode_by_cmdq(level);
 			}
 			//atomic_set(&delayed_trigger_kick, 1);
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 	_primary_path_unlock(__func__);
@@ -1100,14 +1100,14 @@ static int _set_safe_mode_by_cmdq(unsigned int level)
 
 	    ret = disp_lcm_set_safe_mode(pgc->plcm, cmdq_handle_SAFE_mode, level);\
 
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_SAFE_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_SAFE_mode, 1);
 		DISPCHECK("[BL]_set_safe_mode_by_cmdq ret=%d\n", ret);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_SAFE_mode);
 		cmdqRecWait(cmdq_handle_SAFE_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_SAFE_mode);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_SAFE_mode);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_SAFE_mode);
 
 	    ret = disp_lcm_set_safe_mode(pgc->plcm, cmdq_handle_SAFE_mode, level);
@@ -1116,7 +1116,7 @@ static int _set_safe_mode_by_cmdq(unsigned int level)
 		cmdqRecSetEventToken(cmdq_handle_SAFE_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 4);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_SAFE_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_SAFE_mode, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 6);
 		DISPCHECK("[BL]_set_safe_mode_by_cmdq ret=%d\n", ret);
@@ -1165,7 +1165,7 @@ int primary_display_set_safe_mode(unsigned int level)
 				_set_safe_mode_by_cmdq(level);
 			}
 			/* atomic_set(&delayed_trigger_kick, 1); */
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 	mdelay(20);
@@ -1174,14 +1174,14 @@ int primary_display_set_safe_mode(unsigned int level)
 	return ret;
 }
 
-static struct kobject *oplus_display_kobj;
+static struct kobject *oppo_display_kobj;
 
-static struct kobj_attribute dev_attr_oplus_brightness = __ATTR(oplus_brightness, S_IRUGO|S_IWUSR, oplus_display_get_brightness, oplus_display_set_brightness);
-static struct kobj_attribute dev_attr_oplus_max_brightness = __ATTR(oplus_max_brightness, S_IRUGO|S_IWUSR, oplus_display_get_max_brightness, NULL);
-static struct kobj_attribute dev_attr_aod_light_mode_set = __ATTR(aod_light_mode_set, S_IRUGO|S_IWUSR, oplus_get_aod_light_mode, oplus_set_aod_light_mode);
-static struct kobj_attribute dev_attr_dim_alpha = __ATTR(dim_alpha, S_IRUGO|S_IWUSR, oplus_display_get_dim_alpha, oplus_display_set_dim_alpha);
-static struct kobj_attribute dev_attr_dimlayer_bl_en = __ATTR(dimlayer_bl_en, S_IRUGO|S_IWUSR, oplus_display_get_dc_enable, oplus_display_set_dc_enable);
-static struct kobj_attribute dev_attr_dim_dc_alpha = __ATTR(dim_dc_alpha, S_IRUGO|S_IWUSR, oplus_display_get_dim_dc_alpha, oplus_display_set_dim_dc_alpha);
+static struct kobj_attribute dev_attr_oplus_brightness = __ATTR(oplus_brightness, S_IRUGO|S_IWUSR, oppo_display_get_brightness, oppo_display_set_brightness);
+static struct kobj_attribute dev_attr_oplus_max_brightness = __ATTR(oplus_max_brightness, S_IRUGO|S_IWUSR, oppo_display_get_max_brightness, NULL);
+static struct kobj_attribute dev_attr_aod_light_mode_set = __ATTR(aod_light_mode_set, S_IRUGO|S_IWUSR, oppo_get_aod_light_mode, oppo_set_aod_light_mode);
+static struct kobj_attribute dev_attr_dim_alpha = __ATTR(dim_alpha, S_IRUGO|S_IWUSR, oppo_display_get_dim_alpha, oppo_display_set_dim_alpha);
+static struct kobj_attribute dev_attr_dimlayer_bl_en = __ATTR(dimlayer_bl_en, S_IRUGO|S_IWUSR, oppo_display_get_dc_enable, oppo_display_set_dc_enable);
+static struct kobj_attribute dev_attr_dim_dc_alpha = __ATTR(dim_dc_alpha, S_IRUGO|S_IWUSR, oppo_display_get_dim_dc_alpha, oppo_display_set_dim_dc_alpha);
 static struct kobj_attribute dev_attr_hbm = __ATTR(hbm, S_IRUGO|S_IWUSR, LCM_HBM_show, LCM_HBM_store);
 //static struct kobj_attribute dev_attr_ffl_set = __ATTR(ffl_set, S_IRUGO|S_IWUSR, FFL_SET_show, FFL_SET_store);
 static struct kobj_attribute dev_attr_panel_id = __ATTR(panel_id, S_IRUGO|S_IWUSR, lcm_id_info_show, lcm_id_info_store);
@@ -1190,14 +1190,14 @@ static struct kobj_attribute dev_attr_sau_closebl_node = __ATTR(sau_closebl_node
 static struct kobj_attribute dev_attr_oplus_notify_fppress = __ATTR(oplus_notify_fppress, S_IRUGO|S_IWUSR, NULL, fingerprint_notify_trigger);
 static struct kobj_attribute dev_attr_LCM_CABC = __ATTR(LCM_CABC, S_IRUGO|S_IWUSR, LCM_CABC_show, LCM_CABC_store);
 /* #ifdef OPLUS_FEATURE_RAMLESS_AOD */
-static struct kobj_attribute dev_attr_aod_area = __ATTR(aod_area, S_IRUGO|S_IWUSR, NULL, oplus_display_set_aod_area);
+static struct kobj_attribute dev_attr_aod_area = __ATTR(aod_area, S_IRUGO|S_IWUSR, NULL, oppo_display_set_aod_area);
 /* #endif */ /* OPLUS_FEATURE_RAMLESS_AOD */
 
 /*
  * Create a group of attributes so that we can create and destroy them all
  * at once.
  */
-static struct attribute *oplus_display_attrs[] = {
+static struct attribute *oppo_display_attrs[] = {
 	&dev_attr_oplus_brightness.attr,
 	&dev_attr_oplus_max_brightness.attr,
 	&dev_attr_aod_light_mode_set.attr,
@@ -1217,32 +1217,32 @@ static struct attribute *oplus_display_attrs[] = {
 	NULL,	/* need to NULL terminate the list of attributes */
 };
 
-static struct attribute_group oplus_display_attr_group = {
-	.attrs = oplus_display_attrs,
+static struct attribute_group oppo_display_attr_group = {
+	.attrs = oppo_display_attrs,
 };
 
-static int __init oplus_display_private_api_init(void)
+static int __init oppo_display_private_api_init(void)
 {
 	int retval;
 
-	oplus_display_kobj = kobject_create_and_add("oplus_display", kernel_kobj);
-	if (!oplus_display_kobj)
+	oppo_display_kobj = kobject_create_and_add("oplus_display", kernel_kobj);
+	if (!oppo_display_kobj)
 		return -ENOMEM;
 
 	/* Create the files associated with this kobject */
-	retval = sysfs_create_group(oplus_display_kobj, &oplus_display_attr_group);
+	retval = sysfs_create_group(oppo_display_kobj, &oppo_display_attr_group);
 	if (retval)
-		kobject_put(oplus_display_kobj);
+		kobject_put(oppo_display_kobj);
 
 	return retval;
 }
 
-static void __exit oplus_display_private_api_exit(void)
+static void __exit oppo_display_private_api_exit(void)
 {
-	kobject_put(oplus_display_kobj);
+	kobject_put(oppo_display_kobj);
 }
 
-module_init(oplus_display_private_api_init);
-module_exit(oplus_display_private_api_exit);
+module_init(oppo_display_private_api_init);
+module_exit(oppo_display_private_api_exit);
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Hujie");
+MODULE_AUTHOR("Hujie <hujie@oppo.com>");

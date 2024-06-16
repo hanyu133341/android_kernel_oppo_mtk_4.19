@@ -279,7 +279,7 @@ err_class_create:
 	return rc;
 }
 
-void __exit oplus_display_panel_exit()
+void __exit oplus_display_panel_exit(void)
 {
 	pr_err("%s\n", __func__);
 
@@ -292,4 +292,4 @@ void __exit oplus_display_panel_exit()
 module_init(oplus_display_panel_init);
 module_exit(oplus_display_panel_exit);
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Lisheng");
+MODULE_AUTHOR("Lisheng <lisheng1@oplus.com>");

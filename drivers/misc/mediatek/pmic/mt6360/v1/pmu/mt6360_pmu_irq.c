@@ -10,6 +10,7 @@
 #include <linux/pm_runtime.h>
 #include <linux/irq.h>
 #include "../inc/mt6360_pmu.h"
+#include "../../../../../power/oplus/oplus_chg_track.h"
 #ifdef OPLUS_FEATURE_CHG_BASIC
 extern bool mt6360_get_vbus_status(void);
 extern int mt6360_chg_enable(bool en);
@@ -80,6 +81,7 @@ static irqreturn_t mt6360_pmu_irq_handler(int irq, void *data)
 					if (i == 7) {
 						vbus_status = mt6360_get_vbus_status();
 						oplus_chg_check_break(vbus_status);
+						oplus_chg_track_check_wired_charging_break(vbus_status);
 						printk(KERN_ERR "!!!!! mt6360_pmu_irq_handler: [%d]\n", vbus_status);
 #if !defined CONFIG_OPLUS_CHARGER_MTK6873 && !defined CONFIG_OPLUS_CHARGER_MTK6833
 						if (!oplus_otgctl_by_buckboost()) {

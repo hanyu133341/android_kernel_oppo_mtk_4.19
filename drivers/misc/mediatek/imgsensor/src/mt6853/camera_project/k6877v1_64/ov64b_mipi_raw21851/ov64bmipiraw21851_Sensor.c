@@ -559,7 +559,7 @@ static void write_cmos_sensor(kal_uint32 addr, kal_uint32 para)
 
 static void set_dummy(void)
 {
-	//for protect 60hz banding filter let shutter bigger than framelength.
+    //for protect 60hz banding filter let shutter bigger than framelength.
     if (imgsensor.shutter > imgsensor.min_frame_length - imgsensor_info.margin) {
         imgsensor.frame_length = imgsensor.shutter + imgsensor_info.margin;
     }
@@ -2214,23 +2214,23 @@ static kal_uint32 get_default_framerate_by_scenario(
 static kal_uint32 set_test_pattern_mode(kal_bool enable)
 {
     LOG_INF("Jesse+ enable: %d\n", enable);
-     if (enable) { // for solid color
-
-        write_cmos_sensor(0x3019, 0xf0);
-        write_cmos_sensor(0x4308, 0x01);
-        write_cmos_sensor(0x4300, 0x00);
-        write_cmos_sensor(0x4302, 0x00);
-        write_cmos_sensor(0x4304, 0x00);
-        write_cmos_sensor(0x4306, 0x00);
-
-        } else {
-        write_cmos_sensor(0x3019, 0xd2);
-        write_cmos_sensor(0x4308, 0x00);
-        write_cmos_sensor(0x4300, 0x00);
-        write_cmos_sensor(0x4302, 0x00);
-        write_cmos_sensor(0x4304, 0x00);
-        write_cmos_sensor(0x4306, 0x00);
-        }
+    if (enable) { // for solid color
+        write_cmos_sensor(0x3208, 0x00);
+        write_cmos_sensor(0x430b, 0x00);
+        write_cmos_sensor(0x430c, 0x00);
+        write_cmos_sensor(0x4310, 0x00);
+        write_cmos_sensor(0x4311, 0x00);
+        write_cmos_sensor(0x3208, 0x10);
+        write_cmos_sensor(0x3208, 0xa0);
+    } else {
+        write_cmos_sensor(0x3208, 0x00);
+        write_cmos_sensor(0x430b, 0xff);
+        write_cmos_sensor(0x430c, 0xff);
+        write_cmos_sensor(0x4310, 0xff);
+        write_cmos_sensor(0x4311, 0xff);
+        write_cmos_sensor(0x3208, 0x10);
+        write_cmos_sensor(0x3208, 0xa0);
+    }
 
     spin_lock(&imgsensor_drv_lock);
     imgsensor.test_pattern = enable;
@@ -2448,7 +2448,7 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
         }
         break;
     case SENSOR_FEATURE_GET_OFFSET_TO_START_OF_EXPOSURE:
-        *(MINT32 *)(signed long)(*(feature_data + 1)) = -17282000;
+        *(MINT32 *)(signed long)(*(feature_data + 1)) = -1273600;
         break;
     case SENSOR_FEATURE_GET_PIXEL_CLOCK_FREQ_BY_SCENARIO:
         switch (*feature_data) {

@@ -1533,18 +1533,18 @@ int disp_lcm_adjust_fps(void *cmdq, struct disp_lcm_handle *plcm, int fps)
 }
 
 #ifdef OPLUS_BUG_STABILITY
-int disp_lcm_oplus_set_lcm_gamma_cmd(struct disp_lcm_handle *plcm, void *handle, unsigned int gamma_flag)
+int disp_lcm_oppo_set_lcm_gamma_cmd(struct disp_lcm_handle *plcm, void *handle, unsigned int gamma_flag)
 {
 	struct LCM_DRIVER *lcm_drv = NULL;
 
 	DISPFUNC();
-	pr_info("check disp_lcm_oplus_set_lcm_gamma_cmd in disp_lcm_c\n");
+	pr_info("check disp_lcm_oppo_set_lcm_gamma_cmd in disp_lcm_c\n");
 	if (_is_lcm_inited(plcm)) {
 		lcm_drv = plcm->drv;
 		if (lcm_drv->set_gamma_mode_cmdq) {
 			lcm_drv->set_gamma_mode_cmdq(handle, gamma_flag);
 		} else {
-			pr_err("FATAL ERROR, lcm_drv->oplus_set_gamma_mode_cmdq is null\n");
+			pr_err("FATAL ERROR, lcm_drv->oppo_set_gamma_mode_cmdq is null\n");
 			return -1;
 		}
 
@@ -1740,18 +1740,18 @@ int disp_lcm_set_lcm_cmd(struct disp_lcm_handle *plcm, void *cmdq_handle,
 }
 
 #ifdef OPLUS_BUG_STABILITY
-int disp_lcm_oplus_set_lcm_cabc_cmd(struct disp_lcm_handle *plcm, void *handle, unsigned int level)
+int disp_lcm_oppo_set_lcm_cabc_cmd(struct disp_lcm_handle *plcm, void *handle, unsigned int level)
 {
 	struct LCM_DRIVER *lcm_drv = NULL;
 
 	DISPFUNC();
-	pr_err("check disp_lcm_oplus_set_lcm_cabc_cmd in disp_lcm_c\n");
+	pr_err("check disp_lcm_oppo_set_lcm_cabc_cmd in disp_lcm_c\n");
 	if (_is_lcm_inited(plcm)) {
 		lcm_drv = plcm->drv;
 		if (lcm_drv->set_cabc_mode_cmdq) {
 			lcm_drv->set_cabc_mode_cmdq(handle, level);
 		} else {
-			pr_err("FATAL ERROR, lcm_drv->oplus_set_cabc_mode_cmdq is null\n");
+			pr_err("FATAL ERROR, lcm_drv->oppo_set_cabc_mode_cmdq is null\n");
 			return -1;
 		}
 

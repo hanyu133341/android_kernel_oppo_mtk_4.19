@@ -20,6 +20,8 @@
 #define MT6360_HW_TIMEOUT_20817 2400 /* ms */
 #define MT6360_LEVEL_TORCH_21015 (16)
 #define MT6360_LEVEL_FLASH_21015 (32)
+#define MT6360_LEVEL_NUM_20291      (13)
+#define MT6360_LEVEL_TORCH_20291    (6)
 
 /******************************************************************************
  * mt6360 20817 custom operations

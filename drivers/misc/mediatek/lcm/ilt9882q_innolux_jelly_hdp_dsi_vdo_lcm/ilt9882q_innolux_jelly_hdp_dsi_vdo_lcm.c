@@ -1,5 +1,5 @@
 /***********************************************************
-** Copyright (C), 2008-2016, OPLUS Mobile Comm Corp., Ltd.
+** Copyright (C), 2008-2016, OPPO Mobile Comm Corp., Ltd.
 ** ODM_WT_EDIT
 ** File: - ili9882q_innolux_hdp_dsi_vdo_lcm.c
 ** Description: source file for lcm ili9882q+innolux in kernel stage

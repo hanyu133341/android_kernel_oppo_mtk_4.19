@@ -50,6 +50,10 @@ enum zram_pageflags {
 	ZRAM_UNDER_WB,	/* page is under writeback */
 	ZRAM_HUGE,	/* Incompressible page */
 	ZRAM_IDLE,	/* not accessed page since last idle marking */
+#ifdef CONFIG_HYBRIDSWAP_ASYNC_COMPRESS
+	ZRAM_CACHED,   /* page is cached in async compress cache buffer */
+	ZRAM_CACHED_COMPRESS, /* page is under async compress */
+#endif
 #ifdef CONFIG_HYBRIDSWAP_CORE
 	ZRAM_BATCHING_OUT,
 	ZRAM_FROM_HYBRIDSWAP,
@@ -66,6 +70,9 @@ struct zram_table_entry {
 	union {
 		unsigned long handle;
 		unsigned long element;
+#ifdef CONFIG_HYBRIDSWAP_ASYNC_COMPRESS
+		unsigned long page;
+#endif
 	};
 	unsigned long flags;
 #ifdef CONFIG_ZRAM_MEMORY_TRACKING
@@ -137,7 +144,7 @@ struct zram {
 	unsigned long increase_nr_pages;
 #endif
 #ifdef CONFIG_HYBRIDSWAP_CORE
-	struct hybridswap *hs_swap;
+	struct hybridswap_area *area;
 #endif
 };
 #endif

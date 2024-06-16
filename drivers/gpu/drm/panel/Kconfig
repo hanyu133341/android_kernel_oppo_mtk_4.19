@@ -28,7 +28,7 @@ config DRM_PANEL_SIMPLE
 	  that it can be automatically turned off when the panel goes into a
 	  low power state.
 
-config DRM_PANEL_OPLUS20625_BOE_NT35625B_DPHY_VDO
+config DRM_PANEL_OPPO20625_BOE_NT35625B_DPHY_VDO
         tristate "boe DPHY 720p vdo mode panel"
         depends on OF
         depends on DRM_MIPI_DSI
@@ -39,7 +39,7 @@ config DRM_PANEL_OPLUS20625_BOE_NT35625B_DPHY_VDO
           and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
           to host.
 
-config DRM_PANEL_OPLUS20015_BOE_ILI9882N_DPHY_VDO
+config DRM_PANEL_OPPO20015_BOE_ILI9882N_DPHY_VDO
         tristate "boe ili9882n 720p vdo mode panel"
         depends on OF
         depends on DRM_MIPI_DSI
@@ -50,7 +50,7 @@ config DRM_PANEL_OPLUS20015_BOE_ILI9882N_DPHY_VDO
           and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
           to host.
 
-config DRM_PANEL_OPLUS20015_TRULY_HX83102_DPHY_VDO
+config DRM_PANEL_OPPO20015_TRULY_HX83102_DPHY_VDO
         tristate "truly hx83102 720p vdo mode panel"
         depends on OF
         depends on DRM_MIPI_DSI
@@ -61,7 +61,7 @@ config DRM_PANEL_OPLUS20015_TRULY_HX83102_DPHY_VDO
           and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
           to host.
 
-config DRM_PANEL_OPLUS20015_INNOLUX_ILI9882N_DPHY_VDO
+config DRM_PANEL_OPPO20015_INNOLUX_ILI9882N_DPHY_VDO
         tristate "innolux ili9882n 720p vdo mode panel"
         depends on OF
         depends on DRM_MIPI_DSI
@@ -93,6 +93,28 @@ config DRM_PANEL_OPLUS21101_BOE_ILI9883A_DPHY_VDO
           mode Full HD Plus panel. The panel has a 720x1680 resolution
           and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
           to host.
+
+config DRM_PANEL_OPLUS20609_TIANMA_NT36672C_CPHY_VDO
+        tristate "tianma nt36672c 1080p cphy vdo mode panel"
+        depends on OF
+        depends on DRM_MIPI_DSI
+        depends on BACKLIGHT_CLASS_DEVICE
+        help
+          Say Y here if you want to enable support for SAMSUNG DPHY vdo
+          mode Full HD Plus panel. The panel has a 1080x2400 resolution
+          and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
+          to host.
+
+config DRM_PANEL_OPLUS20609_TIANMA_ILI7807S_CPHY_VDO
+        tristate "tianma ili7807s 1080p cphy vdo mode panel"
+        depends on OF
+        depends on DRM_MIPI_DSI
+        depends on BACKLIGHT_CLASS_DEVICE
+        help
+          Say Y here if you want to enable support for SAMSUNG DPHY vdo
+          mode Full HD Plus panel. The panel has a 1080x2400 resolution
+          and uses 24-bits RGB per pixel. It provides a MIPI DSI interface
+          to host
 
 config DRM_PANEL_OPLUS21101_INX_TD4160_DPHY_VDO
         tristate "inx td4160 720p vdo mode panel"

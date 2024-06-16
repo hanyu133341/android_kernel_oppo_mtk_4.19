@@ -1,8 +1,8 @@
 /***************************************************************
 ** Copyright (C),  2020,  OPLUS Mobile Comm Corp.,  Ltd
 ** OPLUS_BUG_STABILITY
-** File : oplus_display_dc.c
-** Description : oplus dc feature
+** File : oppo_display_dc.c
+** Description : oppo dc feature
 ** Version : 1.0
 ** Date : 2020/07/1
 **
@@ -28,7 +28,7 @@ extern unsigned long cabc_sun_flag;
 extern unsigned long cabc_back_flag;
 
 extern unsigned long oplus_display_brightness;
-extern unsigned int oplus_set_brightness;
+extern unsigned int oppo_set_brightness;
 extern unsigned long CABC_mode;
 extern void __attribute__((weak)) disp_aal_set_dre_en(int enable) { return; };
 extern bool oplus_display_panelid_support;
@@ -189,7 +189,7 @@ int primary_display_read_serial(char cmd, uint64_t *buf, int num)
 				ret = _read_serial_by_cmdq(cmd, buf, num);
 			}
 			//atomic_set(&delayed_trigger_kick, 1);
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 	_primary_path_unlock(__func__);
@@ -221,14 +221,14 @@ int _read_serial_by_cmdq(char cmd, uint64_t *buf, int num)
 
 		ret = panel_serial_number_read(cmd, buf, num);
 		//_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
 		DISPCHECK("[BL]_set_reg_by_cmdq ret=%d\n",ret);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 					MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_serial_mode);
 		cmdqRecWait(cmdq_handle_serial_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_serial_mode);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_serial_mode);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_serial_mode);
 
 		ret = panel_serial_number_read(cmd, buf, num);
@@ -238,7 +238,7 @@ int _read_serial_by_cmdq(char cmd, uint64_t *buf, int num)
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 							MMPROFILE_FLAG_PULSE, 1, 4);
 		//_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 							MMPROFILE_FLAG_PULSE, 1, 6);
 
@@ -428,14 +428,14 @@ int _read_lcm_id_by_cmdq(char cmd, uint32_t *buf, int num)
 
 		ret = lcm_id_info_read(cmd, buf, num);
 
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
 		DISPCHECK("[BL]_read_lcm_id_by_cmdq ret=%d\n", ret);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 					MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_serial_mode);
 		cmdqRecWait(cmdq_handle_serial_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_serial_mode);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_serial_mode);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_serial_mode);
 
 		ret = lcm_id_info_read(cmd, buf, num);
@@ -444,7 +444,7 @@ int _read_lcm_id_by_cmdq(char cmd, uint32_t *buf, int num)
 		cmdqRecSetEventToken(cmdq_handle_serial_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 							MMPROFILE_FLAG_PULSE, 1, 4);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_serial_mode, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 							MMPROFILE_FLAG_PULSE, 1, 6);
 
@@ -493,7 +493,7 @@ int primary_display_read_lcm_id(char cmd, uint32_t *buf, int num)
 			} else {
 				ret = _read_lcm_id_by_cmdq(cmd, buf, num);
 			}
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 	_primary_path_unlock(__func__);
@@ -526,18 +526,18 @@ int oplus_display_panel_set_closebl_flag(void *buf)
 
 int oplus_display_set_brightness(void *buf)
 {
-	unsigned int *oplus_brightness = buf;
+	unsigned int *oppo_brightness = buf;
 
-	oplus_set_brightness = (*oplus_brightness);
-	printk("%s %d\n", __func__, oplus_set_brightness);
+	oppo_set_brightness = (*oppo_brightness);
+	printk("%s %d\n", __func__, oppo_set_brightness);
 
-	if (oplus_set_brightness > LED_FULL || oplus_set_brightness < LED_OFF) {
+	if (oppo_set_brightness > LED_FULL || oppo_set_brightness < LED_OFF) {
 		return -1;
 	}
 
 	_primary_path_switch_dst_lock();
 	_primary_path_lock(__func__);
-	primary_display_setbacklight_nolock(oplus_set_brightness);
+	primary_display_setbacklight_nolock(oppo_set_brightness);
 	_primary_path_unlock(__func__);
 	_primary_path_switch_dst_unlock();
 

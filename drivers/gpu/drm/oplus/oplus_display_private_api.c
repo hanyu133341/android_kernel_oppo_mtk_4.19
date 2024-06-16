@@ -1210,7 +1210,7 @@ static ssize_t oplus_display_set_crc_check(struct kobject *kobj,
 #endif /* CONFIG_OPLUS_CRC_CHECK_SUPPORT */
 
 unsigned long cabc_mode = 1;
-unsigned long cabc_true_mode = 1;
+unsigned long cabc_true_mode = 0;
 unsigned long cabc_sun_flag = 0;
 unsigned long cabc_back_flag = 1;
 extern void disp_aal_set_dre_en(int enable);
@@ -1616,4 +1616,4 @@ static void __exit oplus_display_private_api_exit(void)
 module_init(oplus_display_private_api_init);
 module_exit(oplus_display_private_api_exit);
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Hujie");
+MODULE_AUTHOR("Hujie <hujie@oplus.com>");

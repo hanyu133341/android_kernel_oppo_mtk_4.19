@@ -375,6 +375,9 @@
 	//for PD9V or QC9V
 	qcom,vbatt_pdqc_to_5v_thr = <4500>;
 	qcom,vbatt_pdqc_to_9v_thr = <4500>;
+	qcom,pd_not_support = <1>;
+	qcom,qc_not_support = <1>;
+	qcom,enable-ship-mode;
 
 	//GPIO config:
 	qcom,chargerid_switch-gpio = <&pio 133 0x00>;
@@ -474,9 +477,8 @@
 */
 	//#include "mediatek/bat_setting/mt6833_atl_5000mah_battery_table_ext_2163B.dtsi"
 	//#include "mediatek/bat_setting/mt6833_battery_table_cos_2163B.dtsi"
-	#include "mediatek/bat_setting/mt6833_battery_prop_dim2_ext_blade.dtsi"
-	#include "mediatek/bat_setting/mt6833_blade_5000mah_battery_table_4450mv_alt.dtsi"
-	#include "mediatek/bat_setting/mt6833_blade_5000mah_battery_table_4450mv_cos.dtsi"
+	#include "mediatek/bat_setting/mt6833_battery_prop_dim2_ext_2260B.dtsi"
+	#include "mediatek/bat_setting/mt6833_battery_table_cos_atl_2260B.dtsi"
 };
 
 &i2c9 {
@@ -767,14 +769,25 @@
 };
 
 &odm {
-	usbphy_tuning: usbphy_tuning {
-		compatible = "mediatek,phy_tuning";
-		u2_vrt_ref = <7>;
-		u2_term_ref = <7>;
-		u2_enhance = <3>;
-		host_u2_vrt_ref = <6>;
-		host_u2_term_ref = <7>;
-		host_u2_enhance = <3>;
+	mediatek_phy_tuning: mediatek_phy_tuning {
+		phy_tuning {
+			compatible = "mediatek,phy_tuning";
+			eye-vrt = <7>;
+			eye-term = <7>;
+			eye-rev6 = <3>;
+			host-eye-vrt = <7>;
+			host-eye-term = <6>;
+			host-eye-rev6 = <3>;
+		};
 	};
+
+        oplus,track-charge {
+                compatible = "oplus,track-charge";
+                track,fast_chg_break_t_thd = <1000>;
+                track,general_chg_break_t_thd = <200>;
+                track,voocphy_type = <2>;
+                track,wired_max_power = <33000>;
+                track,wired_fast_chg_scheme = <4>;
+        };
 };
 //#endif /*OPLUS_FEATURE_CHG_BASIC*/

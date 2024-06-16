@@ -22,10 +22,11 @@
 
 	backlight {
 		label = "lcd-backlight";
-		max-brightness = <4095>;
+		max-brightness = <2784>;
 		led-bits = <12>;
 		trans-bits = <12>;
 		default-state = "on";
+		max_brightness_custom = <1>;
 	};
 };
 &odm {
@@ -209,9 +210,9 @@
 	};
 	als_radio_lcd:als_radio_lcd {
 		status = "okay";
-		samsung_als_radio = <200>;
-		boe_als_radio = <150>;
-		tianma_als_radio = <150>;
+		samsung_als_radio = <110>;
+		boe_als_radio = <110>;
+		tianma_als_radio = <110>;
 	};
 	rear_cct_1: rear_cct_1 {
                 status = "okay";
@@ -342,8 +343,8 @@
                 				20131 20133 20255 20257>;
 		platform_support_project_dir = <20131 20131 20131 20131
                 				20131 20131 20131 20131>;
-		platform_support_project_commandline = "oplus20131_boe_nt37800_1080p_dsi_cmd","oplus20131_boe_nt37800_1080p_dsi_cmd","oplus20131_boe_nt37800_1080p_dsi_cmd","oplus20131_boe_nt37800_1080p_dsi_cmd",
-                					"oplus20131_tianma_nt37701_1080p_dsi_cmd","oplus20131_tianma_nt37701_1080p_dsi_cmd","oplus20131_tianma_nt37701_1080p_dsi_cmd","oplus20131_tianma_nt37701_1080p_dsi_cmd";
+		platform_support_project_commandline = "oppo20131_boe_nt37800_1080p_dsi_cmd","oppo20131_boe_nt37800_1080p_dsi_cmd","oppo20131_boe_nt37800_1080p_dsi_cmd","oppo20131_boe_nt37800_1080p_dsi_cmd",
+                					"oppo20131_tianma_nt37701_1080p_dsi_cmd","oppo20131_tianma_nt37701_1080p_dsi_cmd","oppo20131_tianma_nt37701_1080p_dsi_cmd","oppo20131_tianma_nt37701_1080p_dsi_cmd";
 
 		prevention,dead_area_width = <0 0>;
 		prevention,makeup_cnt_weight = <4 1 2 2 1>;
@@ -428,7 +429,7 @@
                 tp_type = <8>; /*type:8 SAMSUNG*/
                 platform_support_project = <20131 20133 20255 20257>;
         	platform_support_project_dir = <20131 20131 20131 20131>;
-                platform_support_project_commandline = "oplus20131_samsung_ana6705_1080p_dsi_cmd","oplus20131_samsung_ana6705_1080p_dsi_cmd","oplus20131_samsung_ana6705_1080p_dsi_cmd","oplus20131_samsung_ana6705_1080p_dsi_cmd";
+                platform_support_project_commandline = "oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd";
 
 		prevention,dead_area_width = <0 0>;
 		prevention,makeup_cnt_weight = <4 1 2 2 1>;
@@ -516,6 +517,8 @@
                 project_id = <20615>;
 		irq_need_dev_resume_ok;
                 black_gesture_support;
+		black_gesture_indep_support;
+		sportify_aod_gesture_support;
                 fw_edge_limit_support;
                 pressure_report_support;
                 charger_pump_support;
@@ -987,7 +990,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 	pinctrl-7 = <&ship_sleep_gpio>;
 	pinctrl-8 = <&ship_active_gpio>;
 
-	/*for oplus chg framework:*/
+	/*for oppo chg framework:*/
 	qcom,input_current_charger_ma = <2000>;
 	qcom,input_current_usb_ma = <500>;
 	qcom,input_current_cdp_ma = <1500>;
@@ -1166,6 +1169,9 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 	R_FG_VALUE = <(5)>;
 };
 
+&regulator_vibrator {
+    status = "disabled";
+};
 
 &i2c3 {
     status = "okay";
@@ -1190,8 +1196,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO135__FUNC_GPIO135>;
 			input-enable;
-			slew-rate = <0>;
-			bias-pull-up = <11>;
+			bias-pull-up;
 		};
 	};
 
@@ -1500,10 +1505,12 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 
 
 };
+//#endif //VENDOR_EDIT
 
 &mt6360_pmu {
 	mt6360,intr_gpio_num = <24>; /* direct defined GPIO num */
 	mt6360,intr_gpio = <&pio 24 0x0>;
+	//#ifdef VENDOR_EDIT
 	disable_lpsd = <1>;
 };
 

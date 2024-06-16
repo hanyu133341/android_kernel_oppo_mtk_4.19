@@ -365,17 +365,17 @@
 		new-arch-supported = <1>;
 	};
 /*sensor end */
-/*VNDOR_EDIT oplus project start */
-/* 2019/10/09, Add for oplus project & devinfo*/
+/*VNDOR_EDIT oppo project start */
+/* 2019/10/09, Add for oppo project & devinfo*/
 	opluse_project:oplus_sim_detect {
 		compatible = "oplus, sim_detect";
 		Hw,sim_det = <&pio 1 0x00>;
 	};
 
 	oplus_project:oplus_project {
-		compatible = "oplus,oplus_project";
+		compatible = "oppo,oplus_project";
 	};
-	oplus_devinfo:oplus_devinfo {
+	oppo_devinfo:oppo_devinfo {
 		compatible = "oplus-devinfo";
 /*+ 2021/03/04, Add match between board and subboard */
                 pinctrl-names = "default", "aboard_gpio0_sleep", "aboard_gpio0_active", "aboard_gpio0_idle";
@@ -409,15 +409,15 @@
 //#ifdef OPLUS_ARCH_EXTENDS
 //2021/05/10  add for thermal shell temp
 	shell_front {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 
 	shell_frame {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 
 	shell_back {
-		compatible = "oplus,shell-temp";
+		compatible = "oppo,shell-temp";
 	};
 //#endif
 
@@ -441,7 +441,7 @@
 //#endif /*OPLUS_BUG_STABILITY*/
 
 //#ifdef OPLUS_FEATURE_NFC_CONSOFT
-//2020/12/25, add for: add oplus nfc chipset for FC CONSOFT
+//2020/12/25, add for: add oppo nfc chipset for FC CONSOFT
     nfc_chipset:nfc_chipset {
         compatible = "oplus-nfc-chipset";
         chipset-20376 = "PN557";
@@ -990,7 +990,7 @@
   	touchscreen@0 {
 		compatible = "oplus,tp_noflash";
 		reg = <0>; //Same as CS ID
-		chip-name = "OPLUS_TP_NOFLASH";
+		chip-name = "OPPO_TP_NOFLASH";
 		status = "ok";
 
 		spi-max-frequency = <9600000>;
@@ -1294,19 +1294,19 @@
 	oplus,one_gpio_for_three_ic = <1>;
 	goodix_3626 {
 		oplus,fp-id = <1>; /* fp id mapping table */
-		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "G_3626";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};
 	FP_FPC_1542 {
 		oplus,fp-id = <0>; /* fp id mapping table */
-		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "F_1542";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};
 	goodix_3956 {
 		oplus,fp-id = <2>; /* fp id mapping table */
-		vendor-chip = <27>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <27>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "G_3956";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};

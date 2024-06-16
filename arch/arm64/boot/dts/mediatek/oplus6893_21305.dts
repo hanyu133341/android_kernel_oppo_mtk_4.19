@@ -85,12 +85,12 @@
 		pwm_config = <0 1 0 0 0>;
 	};
 	vibrator0:vibrator@0 {
-		compatible = "mediatek,vibrator";
-		vib_timer = <25>;
-		vib_limit = <9>;
-		vib_vol= <9>;
+		vib_timer = <30>;
+		vib_limit = <0>;
+		vib_vol= <11>;
+		lk_vib_vol  = <11>;
+		status = "okay";
 	};
-
 /* sensor start */
 	/*
 	enum {
@@ -370,6 +370,13 @@
 	pmic_history3:pmic_history3 {
 	};
 
+//#ifdef OPLUS_FEATURE_SIM
+/* Add for sim detect */
+	oplus_sim_detect {
+		compatible = "oplus, sim_detect";
+		Hw,sim_det = <&pio 43 0x00>;
+	};
+//#endif /* OPLUS_FEATURE_SIM */
 };
 
 &keypad {

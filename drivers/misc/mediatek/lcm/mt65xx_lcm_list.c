@@ -1256,25 +1256,25 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 	&nt36672c_fhdp_dsi_vdo_60hz_wo_dsc_shenchao_lcm_drv,
 #endif
 
-#if defined(OPLUS_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
-	&oplus_tianma_td4310_fhdp_dsi_vdo_rt5081_lcm_drv,
+#if defined(OPPO_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
+	&oppo_tianma_td4310_fhdp_dsi_vdo_rt5081_lcm_drv,
 #endif
 
 /* #ifdef OPLUS_BUG_STABILITY */
-#if defined(OPLUS20291_SAMSUNG_AMS643XY01_1080P_DSI_VDO)
-	&oplus20291_samsung_ams643xy01_1080p_dsi_vdo_lcm_drv,
+#if defined(OPPO20291_SAMSUNG_AMS643XY01_1080P_DSI_VDO)
+	&oppo20291_samsung_ams643xy01_1080p_dsi_vdo_lcm_drv,
 #endif
 
-#if defined(OPLUS19537_SAMSUNG_AMS643XF01_1080P_DSI_CMD)
-	&oplus19537_samsung_ams643xf01_1080p_dsi_cmd_lcm_drv,
+#if defined(OPPO19537_SAMSUNG_AMS643XF01_1080P_DSI_CMD)
+	&oppo19537_samsung_ams643xf01_1080p_dsi_cmd_lcm_drv,
 #endif
 
-#if defined(OPLUS19357_SAMSUNG_AMS644VA04_1080P_DSI_CMD)
-	&oplus19357_samsung_ams644va04_1080p_dsi_cmd_lcm_drv,
+#if defined(OPPO19357_SAMSUNG_AMS644VA04_1080P_DSI_CMD)
+	&oppo19357_samsung_ams644va04_1080p_dsi_cmd_lcm_drv,
 #endif
 
-#if defined(OPLUS19551_SAMSUNG_AMS644VK01_1080P_DSI_CMD)
-	&oplus19551_samsung_ams644vk01_1080p_dsi_cmd_lcm_drv,
+#if defined(OPPO19551_SAMSUNG_AMS644VK01_1080P_DSI_CMD)
+	&oppo19551_samsung_ams644vk01_1080p_dsi_cmd_lcm_drv,
 #endif
 
 #if defined(OPLUS21331_TD4160_INX_HDP_DSI_VDO_LCM)
@@ -1438,8 +1438,8 @@ unsigned char lcm_name_list[][128] = {
 	"nt35695B_fhd_dsi_cmd_truly_rt5081_720p_lcm_drv",
 #endif
 
-#if defined(OPLUS_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
-	"oplus_tianma_td4310_fhdp_dsi_vdo_rt5081_drv",
+#if defined(OPPO_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
+	"oppo_tianma_td4310_fhdp_dsi_vdo_rt5081_drv",
 #endif
 };
 

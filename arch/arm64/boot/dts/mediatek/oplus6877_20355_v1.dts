@@ -986,7 +986,8 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 
 		/* SW Support Feature Control */
 		black_gesture_support;
-		//black_gesture_indep_support;
+		black_gesture_indep_support;
+		sportify_aod_gesture_support;
 		fw_edge_limit_support;
 		pressure_report_support;
 		charger_pump_support;

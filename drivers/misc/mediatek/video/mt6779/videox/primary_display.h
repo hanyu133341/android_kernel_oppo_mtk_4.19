@@ -480,12 +480,12 @@ int primary_display_get_dvfs_last_req(void);
 
 /***************************************/
 /* #ifdef OPLUS_ARCH_EXTENDS */
-void oplus_cmdq_flush_config_handle_mira(void *handle, int blocking);
-void oplus_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle);
-void oplus_delayed_trigger_kick_set(int params);
-enum DISP_POWER_STATE oplus_primary_set_state(enum DISP_POWER_STATE new_state);
-void oplus_cmdq_reset_config_handle(void);
-void oplus_cmdq_build_trigger_loop(void);
+void oppo_cmdq_flush_config_handle_mira(void *handle, int blocking);
+void oppo_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle);
+void oppo_delayed_trigger_kick_set(int params);
+enum DISP_POWER_STATE oppo_primary_set_state(enum DISP_POWER_STATE new_state);
+void oppo_cmdq_reset_config_handle(void);
+void oppo_cmdq_build_trigger_loop(void);
 /* #endif */
 
 int primary_display_is_directlink_mode(void);

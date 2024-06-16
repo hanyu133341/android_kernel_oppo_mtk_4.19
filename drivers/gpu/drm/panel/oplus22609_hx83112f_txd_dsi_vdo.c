@@ -64,6 +64,7 @@ static void cabc_switch(void *dsi, dcs_write_gce cb,
 /* #endif */
 static int backlight_gamma = 0;
 extern int g_shutdown_flag;
+static int dimming_on = 0;
 
 
 struct lcm {
@@ -242,6 +243,8 @@ static void lcm_panel_init(struct lcm *ctx)
 	pr_info("SYQ %s+\n", __func__);
 	lcm_dcs_write_seq_static(ctx, 0xB9, 0x83, 0x11, 0x2F);
 	lcm_dcs_write_seq_static(ctx, 0xB1, 0x40,0x27,0x27,0x80,0x80,0xAA,0xA6,0x2A,0x26,0x06,0x06);
+	lcm_dcs_write_seq_static(ctx, 0xBD, 0x01);
+	lcm_dcs_write_seq_static(ctx, 0xB1, 0x9B,0x21,0x81,0x09);
 	lcm_dcs_write_seq_static(ctx, 0xBD, 0x02);
 	lcm_dcs_write_seq_static(ctx, 0xB1, 0x2D,0x2D);
 	lcm_dcs_write_seq_static(ctx, 0xBD, 0x00);
@@ -348,9 +351,9 @@ static int lcm_panel_poweron(struct drm_panel *panel)
 	devm_gpiod_put(ctx->dev, ctx->ldo_1v8);
 	usleep_range(3000, 3010);
 
-	_20015_lcm_i2c_write_bytes(0x0, 0x14);
+	_20015_lcm_i2c_write_bytes(0x0, 0x12);
 	usleep_range(1000, 1010);
-	_20015_lcm_i2c_write_bytes(0x1, 0x14);
+	_20015_lcm_i2c_write_bytes(0x1, 0x12);
 	usleep_range(1000, 1010);
 
 	ctx->bias_pos = devm_gpiod_get_index(ctx->dev,
@@ -484,7 +487,7 @@ static int lcm_prepare(struct drm_panel *panel)
 	usleep_range(50 * 1000, 50 * 1000 + 10);
 
 	lcm_panel_init(ctx);
-
+	dimming_on = 0;
 	ret = ctx->error;
 	if (ret < 0)
 		lcm_unprepare(panel);
@@ -522,28 +525,28 @@ static int lcm_enable(struct drm_panel *panel)
 #define HAC (1080)
 
 static struct drm_display_mode default_mode = {
-	.clock = 263802,
+	.clock = 261609,
 	.hdisplay = HAC,
 	.hsync_start = HAC + 30,//HFP
-	.hsync_end = HAC + 30 + 12,//HSA
-	.htotal = HAC + 30 + 12 + 20,//HBP
+	.hsync_end = HAC + 30 + 34,//HSA
+	.htotal = HAC + 30 + 34 + 34,//HBP
 	.vdisplay = VAC,
-	.vsync_start = VAC + 1412,//VFP
-	.vsync_end = VAC + 1412 + 15,//VSA
-	.vtotal = VAC + 1412 + 15 + 15,//VBP
+	.vsync_start = VAC + 1380,//VFP
+	.vsync_end = VAC + 1380 + 15,//VSA
+	.vtotal = VAC + 1380 + 15 + 15,//VBP
 	.vrefresh = 60,
 };
 
 static struct drm_display_mode performance_mode = {
-	.clock = 263733,
+	.clock = 266746,
 	.hdisplay = HAC,
 	.hsync_start = HAC + 30,//HFP
-	.hsync_end = HAC + 30 + 12,//HSA
-	.htotal = HAC + 30 + 12 + 20,//HBP
+	.hsync_end = HAC + 30 + 34,//HSA
+	.htotal = HAC + 30 + 34 + 34,//HBP
 	.vdisplay = VAC,
-	.vsync_start = VAC + 128,//VFP
-	.vsync_end = VAC + 128 + 15,//VSA
-	.vtotal = VAC + 128	+ 15 + 15,//VBP
+	.vsync_start = VAC + 78,//VFP
+	.vsync_end = VAC + 78 + 15,//VSA
+	.vtotal = VAC + 78	+ 15 + 15,//VBP
 	.vrefresh = 90,
 };
 
@@ -565,19 +568,20 @@ static struct mtk_panel_params ext_params = {
 	.dyn = {
 		.switch_en = 1,
 		.hsa = 12,
-		.hbp = 16,
-		.hfp = 16,
-		.vfp = 1336,
+		.hbp = 20,
+		.hfp = 30,
+		.vfp = 1380,
 		.vfp_lp_dyn = 2592,
 		.pll_clk = 520,
 	},
 	.phy_timcon = {
-		.hs_zero = 17,
-		.hs_trail = 32,
-		.clk_hs_prpr = 50,
+		.hs_zero = 29,
+		.hs_prpr = 10,
 	},
 	.oplus_display_global_dre = 1,
 	//.oplus_teot_ns_multiplier = 90,
+	.physical_width_um = 68430,
+	.physical_height_um = 152570,
 };
 
 static struct mtk_panel_params ext_params_90hz = {
@@ -597,18 +601,19 @@ static struct mtk_panel_params ext_params_90hz = {
 	.dyn = {
 		.switch_en = 1,
 		.hsa = 12,
-		.hbp = 16,
-		.hfp = 16,
+		.hbp = 20,
+		.hfp = 30,
 		.vfp = 78,
 		.vfp_lp_dyn = 2592,
 		.pll_clk = 520,
 	},
 	.phy_timcon = {
-		.hs_zero = 17,
-		.hs_trail = 32,
-		.clk_hs_prpr = 50,
+		.hs_zero = 29,
+		.hs_prpr = 10,
 	},
 	.oplus_display_global_dre = 1,
+	.physical_width_um = 68430,
+	.physical_height_um = 152570,
 };
 
 static int map_exp[4096] = {0};
@@ -654,7 +659,7 @@ static int lcm_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	cb(dsi, handle, bl_tb0, ARRAY_SIZE(bl_tb0));*/
 
 	char bl_tb0[] = {0x51, 0x0F, 0xFF, 0x00};
-	//char bl_tb2[] = {0xFF, 0x98, 0x83, 0x00};
+	char bl_tb1[] = {0x53, 0x24};
 	char bl_tb3[] = {0x53, 0x2C};
 #if 0
 	char bl_tb4[] = {0xFF,0x98,0x82,0x08};
@@ -690,8 +695,15 @@ static int lcm_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	esd_brightness = level;
 	if (!cb)
 		return -1;
-	if (last_brightness == 0)
+	if (dimming_on == 1) {
+		cb(dsi, handle, bl_tb3, ARRAY_SIZE(bl_tb3));
+		dimming_on = 0;
+	}
+	if (last_brightness == 0 || level == 0) {
+		cb(dsi, handle, bl_tb1, ARRAY_SIZE(bl_tb1));
 		usleep_range(31000, 31010);
+		dimming_on = 1;
+	}
 	pr_err("%s SYQ bl_tb0[1]=%x, bl_tb0[2]=%x\n", __func__, bl_tb0[1], bl_tb0[2]);
 	//cb(dsi, handle, bl_tb2, ARRAY_SIZE(bl_tb2));
 	cb(dsi, handle, bl_tb0, ARRAY_SIZE(bl_tb0));
@@ -775,11 +787,11 @@ static void cabc_switch(void *dsi, dcs_write_gce cb,
 		void *handle, unsigned int cabc_mode)
 {
 	char bl_tb0[] = {0x55, 0x00};
-	char bl_tb3[] = {0x53, 0x2C};
+	//char bl_tb3[] = {0x53, 0x2C};
 	pr_err("%s cabc = %d\n", __func__, cabc_mode);
 	bl_tb0[1] = (u8)cabc_mode;
     usleep_range(5000, 5010);
-	cb(dsi, handle, bl_tb3, ARRAY_SIZE(bl_tb3));//FB 01
+	//cb(dsi, handle, bl_tb3, ARRAY_SIZE(bl_tb3));//FB 01
 	cb(dsi, handle, bl_tb0, ARRAY_SIZE(bl_tb0));//55 0X
 /* #ifdef OPLUS_BUG_STABILITY */
 	cabc_lastlevel = cabc_mode;
@@ -858,8 +870,8 @@ static int lcm_get_modes(struct drm_panel *panel)
 	drm_mode_set_name(mode2);
 	mode2->type = DRM_MODE_TYPE_DRIVER;
 	drm_mode_probed_add(panel->connector, mode2);
-	panel->connector->display_info.width_mm = 68;
-	panel->connector->display_info.height_mm = 153;
+	//panel->connector->display_info.width_mm = 68;
+	//panel->connector->display_info.height_mm = 153;
 
 	return 1;
 }

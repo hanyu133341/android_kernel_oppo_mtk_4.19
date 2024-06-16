@@ -712,4 +712,4 @@ late_initcall(opluscustom_init);
 
 MODULE_DESCRIPTION("OPLUS custom version");
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Joshua");
+MODULE_AUTHOR("Joshua <gyx@oplus.com>");

@@ -1690,7 +1690,7 @@
 		tfa_max_range = <8500>;
 		speaker_type = <2>;
 		status = "okay";
-		oplus,tfa98xx-dual-spk = <0>;
+		oppo,tfa98xx-dual-spk = <0>;
 	};
 };
 &snd_audio_dsp {
@@ -1818,7 +1818,7 @@
 	pinctrl-0 = <&gpio_id0_default>;
 	goodix_optical {
 		oplus,fp-id = <1>; /* fp id mapping table */
-		vendor-chip = <11>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <11>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "G_OPTICAL_G3";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};

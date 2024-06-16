@@ -695,7 +695,7 @@ struct replace_partition_tbl {
 	char *new_name;
 };
 static struct replace_partition_tbl tbl[] = {
-//	{"oplus_sec", "oplus_sec"},
+//	{"oppo_sec", "oplus_sec"},
 //	{"oppodycnvbk","oplusdycnvbk"},
 //	{"oppostanvbk", "oplusstanvbk"},
 	{"opporeserve1", "oplusreserve1"},
@@ -704,7 +704,7 @@ static struct replace_partition_tbl tbl[] = {
 	{"opporeserve4", "oplusreserve4"},
 	{"opporeserve5", "oplusreserve5"},
 	{"opporeserve6", "oplusreserve6"},
-	{"oplus_custom", "oplus_custom"},
+	{"oppo_custom", "oplus_custom"},
 };
 
 static void oplus_replace_partition_name(char *name)

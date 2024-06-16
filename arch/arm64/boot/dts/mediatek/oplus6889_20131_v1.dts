@@ -956,6 +956,14 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 	vooc_ap_data_new_function:vooc_ap_data_new_function {
 		compatible = "mediatek, VOOC_EINT_NEW_FUNCTION";
 	};
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <65000>;
+		track,wired_fast_chg_scheme = <1>;
+	};
 };
 
 &i2c7 {
@@ -1168,7 +1176,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;		//check
 			slew-rate = <1>;							//0:input direction 1:output direction
-			bias-pull-up;
+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
 			output-high;
 		};
 	};
@@ -1177,7 +1185,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;		//check
 			slew-rate = <1>;
-			bias-pull-down = <00>;
+			bias-pull-down = <MTK_PUPD_SET_R1R0_01>;
 			output-low;
 		};
 	};
@@ -1842,10 +1850,10 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
                 				20131 20133 20255 20257>;
 		platform_support_project_dir = <20131 20131 20131 20131
                 				20131 20131 20131 20131>;
-		platform_support_project_commandline = "20131_boe_nt37800_1080p_dsi_cmd","20131_boe_nt37800_1080p_dsi_cmd",
-							"20131_boe_nt37800_1080p_dsi_cmd","20131_boe_nt37800_1080p_dsi_cmd",
-							"20131_tianma_nt37701","20131_tianma_nt37701",
-                                                        "20131_tianma_nt37701","20131_tianma_nt37701";
+		platform_support_project_commandline = "oppo20131_boe_nt37800_1080p_dsi_cmd","oppo20131_boe_nt37800_1080p_dsi_cmd",
+                					"oppo20131_boe_nt37800_1080p_dsi_cmd","oppo20131_boe_nt37800_1080p_dsi_cmd",
+							"oppo20131_tianma_nt37701","oppo20131_tianma_nt37701",
+                                                        "oppo20131_tianma_nt37701","oppo20131_tianma_nt37701";
 
 		prevention,curved_screen_V2;
 		prevention,grip_disable_level = <6>;
@@ -1940,7 +1948,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
                 report_rate_limit = <60>;
                 platform_support_project = <20131 20133 20255 20257>;
         	platform_support_project_dir = <20131 20131 20131 20131>;
-                platform_support_project_commandline = "20131_samsung_ana6705_1080p_dsi_cmd","20131_samsung_ana6705_1080p_dsi_cmd","20131_samsung_ana6705_1080p_dsi_cmd","20131_samsung_ana6705_1080p_dsi_cmd";
+                platform_support_project_commandline = "oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd","oppo20131_samsung_ana6705_1080p_dsi_cmd";
 
 		prevention,curved_screen_V2;
 		prevention,grip_disable_level = <6>;

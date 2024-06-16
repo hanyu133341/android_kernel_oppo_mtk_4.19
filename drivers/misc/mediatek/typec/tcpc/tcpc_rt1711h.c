@@ -174,6 +174,8 @@ enum LOGIC_CC_ID
 };
 static int logic_cc_id;
 
+extern int register_device_proc(char *name, char *version, char *vendor);
+
 static int rt1711_read_device(void *client, u32 reg, int len, void *dst)
 {
 	struct i2c_client *i2c = client;
@@ -784,10 +786,14 @@ static int rt1711_tcpc_init(struct tcpc_device *tcpc, bool sw_reset)
 	rt1711_i2c_write8(tcpc, RT1711H_REG_DRP_TOGGLE_CYCLE, 4);
 	rt1711_i2c_write16(tcpc,
 		RT1711H_REG_DRP_DUTY_CTRL, TCPC_NORMAL_RP_DUTY);
-
-	/* Vconn OC */
-	rt1711_i2c_write8(tcpc, RT1711H_REG_VCONN_CLIMITEN, 1);
-
+#ifdef OPLUS_FEATURE_CHG_BASIC
+	/**
+	 *Vconn OC Mode
+	 *0:close Vconn output/default value
+	 *1:current limit/There is a risk of burning
+	 *rt1711_i2c_write8(tcpc, RT1711H_REG_VCONN_CLIMITEN, 1);
+	 */
+#endif
 	/* RX/TX Clock Gating (Auto Mode)*/
 	if (!sw_reset)
 		rt1711h_set_clock_gating(tcpc, true);
@@ -1604,6 +1610,34 @@ static inline int rt1711h_check_revision(struct i2c_client *client)
 	return did;
 }
 
+static void register_typec_devinfo(void)
+{
+#ifndef CONFIG_DISABLE_OPLUS_FUNCTION
+	int ret = 0;
+	char *version;
+	char *manufacture;
+
+	switch (logic_cc_id) {
+	case RT1711:
+		version = "rt1711h";
+		manufacture = "Richtek Technology";
+		break;
+	case ET7303:
+		version = "et7303";
+		manufacture = "Etek Microelectronics";
+		break;
+	default:
+		version = "unknown";
+		manufacture = "UNKNOWN";
+		break;
+	}
+
+	ret = register_device_proc("typec", version, manufacture);
+	if (ret)
+		pr_err("register_typec_devinfo fail\n");
+#endif
+}
+
 static int rt1711_i2c_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
@@ -1649,6 +1683,8 @@ static int rt1711_i2c_probe(struct i2c_client *client,
 
 	chip->chip_id = chip_id;
 	pr_info("rt1711h_chipID = 0x%0x\n", chip_id);
+
+	register_typec_devinfo();
 
 	ret = rt1711_regmap_init(chip);
 	if (ret < 0) {

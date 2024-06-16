@@ -3959,8 +3959,8 @@ static ssize_t store_FG_daemon_log_level(
 				val
 			);
 
-			gm.d_log_level = val;
-			gm.log_level = val;
+			gm.d_log_level = 0;
+			gm.log_level = 0;
 		}
 		if (val >= 7)
 			gauge_coulomb_set_log_level(3);
@@ -4838,7 +4838,7 @@ int oplus_battery_get_bat_temperature(void)
     if(is_fuelgauge_apply() == false){
         return oplus_gauge_get_batt_temperature()/10;
     }
-	if (prj_for_mtk_60w_support() == true) {
+	if (prj_for_mtk_60w_support() == true && prj_is_subboard_temp_support()) {
 		return oplus_chg_get_subboard_temp_cal();
 	}
    /* TODO */
@@ -4847,7 +4847,12 @@ int oplus_battery_get_bat_temperature(void)
 		force_get_tbat(true);
 		return bat_temperature_high_precision_val;
 #else
+	if (get_project() == 21081) {
+		force_get_tbat(true);
+		return gm.tbat_precise;
+	} else {
 		return force_get_tbat(true);
+	}
 #endif
 	} else {
 		if(gm.pbat_consumer->support_ntc_01c_precision)
@@ -4912,7 +4917,7 @@ static int meter_fg_30_get_battery_temperature(void)
 	return ret;
 #else
 	ret = oplus_battery_get_bat_temperature();
-	if (prj_for_mtk_60w_support() == true || get_project() == 21081) {
+	if ((prj_for_mtk_60w_support() == true && prj_is_subboard_temp_support()) || get_project() == 21081) {
 			return ret;
 	}
 	return ret * 10;

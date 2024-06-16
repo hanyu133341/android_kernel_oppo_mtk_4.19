@@ -702,6 +702,7 @@
 	/* moisture of water resister ohm, SW mode by auxadc*/
 	moisture-water-r = <10000>;
 	/* moisture SW mode config end */
+        //#endif /* VENDOR_EDIT */
 	status = "okay";
 };
 /* accdet end */
@@ -777,6 +778,262 @@
 		compatible = "mediatek,vibrator";
 	};
 
+	gsensor_1: gsensor_1 {
+		status = "okay";
+		sensor_name = <8>;//SC7A20
+		device_name = "sc7a20";
+		i2c_num = <2>;
+		i2c_addr = <0>;
+		direction = <2>;
+		eint_num = <3>;
+		gyro_cali_version= <2>;
+		acc_cali_range= <300 300 300>; //300mg
+		device_id = <1>; //0 sc7a20,1 sc7a20e
+	};
+	gsensor_2: gsensor_2 {
+		status = "okay";
+		sensor_name = <12>;//BMA2X2
+		device_name = "bma2x2";
+		i2c_num = <2>;
+		i2c_addr = <0>;
+		direction = <3>;
+		eint_num = <3>;
+		gyro_cali_version= <2>;
+		acc_cali_range= <300 300 300>; //300mg
+	};
+	gsensor_3: gsensor_3 {
+		status = "okay";
+		sensor_name = <13>;//MC34X9
+		device_name = "mc34x9";
+		i2c_num = <2>;
+		i2c_addr = <0>;
+		direction = <3>;
+		eint_num = <3>;
+		gyro_cali_version= <2>;
+		acc_cali_range= <300 300 300>; //300mg
+		device_id = <1>; //0 sc7a20,1 sc7a20e
+	};
+	gsensor_4: gsensor_4 {
+		status = "okay";
+		sensor_name = <14>;//STK8XXX
+		device_name = "stk8xxx";
+		i2c_num = <2>;
+		i2c_addr = <0>;
+		direction = <3>;
+		eint_num = <3>;
+		gyro_cali_version= <2>;
+		acc_cali_range= <300 300 300>; //300mg
+	};
+	/*
+	enum {
+		AKM09911,
+		MMC3530,
+		MMC5603,
+		MXG4300,
+		QMC6308,
+	};
+	*/
+	msensor_1: msensor_1 {
+		status = "okay";
+		sensor_name = <2>;//MMC5603
+		i2c_num = <0>;
+		i2c_addr = <48>;
+		direction = <0>;
+		eint_num = <0>;
+		soft-mag-parameter = <9771 0 968 0 745 0 2057 0 12127 0 596 1 500 1 61 0 12550 0>;
+	};
+	msensor_2: msensor_2 {
+		status = "okay";
+		sensor_name = <4>;//QMC6308
+		i2c_num = <0>;
+		i2c_addr = <44>;
+		direction = <0>;
+		eint_num = <0>;
+		soft-mag-parameter = <10000 0 0 0 0 0 0 0 10000 0 0 0 0 0 0 0 10000 0>;
+	};
+	/*
+	enum {
+		SX933x,
+		SX933xs,
+		AW9610X,
+	};
+	*/
+	sar_1: sar_1 {
+		status = "okay";
+		sensor_name = <2>;//AW9610X
+		i2c_num = <0>;
+		i2c_addr = <0x12>;
+		direction = <0>;
+		eint_num = <11>;
+		channel_num = <3>;
+		channel_0_min = <0>;
+		channel_0_max = <70000>;
+		channel_1_min = <0>;
+		channel_1_max = <70000>;
+		channel_2_min = <0>;
+		channel_2_max = <70000>;
+		channel_3_min = <0>;
+		channel_3_max = <70000>;
+		reg_table_num = <0>;
+	};
+	sar_2: sar_2 {
+		status = "okay";
+		sensor_name = <0>;//SX933x
+		i2c_num = <0>;
+		i2c_addr = <0x28>;
+		direction = <0>;
+		eint_num = <11>;
+		channel_num = <3>;
+		channel_0_min = <0>;
+		channel_0_max = <70000>;
+		channel_1_min = <0>;
+		channel_1_max = <70000>;
+		channel_2_min = <0>;
+		channel_2_max = <70000>;
+		channel_3_min = <0>;
+		channel_3_max = <70000>;
+		reg_table_num = <7>;
+	};
+	/*
+	enum {
+		TMD2725,
+		APSD9922,
+		STK3335,
+		STK3331,
+		STK2232,
+		TCS3701,
+		STK32600,
+		STK33502,
+		MN78911,
+		TMD2755x12,
+	};
+	*/
+	proximity_1: proximity_1 {
+		status = "okay";
+		sensor_name = <7>;//STK33502
+		i2c_num = <0>;
+		i2c_addr = <0x46>;
+		direction = <4>;
+		eint_num = <3>;
+		low_step = <300>;
+		high_step = <400>;
+		low_limit = <650>;
+		high_limit = <1050>;
+		dirty_low_step = <200>;
+		dirty_high_step = <300>;
+		ps_dirty_limit = <2000>;
+		ps_ir_limit = <2000>;
+		ps_adjust_min = <0>;
+		ps_adjust_max = <1850>;
+		sampling_count = <5>;
+		step_max = <400>;
+		step_min = <100>;
+		step_div = <2000>;
+		anti_shake_delta = <70>;
+		dynamic_cali_max = <5000>;
+		raw2offset_radio = <1000>;
+		offset_max = <60000>;
+		offset_range_min = <0>;
+		offset_range_max = <65534>;
+		force_cali_limit = <2000>;
+		cali_jitter_limit = <30>;
+		cal_offset_margin = <3000>;
+		sensor-reg = <0x01 0x33>;
+	};
+	proximity_2: proximity_2 {
+		status = "okay";
+		sensor_name = <9>;//TMD2755x12
+		i2c_num = <0>;
+		i2c_addr = <0x39>;
+		direction = <4>;
+		eint_num = <2>;
+		low_step = <200>;
+		high_step = <300>;
+		low_limit = <400>;
+		high_limit = <600>;
+		dirty_low_step = <400>;
+		dirty_high_step = <600>;
+		ps_dirty_limit = <1023>;
+		ps_ir_limit = <500>;
+		ps_adjust_min = <0>;
+		ps_adjust_max = <600>;
+		sampling_count = <5>;
+		step_max = <400>;
+		step_min = <100>;
+		step_div = <1500>;
+		anti_shake_delta = <100>;
+		dynamic_cali_max = <1024>;
+		raw2offset_radio = <24000>;
+		offset_max = <250>;
+		offset_range_min = <255>;
+		offset_range_max = <255>;
+		force_cali_limit = <2000>;
+		cali_jitter_limit = <30>;
+		cal_offset_margin = <120>;
+		is_use_force_cali = <1>;
+		ps_int_enable = <0>;
+	};
+	light_1: light_1 {
+		status = "okay";
+		sensor_name = <7>;//STK33502
+		i2c_num = <0>;
+		i2c_addr = <0x46>;
+		direction = <4>;
+		eint_num = <3>;
+		als_buffer_length =<8>;
+		als_ratio = <90>;
+		als_type = <1>;//<1-normal;2-under screen;3-normal needed compensation>
+		device_name = "stk33502";
+		als_spectral_coefficient = <1>;
+		coefficient_mode = <6>; //6x coefficient mode
+		als_coef_a = <8500>; //*100
+		als_coef_b = <39500>; //*100
+		als_coef_c = <4300>; //*100
+		als_coef_d = <14300>; //*100
+		als_coef_e = <10000>; //*100
+		als_coef_ratio = <70>;
+	};
+	light_2: light_2 {
+		status = "okay";
+		sensor_name = <9>;//TMD2755x12
+		i2c_num = <0>;
+		i2c_addr = <0x39>;
+		direction = <4>;
+		eint_num = <2>;
+		als_buffer_length =<8>;
+		als_ratio = <90>;
+		als_type = <1>;//<1-normal;2-under screen;3-normal needed compensation>
+		device_name = "tmd2755x12";
+		als_spectral_coefficient = <0x08>;
+		als_coef_a = <3575>;
+		als_coef_b = <1291>;
+		als_coef_c = <1548>;
+		als_coef_d = <141>; //*1000
+		als_coef_e = <100>; //*1000
+		als_coef_ratio = <602>; //*1000
+		offset_gain = <200>; //*1000
+		scale_gain = <600>; //*1000
+		lux_revocer = <1000>; //*1000
+		esd_gpio_offset = <0x150>;
+		esd_gpio_bit = <17>;
+		esd_gpio_use = <1>; //default must 0
+	};
+	cali_arch: cali_arch {
+		status = "okay";
+		new-arch-supported = <1>;
+	};
+	pick_up: pick_up {
+		status = "okay";
+		use-proximity = <1>;
+	};
+	lux_aod: lux_aod {
+		status = "okay";
+		use-proximity = <1>;
+	};
+	alsps_arch: alsps_arch {
+		status = "okay";
+		new-arch-supported = <1>;
+	};
     oplus_sim_detect {
         compatible = "oplus, sim_detect";
         Hw,sim_det = <&pio 77 0x00>;
@@ -1235,11 +1492,19 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 /* FINGERPRINT end */
 //#endif /*OPLUS_FEATURE_FINGERPRINT*/
 
-#include "mediatek/cust_mt6833_camera_22609.dtsi"
-#include <oplus6833_22609/cust.dtsi>
+#include "mediatek/cust_mt6833_camera_22669.dtsi"
+#include <oplus6833_22669/cust.dtsi>
 
 //#ifdef OPLUS_FEATURE_CHG_BASIC
 #include "mediatek/oplus_charge_mt6833_2260B.dtsi"
 //#endif
-
+&mmc1 {
+    cd-gpios = <&pio 4 0>;
+    status = "okay";
+    vmmc-supply = <&mt_pmic_vmch_ldo_reg>;
+};
+&mt6360_ldo {
+	sdcard_det_en = <1>;
+	sdcard_hlact = <0>;
+};
 /*End of this file, DO NOT ADD ANYTHING HERE*/

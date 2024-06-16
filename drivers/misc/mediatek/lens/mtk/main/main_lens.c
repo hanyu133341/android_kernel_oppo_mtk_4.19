@@ -247,7 +247,7 @@ static struct pinctrl *af_pinctrl;
 static struct pinctrl_state *af_hwen_high;
 static struct pinctrl_state *af_hwen_low;
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
-#if defined(CONFIG_MACH_MT6853) || defined(CONFIG_MACH_MT6873)
+#if defined(CONFIG_MACH_MT6853) || defined(CONFIG_MACH_MT6873) || defined(CONFIG_MACH_MT6779)
 extern struct regulator *regulator_get_regVCAMAF(void);
 #endif /* CONFIG_MACH_MT6853 */
 #endif /* OPLUS_FEATURE_CAMERA_COMMON */
@@ -371,7 +371,7 @@ void AFRegulatorCtrl(int Stage)
     }
 
 
-	if (is_project(22693) || is_project(22694) || is_project(22612)) {
+	if (is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)) {
 		Other_AFRegulatorCtrl(Stage);
 		return;
 	}
@@ -531,7 +531,7 @@ void AFRegulatorCtrl(int Stage)
 	}
 #endif
 #else
-	LOG_INF("AFIOC_S_SETPOWERCTRL regulator_put %p\n", regVCAMAF);
+	LOG_INF("AFIOC_S_SETPOWERCTRL regulator_put %p, stage: %d\n", regVCAMAF, Stage);
 
 	if (Stage == 0) {
 		if (regVCAMAF == NULL) {
@@ -649,7 +649,7 @@ void AFRegulatorCtrl(int Stage)
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
 void Other_AFRegulatorCtrl(int Stage)
 {
-	LOG_INF("AFIOC_S_SETPOWERCTRL regulator_put %p\n", regVCAMAF);
+	LOG_INF("AFIOC_S_SETPOWERCTRL regulator_put %p, stage: %d\n", regVCAMAF, Stage);
 
 	if (Stage == 0) {
 		if (regVCAMAF == NULL) {
@@ -710,7 +710,7 @@ void Other_AFRegulatorCtrl(int Stage)
 				lens_device->of_node = kd_node;
 			}
                         #else /* OPLUS_FEATURE_CAMERA_COMMON */
-                            #if defined(CONFIG_MACH_MT6853) || defined(CONFIG_MACH_MT6873)
+                            #if defined(CONFIG_MACH_MT6853) || defined(CONFIG_MACH_MT6873) || defined(CONFIG_MACH_MT6779)
                             if (is_project(20075) || is_project(20076) || is_project(20041) || is_project(20042) || is_project(20043)) {
                                 LOG_INF("project 20075,20076.\n");
                                 regVCAMAF = regulator_get_regVCAMAF();
@@ -730,7 +730,7 @@ void Other_AFRegulatorCtrl(int Stage)
                             #else /* CONFIG_MACH_MT6853 */
                             if (is_project(0x2169E) || is_project(0x2169F) || is_project(0x216C9) || is_project(0x216CA)) {
                                 regVCAMAF = regulator_get(lens_device, "VFP");
-                            } else if (is_project(22693) || is_project(22694) || is_project(22612)) {
+                            } else if (is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)) {
                                 regVCAMAF = regulator_get(lens_device, "VFP");
                             } else if (is_project(22603) || is_project(22604) || is_project(22609)) {
                                 LOG_INF("project BLADE,\n");

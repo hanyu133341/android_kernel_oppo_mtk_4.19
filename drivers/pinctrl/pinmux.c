@@ -504,13 +504,13 @@ void pinmux_disable_setting(const struct pinctrl_setting *setting)
 				 "used for some other setting",
 				 pins[i], desc->name, gname);
 #else
-			if (printk_ratelimit()) {
+			/*if (printk_ratelimit()) {
 				dev_warn(pctldev->dev,
 					"not freeing pin %d (%s) as part of "
 					"deactivating group %s - it is already "
 					"used for some other setting",
 					pins[i], desc->name, gname);
-			}
+			}*/
 #endif
 		}
 	}

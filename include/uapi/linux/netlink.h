@@ -37,7 +37,7 @@
 #endif /*OPLUS_FEATURE_HANS_FREEZE*/
 
 //#ifdef OPLUS_FEATURE_THEIA
-//should match with oplus_theia/include/TheiaKeventThread.h define
+//should match with oppo_theia/include/TheiaKeventThread.h define
 #define OPLUS_NETLINK_THEIA_KEVENT 43
 //#endif /* OPLUS_FEATURE_THEIA */
 

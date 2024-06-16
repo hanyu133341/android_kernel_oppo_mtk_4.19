@@ -1,8 +1,8 @@
 /***************************************************************
 ** Copyright (C),  2020,  OPLUS Mobile Comm Corp.,  Ltd
 ** OPLUS_BUG_STABILITY
-** File : oplus_display_common.c
-** Description : oplus common feature
+** File : oppo_display_common.c
+** Description : oppo common feature
 ** Version : 1.0
 ** Date : 2020/07/1
 **
@@ -10,8 +10,8 @@
 **  <author>        <data>        <version >        <desc>
 **  JianBin.Zhang   2020/07/01        1.0           Build this moudle
 ******************************************************************/
-#ifndef _OPLUS_DISPLAY_COMMON_H_
-#define _OPLUS_DISPLAY_COMMON_H_
+#ifndef _OPPO_DISPLAY_COMMON_H_
+#define _OPPO_DISPLAY_COMMON_H_
 
 #include <oplus_display_private_api.h>
 
@@ -26,4 +26,4 @@ int oplus_display_get_brightness(void *buf);
 int oplus_display_set_brightness(void *buf);
 int oplus_display_panel_set_cabc(void *buf);
 int oplus_display_panel_get_cabc(void *buf);
-#endif /*_OPLUS_DISPLAY_COMMON_H_*/
+#endif /*_OPPO_DISPLAY_COMMON_H_*/

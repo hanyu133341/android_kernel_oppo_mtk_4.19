@@ -340,6 +340,7 @@ struct mtk_panel_params {
 	bool oplus_osc_hoping_fps_switch;
 /*#endif*/
 	bool oplus_panel_use_rgb_gain;
+	bool oplus_bypass_color_flag;
 };
 
 struct mtk_panel_ext {

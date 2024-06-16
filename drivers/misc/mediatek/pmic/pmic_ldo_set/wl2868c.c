@@ -19,7 +19,7 @@
 #include <linux/printk.h>
 #include <mach/upmu_hw.h>
 #include <mt-plat/upmu_common.h>
-#include <soc/oplus/system/oplus_project.h>
+#include <soc/oplus/system/oppo_project.h>
 #include <soc/oplus/device_info.h>
 #endif
 

@@ -8202,7 +8202,7 @@ int _set_gamma_mode_by_cmdq(unsigned int gamma_flag)
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_cmd, MMPROFILE_FLAG_PULSE, 1, 2);
 		cmdqRecReset(cmdq_handle_lcm_cmd);
 
-			disp_lcm_oplus_set_lcm_gamma_cmd(pgc->plcm, cmdq_handle_lcm_cmd, gamma_flag);
+			disp_lcm_oppo_set_lcm_gamma_cmd(pgc->plcm, cmdq_handle_lcm_cmd, gamma_flag);
 
 		_cmdq_flush_config_handle_mira(cmdq_handle_lcm_cmd, 1);
 		DISPCHECK("[CMD]_set_gamma_mode_by_cmdq is_video_mode ret=%d\n", ret);
@@ -8212,7 +8212,7 @@ int _set_gamma_mode_by_cmdq(unsigned int gamma_flag)
 		_cmdq_handle_clear_dirty(cmdq_handle_lcm_cmd);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_lcm_cmd);
 
-		disp_lcm_oplus_set_lcm_gamma_cmd(pgc->plcm, cmdq_handle_lcm_cmd, gamma_flag);
+		disp_lcm_oppo_set_lcm_gamma_cmd(pgc->plcm, cmdq_handle_lcm_cmd, gamma_flag);
 		cmdqRecSetEventToken(cmdq_handle_lcm_cmd, CMDQ_SYNC_TOKEN_CONFIG_DIRTY);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_cmd, MMPROFILE_FLAG_PULSE, 1, 4);
 		_cmdq_flush_config_handle_mira(cmdq_handle_lcm_cmd, 1);
@@ -8702,7 +8702,7 @@ int _set_cabc_mode_by_cmdq(unsigned int level)
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_cmd, MMPROFILE_FLAG_PULSE, 1, 2);
 		cmdqRecReset(cmdq_handle_lcm_cmd);
 			_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_lcm_cmd);
-			disp_lcm_oplus_set_lcm_cabc_cmd(pgc->plcm, cmdq_handle_lcm_cmd, level);
+			disp_lcm_oppo_set_lcm_cabc_cmd(pgc->plcm, cmdq_handle_lcm_cmd, level);
 
 		_cmdq_flush_config_handle_mira(cmdq_handle_lcm_cmd, 1);
 		DISPCHECK("[CMD]_set_cabc_mode_by_cmdq is_video_mode ret=%d\n", ret);
@@ -8712,7 +8712,7 @@ int _set_cabc_mode_by_cmdq(unsigned int level)
 		_cmdq_handle_clear_dirty(cmdq_handle_lcm_cmd);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_lcm_cmd);
 
-		disp_lcm_oplus_set_lcm_cabc_cmd(pgc->plcm, cmdq_handle_lcm_cmd, level);
+		disp_lcm_oppo_set_lcm_cabc_cmd(pgc->plcm, cmdq_handle_lcm_cmd, level);
 		cmdqRecSetEventToken(cmdq_handle_lcm_cmd, CMDQ_SYNC_TOKEN_CONFIG_DIRTY);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_cmd, MMPROFILE_FLAG_PULSE, 1, 4);
 		_cmdq_flush_config_handle_mira(cmdq_handle_lcm_cmd, 1);
@@ -10565,32 +10565,32 @@ void primary_display_dynfps_get_vfp_info(
 }
 /*-----------------DynFPS end-------------------------------*/
 #endif
-void oplus_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle)
+void oppo_cmdq_handle_clear_dirty(struct cmdqRecStruct *cmdq_handle)
 {
 	_cmdq_handle_clear_dirty(cmdq_handle);
 }
 
-void oplus_cmdq_flush_config_handle_mira(void *handle, int blocking)
+void oppo_cmdq_flush_config_handle_mira(void *handle, int blocking)
 {
 	_cmdq_flush_config_handle_mira(handle,blocking);
 }
 
-void oplus_delayed_trigger_kick_set(int params)
+void oppo_delayed_trigger_kick_set(int params)
 {
 	atomic_set(&delayed_trigger_kick, params);
 }
 
-enum DISP_POWER_STATE oplus_primary_set_state(enum DISP_POWER_STATE new_state)
+enum DISP_POWER_STATE oppo_primary_set_state(enum DISP_POWER_STATE new_state)
 {
 	 return primary_set_state(new_state);
 }
 
-void oplus_cmdq_reset_config_handle(void)
+void oppo_cmdq_reset_config_handle(void)
 {
 	_cmdq_reset_config_handle();
 }
 
-void oplus_cmdq_build_trigger_loop(void)
+void oppo_cmdq_build_trigger_loop(void)
 {
 	_cmdq_build_trigger_loop();
 }

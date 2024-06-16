@@ -14,7 +14,8 @@
 #include <linux/types.h>
 
 #include "hi556mipiraw_Sensor.h"
-
+#include "imgsensor_common.h"
+#include "imgsensor_hwcfg_custom.h"
 #define PFX "hi556_camera_sensor"
 #define LOG_INF(format, args...)    \
 	pr_info(PFX "[%s] " format, __func__, ##args)
@@ -282,6 +283,7 @@ void dumpEEPROMData1(int startAdd, int u4Length,u8* pu1Params)
 #define MODULE_INFO_SIZE 15
 #define AWB_DATA_SIZE 16
 #define LSC_DATA_SIZE 1868
+#define SN_DATA_SIZE 18
 
 //+bug604664, liuxingyu, add, 2020/12/18, add for hi556 eeprom bring up
 #define OTP_SET_ADDR_H 0x010a
@@ -298,6 +300,9 @@ static int awb_data_addr_tbl[MAX_GROUP_NUM] = {0x0421, 0x0C69, 0x14B1};
 
 static int lsc_flag_addr_tbl[MAX_GROUP_NUM] = {0x0B7F, 0x13C8, 0x1C10};
 static int lsc_data_addr_tbl[MAX_GROUP_NUM] = {0x0433, 0x0C7B, 0x14C3};
+
+static int SN_flag_addr_tbl[MAX_GROUP_NUM] = {0x0C47, 0x148F, 0x1CD7};
+static int SN_data_addr_tbl[MAX_GROUP_NUM] = {0x0C35, 0x147D, 0x1CC5};
 //-bug604664, liuxingyu, add, 2020/12/18, add for hi556 eeprom bring up
 
 #define VALID_OTP_FLAG 0x55
@@ -306,6 +311,7 @@ static int lsc_data_addr_tbl[MAX_GROUP_NUM] = {0x0433, 0x0C7B, 0x14C3};
 unsigned char hi556_data_lsc[LSC_DATA_SIZE + 2] = {0};/*Add flag and check sum*/
 unsigned char hi556_data_awb[AWB_DATA_SIZE + 2] = {0};/*Add  flag andcheck sum*/
 unsigned char hi556_data_info[MODULE_INFO_SIZE + 2] = {0};/*Add  flag and check sum*/
+unsigned char hi556_data_SN[SN_DATA_SIZE + 2] = {0};
 unsigned char hi556_module_id = 0;
 unsigned char hi556_lsc_valid = 0;
 unsigned char hi556_awb_valid = 0;
@@ -489,6 +495,56 @@ static int read_hi556_lsc_info(void)
 	}
 }
 
+static int read_hi556_SN_Code(void)
+{
+    int otp_grp_flag = 0, SN_start_addr = 0;
+    int i;
+
+    /* read flag */
+    for(i = 0; i < MAX_GROUP_NUM; i++){
+        write_cmos_sensor_8(OTP_SET_ADDR_H, (SN_flag_addr_tbl[i]>>8)&0xff);
+        write_cmos_sensor_8(OTP_SET_ADDR_L, (SN_flag_addr_tbl[i])&0xff);
+        write_cmos_sensor_8(OTP_RW_FLAG, 0x01);
+        otp_grp_flag = read_cmos_sensor(OTP_READ_FLAG);
+        if (otp_grp_flag == 0x01) {
+            LOG_INF("lsc: group %d selected\n", i);
+            SN_start_addr = SN_data_addr_tbl[i];
+            break;
+        }
+    }
+
+    if (SN_start_addr != 0) {
+        /* read & checksum */
+
+        write_cmos_sensor_8(OTP_SET_ADDR_H, ((SN_start_addr)>>8)&0xff);
+        write_cmos_sensor_8(OTP_SET_ADDR_L, (SN_start_addr)&0xff);
+        write_cmos_sensor_8(OTP_RW_FLAG, 0x01);
+        Oplusimgsensor_Registdeviceinfo(gImgEepromInfo.pCamModuleInfo[IMGSENSOR_SENSOR_IDX_SUB].name,
+                                        gImgEepromInfo.pCamModuleInfo[IMGSENSOR_SENSOR_IDX_SUB].version,
+                                        hi556_data_info[0]);
+        for(i = 0; i < SN_DATA_SIZE + 2; i++)  // add flag and checksum
+        {
+            hi556_data_SN[i] = read_cmos_sensor(OTP_READ_FLAG);
+        }
+
+    #ifdef HI556_OTP_DUMP
+        dumpEEPROMData1(SN_start_addr, SN_DATA_SIZE,&hi556_data_SN[0]);
+    #endif
+        LOG_INF("=== HI556 SN SN_flag=0x%x ===\n", hi556_data_SN[SN_DATA_SIZE]);
+        if (hi556_data_SN[SN_DATA_SIZE] == 0x01) {
+            memcpy(&(gImgEepromInfo.camNormdata[IMGSENSOR_SENSOR_IDX_SUB][8]), hi556_data_SN, SN_DATA_SIZE);
+            gImgEepromInfo.i4CurSensorIdx = IMGSENSOR_SENSOR_IDX_SUB;
+            gImgEepromInfo.i4CurSensorId = imgsensor_info.sensor_id;
+            return 1;
+        } else {
+            LOG_INF("SN is not invalid.");
+            return 0;
+        }
+     } else {
+        return 0;
+    }
+}
+
 static int hi556_sensor_otp_info(void)
 {
 	int ret = 0;
@@ -545,7 +601,7 @@ static int hi556_sensor_otp_info(void)
 	}else{
 		hi556_lsc_valid = 1;
 	}
-
+	ret = read_hi556_SN_Code();
 	/* 4. disable otp function */
 	hi556_disable_otp_func();
 	if(hi556_module_id == 0 || hi556_lsc_valid == 0 || hi556_awb_valid == 0){

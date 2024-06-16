@@ -530,4 +530,4 @@ module_init(oplus_als_cali_data_init);
 module_exit(oplus_als_cali_data_clean);
 MODULE_DESCRIPTION("OPLUS custom version");
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Chao.Zeng");
+MODULE_AUTHOR("Chao.Zeng <zengchao@oplus.com>");

@@ -1,8 +1,8 @@
 /***************************************************************
 ** Copyright (C),  2020,  OPLUS Mobile Comm Corp.,  Ltd
 ** OPLUS_BUG_STABILITY
-** File : oplus_display_alwaysondisplay.h
-** Description : oplus_display_alwaysondisplay. implement
+** File : oppo_display_alwaysondisplay.h
+** Description : oppo_display_alwaysondisplay. implement
 ** Version : 1.0
 ** Date : 2020/05/13
 **
@@ -19,21 +19,21 @@
 #include <soc/oplus/system/oplus_mm_kevent_fb.h>
 #endif /* OPLUS_FEATURE_MM_FEEDBACK */
 #include <linux/delay.h>
-/* #include <soc/oplus/oplus_project.h> */
+/* #include <soc/oppo/oppo_project.h> */
 #include "ddp_dsi.h"
 #include "fbconfig_kdebug.h"
 #include "oplus_display_alwaysondisplay.h"
 /*
- * we will create a sysfs which called /sys/kernel/oplus_display,
- * In that directory, oplus display private api can be called
+ * we will create a sysfs which called /sys/kernel/oppo_display,
+ * In that directory, oppo display private api can be called
  */
 /* #ifdef OPLUS_FEATURE_RAMLESS_AOD */
 extern int primary_display_def_dst_mode;
 extern int primary_display_cur_dst_mode;
 extern unsigned char aod_area_cmd[];
 extern void set_is_dc(unsigned int is_dc);
-extern void oplus_cmdq_reset_config_handle(void);
-extern void oplus_cmdq_build_trigger_loop(void);
+extern void oppo_cmdq_reset_config_handle(void);
+extern void oppo_cmdq_build_trigger_loop(void);
 /* #endif */ /* OPLUS_FEATURE_RAMLESS_AOD */
 
  /*
@@ -47,7 +47,7 @@ int disp_lcm_aod_from_display_on(struct disp_lcm_handle *plcm);
 int disp_lcm_set_aod_mode(struct disp_lcm_handle *plcm, void *handle, unsigned int mode);
 int _set_aod_mode_by_cmdq(unsigned int mode);
 int primary_display_set_aod_mode_nolock(unsigned int mode);
-void oplus_display_aod_backlight(void);
+void oppo_display_aod_backlight(void);
 
 int disp_lcm_aod_from_display_on(struct disp_lcm_handle *plcm)
 {
@@ -117,20 +117,20 @@ int _set_aod_mode_by_cmdq(unsigned int mode)
 			MMPROFILE_FLAG_PULSE, 1, 2);
 		cmdqRecReset(cmdq_handle_aod_mode);
 		ret = disp_lcm_set_aod_mode(pgc->plcm,cmdq_handle_aod_mode,mode);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_aod_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_aod_mode, 1);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_aod_mode);
 		cmdqRecWait(cmdq_handle_aod_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_aod_mode);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_aod_mode);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_aod_mode);
 		ret = disp_lcm_set_aod_mode(pgc->plcm,cmdq_handle_aod_mode,mode);
 		cmdqRecSetEventToken(cmdq_handle_aod_mode, CMDQ_SYNC_TOKEN_CONFIG_DIRTY);
 		cmdqRecSetEventToken(cmdq_handle_aod_mode, CMDQ_SYNC_TOKEN_CABC_EOF);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 4);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_aod_mode, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_aod_mode, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
 			MMPROFILE_FLAG_PULSE, 1, 6);
 	}
@@ -173,7 +173,7 @@ int primary_display_set_aod_mode_nolock(unsigned int mode)
 				_set_aod_mode_by_cmdq(mode);
 			}
 			//atomic_set(&delayed_trigger_kick, 1);
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
@@ -182,7 +182,7 @@ int primary_display_set_aod_mode_nolock(unsigned int mode)
 }
 //#endif
 
-void oplus_display_aod_backlight()
+void oppo_display_aod_backlight()
 {
 	int ret;
 	/* blocking flush before stop trigger loop */
@@ -232,14 +232,14 @@ void oplus_display_aod_backlight()
 	dpmgr_path_power_off(pgc->dpmgr_handle, CMDQ_DISABLE);
 	pgc->lcm_refresh_rate = 60;
 	/* pgc->state = DISP_SLEPT; */
-	oplus_primary_set_state(DISP_SLEPT);
+	oppo_primary_set_state(DISP_SLEPT);
 }
 
 int oplus_panel_get_aod_light_mode(void *buf)
 {
 	unsigned int *aod_mode = buf;
 	(*aod_mode) = aod_light_mode;
-	printk(KERN_INFO "oplus_panel_get_aod_light_mode = %d\n",aod_light_mode);
+	printk(KERN_INFO "oppo_panel_get_aod_light_mode = %d\n",aod_light_mode);
 	return 0;
 }
 
@@ -251,12 +251,12 @@ int oplus_panel_set_aod_light_mode(void *buf)
 	if (oplus_display_aodlight_support) {
 
 		if (primary_display_get_fp_hbm_state()) {
-			printk(KERN_INFO "oplus_set_aod_light_mode = %d return on hbm\n",(*temp_save));
+			printk(KERN_INFO "oppo_set_aod_light_mode = %d return on hbm\n",(*temp_save));
 			return 0;
 		}
 		aod_light_mode = (*temp_save);
 		ret = primary_display_aod_backlight(aod_light_mode);
-		printk(KERN_INFO "oplus_panel_set_aod_light_mode = %d\n",(*temp_save));
+		printk(KERN_INFO "oppo_panel_set_aod_light_mode = %d\n",(*temp_save));
 	}
 
 	return 0;
@@ -359,12 +359,12 @@ int _set_aod_area_by_cmdq(unsigned char *area)
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl, MMPROFILE_FLAG_PULSE, 1, 3);
 		cmdqRecReset(cmdq_handle_area);
 		cmdqRecWait(cmdq_handle_area, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(cmdq_handle_area);
+		oppo_cmdq_handle_clear_dirty(cmdq_handle_area);
 		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_area);
 		disp_lcm_set_aod_area(pgc->plcm, cmdq_handle_area, area);
 		cmdqRecSetEventToken(cmdq_handle_area, CMDQ_SYNC_TOKEN_CABC_EOF);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl, MMPROFILE_FLAG_PULSE, 1, 4);
-		oplus_cmdq_flush_config_handle_mira(cmdq_handle_area, 1);
+		oppo_cmdq_flush_config_handle_mira(cmdq_handle_area, 1);
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl, MMPROFILE_FLAG_PULSE, 1, 6);
 		DISPMSG("[BL]_set_aod_area_by_cmdq ret=%d\n", ret);
 	}
@@ -413,7 +413,7 @@ int primary_display_set_aod_area(unsigned char *area, int use_cmdq)
 				}
 			}
 			/* atomic_set(&delayed_trigger_kick, 1); */
-			oplus_delayed_trigger_kick_set(1);
+			oppo_delayed_trigger_kick_set(1);
 		}
 	}
 
@@ -491,7 +491,7 @@ int primary_display_switch_aod_mode(int mode)
 
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_display_switch_dst_mode,
 			 MMPROFILE_FLAG_PULSE, 4, 0);
-	oplus_cmdq_reset_config_handle();
+	oppo_cmdq_reset_config_handle();
 
 	/* 1.modify lcm mode - sw */
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_display_switch_dst_mode,
@@ -550,9 +550,9 @@ int primary_display_switch_aod_mode(int mode)
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_display_switch_dst_mode,
 			 MMPROFILE_FLAG_PULSE, 4, 2);
 	_cmdq_stop_trigger_loop();
-	oplus_cmdq_build_trigger_loop();
+	oppo_cmdq_build_trigger_loop();
 	_cmdq_start_trigger_loop();
-	oplus_cmdq_reset_config_handle();
+	oppo_cmdq_reset_config_handle();
 	_cmdq_insert_wait_frame_done_token_mira(pgc->cmdq_handle_config);
 
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_display_switch_dst_mode,

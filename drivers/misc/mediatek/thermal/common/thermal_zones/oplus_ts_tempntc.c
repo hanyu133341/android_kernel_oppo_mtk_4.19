@@ -20,7 +20,7 @@
 #include "mach/mtk_thermal.h"
 #include <linux/uidgid.h>
 #include <linux/slab.h>
-#include <soc/oplus/system/oplus_project.h>
+#include <soc/oplus/system/oppo_project.h>
 #include <linux/power_supply.h>
 #include <linux/iio/consumer.h>
 #include <linux/kthread.h>	/* For Kthread_run */

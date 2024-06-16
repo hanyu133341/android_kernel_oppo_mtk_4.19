@@ -69,6 +69,10 @@
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
 //static kal_uint32 streaming_control(kal_bool enable);
 static bool IsProject_20151 = false ;
+
+#define DOMESTIC_OFFSET -375375
+#define EXPORT_OFFSET -1055400
+
 #define _I2C_BUF_SIZE 4096
 kal_uint16 _i2c_data [_I2C_BUF_SIZE];
 static unsigned int _size_to_write;
@@ -2157,9 +2161,9 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
 		}
 		case SENSOR_FEATURE_GET_OFFSET_TO_START_OF_EXPOSURE:
 			if (IsProject_20151) {
-				*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = -7320000;
+				*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = DOMESTIC_OFFSET;
 			} else {
-				*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = -5561000;
+				*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = EXPORT_OFFSET;
 			}
 			break;
 #endif

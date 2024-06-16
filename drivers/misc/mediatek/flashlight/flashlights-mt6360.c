@@ -49,6 +49,8 @@
 
 #define MT6360_LEVEL_NUM 32
 #define MT6360_LEVEL_TORCH 16
+#define MT6360_LEVEL_NUM_20291      (12)
+#define MT6360_LEVEL_TORCH_20291    (6)
 #define MT6360_LEVEL_FLASH MT6360_LEVEL_NUM
 #define MT6360_WDT_TIMEOUT 1248 /* ms */
 #define MT6360_HW_TIMEOUT 400 /* ms */
@@ -266,7 +268,11 @@ static int mt6360_is_charger_ready(void)
 
 static int mt6360_is_torch(int level)
 {
-	if (level >= MT6360_LEVEL_TORCH)
+	if (is_project(20291) || is_project(20292) || is_project(20293)
+		|| is_project(20294) || is_project(20295)) {
+		if (level >= MT6360_LEVEL_TORCH_20291)
+			return -1;
+	} else if (level >= MT6360_LEVEL_TORCH)
 		return -1;
 
 	return 0;
@@ -276,7 +282,11 @@ static int mt6360_verify_level(int level)
 {
 	if (level < 0)
 		level = 0;
-	else if (level >= MT6360_LEVEL_NUM)
+	else if (is_project(20291) || is_project(20292) || is_project(20293)
+		|| is_project(20294) || is_project(20295)) {
+		if (level >= MT6360_LEVEL_NUM_20291)
+			level = MT6360_LEVEL_NUM_20291 - 1;
+	} else if (level >= MT6360_LEVEL_NUM)
 		level = MT6360_LEVEL_NUM - 1;
 
 	return level;
@@ -481,7 +491,7 @@ static int mt6360_set_level_ch1(int level)
 				flashlight_dev_ch1, mt6360_torch_level_6833[level]);
 		} else if (is_project(20609) || is_project(0x2060A) || is_project(0x2060B) || is_project(20796) || is_project(0x206F0) || is_project(0x206FF)
 			       || is_project(0x2070C) || is_project(0x2070B) || is_project(0x2070E) || is_project(20795)
-			       || is_project(21041) || is_project(21042) || is_project(0x210A0)){
+			       || is_project(21041) || is_project(21042) || is_project(0x210A0) || is_project(21747) || is_project(21748)){
 			flashlight_set_torch_brightness(
 				flashlight_dev_ch1, mt6360_torch_level_20609[level]);
 		} else if (is_project(20732) || is_project(20731) || is_project(20730)){
@@ -512,7 +522,7 @@ static int mt6360_set_level_ch1(int level)
 		    is_project(20295)) {
 		        flashlight_set_torch_brightness(
 			        flashlight_dev_ch1, mt6360_torch_level_20291[level]);
-		} else if (is_project(22693) || is_project(22694) || is_project(22612)) {
+		} else if (is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)) {
 		        flashlight_set_torch_brightness(
 			        flashlight_dev_ch1, mt6360_torch_level_22693[level]);
 		} else {
@@ -537,7 +547,7 @@ static int mt6360_set_level_ch1(int level)
 	} else if (is_project(19551) || is_project(19597)||is_project(19553)||is_project(19550)||is_project(19556)){
 		flashlight_set_strobe_brightness(
 			flashlight_dev_ch1, mt6360_strobe_level_19551[level]);
-	} else if (is_project(22693) || is_project(22694) || is_project(22612)){
+	} else if (is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)){
 		flashlight_set_strobe_brightness(
 			flashlight_dev_ch1, mt6360_strobe_level_22693[level]);
 	} else if (is_project(19537) || is_project(19538) ||
@@ -633,7 +643,7 @@ static int mt6360_set_level_ch2(int level)
 	} else if (is_project(19551) || is_project(19597)||is_project(19553)||is_project(19550)||is_project(19556)){
 		flashlight_set_strobe_brightness(
 			flashlight_dev_ch2, mt6360_strobe_level_19551[level]);
-	} else if (is_project(22693) || is_project(22694) || is_project(22612)){
+	} else if (is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)){
 		flashlight_set_strobe_brightness(
 			flashlight_dev_ch2, mt6360_strobe_level_22693[level]);
 	} else if (is_project(19537) || is_project(19538) ||
@@ -1030,7 +1040,7 @@ static int mt6360_ioctl(unsigned int cmd, unsigned long arg)
 			fl_arg->arg = mt6360_current_19357[fl_arg->arg];
 		} else if(is_project(19551) || is_project(19597)||is_project(19553)||is_project(19550)||is_project(19556)){
 			fl_arg->arg = mt6360_current_19551[fl_arg->arg];
-		} else if(is_project(22693) || is_project(22694) || is_project(22612)){
+		} else if(is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)){
 			fl_arg->arg = mt6360_current_22693[fl_arg->arg];
 		} else if (is_project(19537) || is_project(19538) ||
 			is_project(19539) || is_project(19536) ||

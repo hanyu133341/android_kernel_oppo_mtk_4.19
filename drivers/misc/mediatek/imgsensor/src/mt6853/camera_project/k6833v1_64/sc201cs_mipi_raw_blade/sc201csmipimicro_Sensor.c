@@ -46,7 +46,7 @@
 #include <linux/types.h>
 
 #include "sc201csmipimono_Sensor.h"
-
+#include "imgsensor_common.h"
 /****************************Modify Following Strings for Debug****************************/
 #define PFX "SC201CS_camera_sensor"
 
@@ -61,6 +61,10 @@
 
 static DEFINE_SPINLOCK(imgsensor_drv_lock);
 
+static kal_uint8 deviceInfo_register_value = 0x00;
+extern enum IMGSENSOR_RETURN Eeprom_DataInit(
+            enum IMGSENSOR_SENSOR_IDX sensor_idx,
+            kal_uint32 sensorID);
 
 static imgsensor_info_struct imgsensor_info = {
     .sensor_id = SC201CS1_SENSOR_ID_BLADE,
@@ -842,6 +846,10 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
             if (*sensor_id == 0xeb2c) {
                 *sensor_id = imgsensor_info.sensor_id;
                 LOG_INF("i2c write id: 0x%x, sensor id: 0x%x\n", imgsensor.i2c_write_id,*sensor_id);
+                if(deviceInfo_register_value == 0x00){
+                        Eeprom_DataInit(2, SC201CS1_SENSOR_ID_BLADE);
+                        deviceInfo_register_value = 0x01;
+                }
                 return ERROR_NONE;
             }
             LOG_INF("Read sensor id fail,i2c write id: 0x%x, id: 0x%x\n", imgsensor.i2c_write_id,*sensor_id);

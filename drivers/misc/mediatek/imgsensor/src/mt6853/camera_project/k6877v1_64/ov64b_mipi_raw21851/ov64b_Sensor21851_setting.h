@@ -4175,24 +4175,24 @@ static kal_uint16 addr_data_pair_seamless_switch_step3_ov64b2q[] = {
     0x3208, 0x13,
 
     //switch
-    //6c 368b ff 
+    //6c 368b ff
     //6c 320D 92 ;switch back group2
-    //6c 3209 01 ;stay 1 frame in current mode 
-    //6c 320A 03 ;3 frame capture 
+    //6c 3209 01 ;stay 1 frame in current mode
+    //6c 320A 03 ;3 frame capture
     //6c 320B 01
     //6c 320e a0
 
     //0x368b, 0xff,
     0x320d, 0x00,
     0x320d, 0x93,//?switch back group2?
-    
-    //6c 3209 01 ;stay 1 frame in current mode 
-    //6c 320A 03 ;3 frame capture 
+
+    //6c 3209 01 ;stay 1 frame in current mode
+    //6c 320A 03 ;3 frame capture
     //6c 320B 01
     //6c 320e a0
 
     0x3209, 0x01,//stay 1 frame in current mode
-    0x320a, 0x01,//1 frame capture 
+    0x320a, 0x01,//1 frame capture
     0x320b, 0x01,
     0x320c, 0x01,
     0x382a, 0x83,

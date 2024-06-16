@@ -34,7 +34,7 @@
 #ifdef OPLUS_FEATURE_CHG_BASIC
 #include <linux/iio/consumer.h>
 #include <soc/oplus/device_info.h>
-//#include <soc/oplus/oplus_project.h>
+//#include <soc/oppo/oppo_project.h>
 #include <linux/gpio.h>
 #include "../oplus/oplus_gauge.h"
 
@@ -48,7 +48,7 @@ extern bool is_kthread_get_adc(void);
 #endif
 extern struct iio_channel *iio_channel_get(struct device *dev,const char *channel_name);
 
-struct mtk_battery *oplus_gm = NULL;
+struct mtk_battery *oppo_gm = NULL;
 struct iio_channel	*batt_id = NULL;
 int fuelgauge_apply = 0;
 int fgauge_is_start = 0;
@@ -502,7 +502,7 @@ static const struct file_operations adc_cali_fops = {
 #ifdef OPLUS_FEATURE_CHG_BASIC
 bool is_battery_init_done(void)
 {
-	return oplus_gm->is_probe_done;
+	return oppo_gm->is_probe_done;
 }
 
 int oplus_battery_get_bat_temperature(void)
@@ -537,13 +537,13 @@ static int meter_fg_30_get_battery_temperature(void)
 
 static int meter_fg_30_get_batt_remaining_capacity(void)
 {
-	return oplus_gm->prev_batt_remaining_capacity;
+	return oppo_gm->prev_batt_remaining_capacity;
 }
 
 static int meter_fg_30_get_battery_soc(void)
 {
-	if(oplus_gm->init_flag == 1) {
-		return oplus_gm->ui_soc;
+	if(oppo_gm->init_flag == 1) {
+		return oppo_gm->ui_soc;
 	} else {
 		return -1;
 	}
@@ -565,12 +565,12 @@ static int meter_fg_30_get_average_current(void)
 
 static int meter_fg_30_get_prev_battery_fcc(void)
 {
-        return (oplus_gm->prev_batt_fcc)/10;
+        return (oppo_gm->prev_batt_fcc)/10;
 }
 
 static int meter_fg_30_get_battery_fcc(void)
 {
-	return (oplus_gm->prev_batt_fcc)/10;
+	return (oppo_gm->prev_batt_fcc)/10;
 }
 
 static int meter_fg_30_get_battery_cc(void)
@@ -585,7 +585,7 @@ static int meter_fg_30_get_battery_soh(void)
 
 static int meter_fg_30_get_prev_batt_remaining_capacity(void)
 {
-	return oplus_gm->prev_batt_remaining_capacity;
+	return oppo_gm->prev_batt_remaining_capacity;
 }
 
 static int meter_fg_30_modify_dod0(void)
@@ -604,9 +604,9 @@ static void meter_fg_30_set_battery_full(bool full)
 	if(last_full != full) {
 		if (full) {
 			if(enable_is_force_full == 1)
-				oplus_gm->is_force_full = true;
-			wakeup_fg_algo(oplus_gm, FG_INTR_CHR_FULL);
-			fg_int_event(oplus_gm, EVT_INT_CHR_FULL);
+				oppo_gm->is_force_full = true;
+			wakeup_fg_algo(oppo_gm, FG_INTR_CHR_FULL);
+			fg_int_event(oppo_gm, EVT_INT_CHR_FULL);
 		}
 		last_full = full;
 	}
@@ -3112,12 +3112,12 @@ static ssize_t bat_sysfs_store(struct device *dev,
 	gm = (struct mtk_battery *)power_supply_get_drvdata(psy);
 #endif
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	if (!oplus_gm) {
-		bm_err("%s oplus_gm is null\n", __func__);
+	if (!oppo_gm) {
+		bm_err("%s oppo_gm is null\n", __func__);
 		return -1;
 	}
 
-	gm = oplus_gm;
+	gm = oppo_gm;
 #endif
 	battery_attr = container_of(attr,
 		struct mtk_battery_sysfs_field_info, attr);
@@ -3142,11 +3142,11 @@ static ssize_t bat_sysfs_show(struct device *dev,
 	gm = (struct mtk_battery *)power_supply_get_drvdata(psy);
 #endif
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	if (!oplus_gm) {
-		bm_err("%s oplus_gm is null\n", __func__);
+	if (!oppo_gm) {
+		bm_err("%s oppo_gm is null\n", __func__);
 		return -1;
 	}
-	gm = oplus_gm;
+	gm = oppo_gm;
 #endif
 	battery_attr = container_of(attr,
 		struct mtk_battery_sysfs_field_info, attr);
@@ -3186,12 +3186,12 @@ int battery_get_property(enum battery_property bp,
 	gm = (struct mtk_battery *)power_supply_get_drvdata(psy);
 #endif
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	if (!oplus_gm) {
-		bm_err("%s oplus_gm is null\n", __func__);
+	if (!oppo_gm) {
+		bm_err("%s oppo_gm is null\n", __func__);
 		return -1;
 	}
 
-	gm = oplus_gm;
+	gm = oppo_gm;
 #endif
 	if (battery_sysfs_field_tbl[bp].prop == bp)
 		battery_sysfs_field_tbl[bp].get(gm,
@@ -3227,11 +3227,11 @@ int battery_set_property(enum battery_property bp,
 #endif
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	if (!oplus_gm) {
-		bm_err("%s oplus_gm is null\n", __func__);
+	if (!oppo_gm) {
+		bm_err("%s oppo_gm is null\n", __func__);
 		return -1;
 	}
-	gm = oplus_gm;
+	gm = oppo_gm;
 #endif
 	if (battery_sysfs_field_tbl[bp].prop == bp)
 		battery_sysfs_field_tbl[bp].set(gm,
@@ -4200,8 +4200,8 @@ int battery_init(struct platform_device *pdev)
 	gm->is_probe_done = true;
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
-	oplus_gm = gm;
-	printk(KERN_ERR "!!!!! oplus_gm is ready\n");
+	oppo_gm = gm;
+	printk(KERN_ERR "!!!!! oppo_gm is ready\n");
 #endif
 	
 	/* for gauge hal hw ocv */

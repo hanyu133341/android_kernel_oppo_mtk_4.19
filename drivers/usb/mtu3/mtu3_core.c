@@ -371,6 +371,7 @@ static void mtu3_gadget_set_ready(struct mtu3 *mtu)
 	}
 }
 
+
 void mtu3_start(struct mtu3 *mtu)
 {
 	void __iomem *mbase = mtu->mac_base;
@@ -873,7 +874,6 @@ static int mtu3_hw_init(struct mtu3 *mtu)
 		return -ENOMEM;
 
 	mtu3_regs_init(mtu);
-
 	mtu3_gadget_set_ready(mtu);
 
 	return 0;

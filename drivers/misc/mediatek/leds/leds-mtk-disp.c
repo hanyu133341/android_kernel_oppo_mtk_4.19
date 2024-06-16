@@ -47,6 +47,7 @@ static int bl_after_aal = 0;
 extern struct timeval end;
 static int oplus_silky_brightness_support = 0;
 int oplus_disp_ccorr_without_gamma = 0;
+int max_brightness_custom = 0;
 #endif
 
 struct mtk_leds_info;
@@ -504,6 +505,19 @@ static int mtk_leds_parse_dt(struct device *dev,
 				s_led->conf.max_level);
 		}
 #ifdef OPLUS_BUG_STABILITY
+		ret = of_property_read_u32(child, "max_brightness_custom",
+			&max_brightness_custom);
+		if (ret) {
+			max_brightness_custom = 0;
+			pr_info("not support max_brightness_custom property = 0\n");
+		}
+		if (max_brightness_custom == 1) {
+			s_led->conf.cdev.max_brightness = s_led->conf.max_level;
+			pr_info("max_brightness_custom %d leds dt: %s, %d, %d", num, s_led->conf.cdev.name,
+			s_led->conf.max_level,
+			s_led->conf.led_bits);
+		}
+
 		ret = of_property_read_u32(child, "support_silky_brightness",
 					&oplus_silky_brightness_support);
 		if (ret) {

@@ -95,8 +95,10 @@ obj-$(CONFIG_MTK_CLK_BUFFER) += clkbuf/
 obj-$(CONFIG_MTK_QOS_FRAMEWORK) += qos/
 obj-$(CONFIG_MTK_SLBC) += slbc/
 ifneq ($(CONFIG_MACH_MT6893), y)
+ifneq ($(CONFIG_MACH_MT6885), y)
 ifneq ($(CONFIG_MACH_MT6771), y)
 obj-$(CONFIG_MTK_CM_MGR) += cm_mgr/
+endif
 endif
 endif
 ifneq ($(CONFIG_MTK_BASE_POWER), y)
@@ -125,7 +127,9 @@ obj-y += mmdvfs/
 obj-$(CONFIG_MTK_IOMMU_MISC) += iommu/
 obj-$(CONFIG_INTERCONNECT_MTK_MMQOS_COMMON) += mmqos/
 obj-$(CONFIG_MTK_PERF_COMMON) += perf_common/
+ifneq ($(CONFIG_MTK_SYSTRACKER_DISABLE),y)
 obj-$(CONFIG_MTK_SYSTRACKER_V2) += systracker/
+endif
 obj-$(CONFIG_MTK_HANG_DETECT) += monitor_hang/
 ifeq ($(CONFIG_MTK_GAUGE_VERSION),30)
 obj-y += power/
@@ -163,7 +167,7 @@ obj-$(CONFIG_RT_REGMAP) += rt-regmap/
 obj-$(CONFIG_MTK_VIDEOCODEC_DRIVER) += videocodec/
 obj-$(CONFIG_MTK_FLASHLIGHT) += flashlight/
 obj-$(CONFIG_RT_FLASHLIGHT)     += flashlight/richtek/
-obj-$(CONFIG_USB) += usb_boost/
+obj-$(CONFIG_MTK_USB_BOOST) += usb_boost/
 obj-$(CONFIG_USB_MTK_HDRC) += usb20/
 ifeq ($(CONFIG_MACH_MT6781),y)
 obj-$(CONFIG_MTK_MUSB_PHY) += usb20/mt6781

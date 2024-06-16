@@ -239,7 +239,7 @@ static enum IMGSENSOR_RETURN gpio_init(
 			} else if(is_project(22083) || is_project(22084) || is_project(22291) || is_project(22292)) {
 				lookup_names =
 				gpio_pinctrl_list_cam_lijing[i].ppinctrl_lookup_names;
-		    }else if(is_project(22693) || is_project(22694) || is_project(22612)) {
+			} else if(is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)) {
 				lookup_names =
 				gpio_pinctrl_list_cam_22693[i].ppinctrl_lookup_names;
 			} else if(is_project(21081)) {

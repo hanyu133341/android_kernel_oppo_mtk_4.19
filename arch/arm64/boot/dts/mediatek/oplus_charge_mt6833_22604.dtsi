@@ -493,14 +493,16 @@
 };
 
 &odm {
-	usbphy_tuning: usbphy_tuning {
-		compatible = "mediatek,phy_tuning";
-		u2_vrt_ref = <7>;
-		u2_term_ref = <7>;
-		u2_enhance = <3>;
-		host_u2_vrt_ref = <7>;
-		host_u2_term_ref = <6>;
-		host_u2_enhance = <3>;
+	mediatek_phy_tuning: mediatek_phy_tuning {
+		phy_tuning {
+			compatible = "mediatek,phy_tuning";
+			eye-vrt = <7>;
+			eye-term = <7>;
+			eye-rev6 = <3>;
+			host-eye-vrt = <7>;
+			host-eye-term = <6>;
+			host-eye-rev6 = <3>;
+		};
 	};
 };
 //#endif /*OPLUS_FEATURE_CHG_BASIC*/

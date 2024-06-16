@@ -175,7 +175,7 @@ static enum IMGSENSOR_RETURN gpio_set(
 
 		#ifdef OPLUS_FEATURE_CAMERA_COMMON
 			#ifdef SENSOR_PLATFORM_4G_20682
-			//if ((pin == IMGSENSOR_HW_PIN_FAN53870_ENABLE) && is_project(OPLUS_19040)) {
+			//if ((pin == IMGSENSOR_HW_PIN_FAN53870_ENABLE) && is_project(OPPO_19040)) {
 			if (pin == IMGSENSOR_HW_PIN_FAN53870_ENABLE) {
 				ppinctrl_state = pgpio->pinctrl_state_ldo_enable;
 			} else {

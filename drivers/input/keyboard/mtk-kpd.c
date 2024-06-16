@@ -705,11 +705,11 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	int err;
 	//#ifdef OPLUS_BUG_STABILITY
 	struct device *dev = &pdev->dev;
-	struct vol_info *kpd_oplus;
+	struct vol_info *kpd_oppo;
 
 	pr_err("Keypad probe start!!!\n");
 
-	kpd_oplus = devm_kzalloc(dev, sizeof(*kpd_oplus), GFP_KERNEL);
+	kpd_oppo = devm_kzalloc(dev, sizeof(*kpd_oppo), GFP_KERNEL);
 	if (!pdev->dev.of_node) {
 		pr_err("no kpd dev node\n");
 		return -ENODEV;
@@ -826,9 +826,9 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 
 //#ifdef OPLUS_BUG_STABILITY
 	g_keypad = keypad;
-	kpd_oplus->dev = dev;
-	dev_set_drvdata(dev, kpd_oplus);
-	kpd_oplus->pdev = pdev;
+	kpd_oppo->dev = dev;
+	dev_set_drvdata(dev, kpd_oppo);
+	kpd_oppo->pdev = pdev;
 
 	vol_key_info.oplus_vol_up_flag = true;
 
@@ -839,7 +839,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	}
 
 	if (!vol_key_info.homekey_as_vol_up) {  // means not home key as volume up, defined on dws
-		err = kpd_request_named_gpio(kpd_oplus, "keypad,volume-up",
+		err = kpd_request_named_gpio(kpd_oppo, "keypad,volume-up",
 				&vol_key_info.vol_up_gpio);
 
 		if (err) {
@@ -849,13 +849,13 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 		err = gpio_direction_input(vol_key_info.vol_up_gpio);
 
 		if (err < 0) {
-			dev_err(&kpd_oplus->pdev->dev,
+			dev_err(&kpd_oppo->pdev->dev,
 				"gpio_direction_input failed for vol_up INT.\n");
 			return -1;
 		}
 	}
 
-	err = kpd_request_named_gpio(kpd_oplus, "keypad,volume-down",
+	err = kpd_request_named_gpio(kpd_oppo, "keypad,volume-down",
 			&vol_key_info.vol_down_gpio);
 	if (err) {
 		pr_err("%s request keypad,volume-down fail\n", __func__);
@@ -864,7 +864,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	err = gpio_direction_input(vol_key_info.vol_down_gpio);
 
 	if (err < 0) {
-		dev_err(&kpd_oplus->pdev->dev,
+		dev_err(&kpd_oppo->pdev->dev,
 			"gpio_direction_input failed for vol_down INT.\n");
 		return -1;
 	}

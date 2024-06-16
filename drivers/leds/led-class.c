@@ -27,7 +27,7 @@ static struct class *leds_class;
 
 #ifdef OPLUS_BUG_STABILITY
 /*
-* add for oplus brightness and max_brightness node
+* add for oppo brightness and max_brightness node
 */
 #if defined(CONFIG_DRM_MEDIATEK)
 extern unsigned int m_new_pq_persist_property[32];
@@ -89,7 +89,7 @@ unlock:
 
 #ifdef OPLUS_BUG_STABILITY
 /*
-* add for oplus brightness and max_brightness node
+* add for oppo brightness and max_brightness node
 */
 #if defined(CONFIG_DRM_MEDIATEK)
 	if (!m_new_pq_persist_property[DISP_PQ_CCORR_SILKY_BRIGHTNESS]) {
@@ -225,7 +225,7 @@ static void led_remove_brightness_hw_changed(struct led_classdev *led_cdev)
 extern bool __attribute((weak)) oplus_display_tenbits_support;
 extern bool __attribute((weak)) oplus_display_elevenbits_support;
 extern bool __attribute((weak)) oplus_display_twelvebits_support;
-int get_full_backlight_level()
+int get_full_backlight_level(void)
 {
 	if (oplus_display_twelvebits_support)
 		return 4095;
@@ -236,7 +236,7 @@ int get_full_backlight_level()
 	return 255;
 }
 EXPORT_SYMBOL_GPL(get_full_backlight_level);
-int get_half_backlight_level()
+int get_half_backlight_level(void)
 {
 	if (oplus_display_twelvebits_support)
 		return 2047;

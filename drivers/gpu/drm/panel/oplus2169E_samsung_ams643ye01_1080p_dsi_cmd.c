@@ -29,7 +29,7 @@
 #include <linux/of_platform.h>
 #include <linux/platform_device.h>
 #include <linux/of_graph.h>
-//#include <soc/oplus/device_info.h>
+//#include <soc/oppo/device_info.h>
 
 #define CONFIG_MTK_PANEL_EXT
 #if defined(CONFIG_MTK_PANEL_EXT)
@@ -1327,7 +1327,7 @@ static int lcm_set_hbm(void *dsi, dcs_write_gce cb,
 	pr_err("oplus_display_brightness= %ld, hbm_mode=%u\n", oplus_display_brightness, hbm_mode);
 
 	if(hbm_mode == 1) {
-		//oplus_lcm_dc_backlight(dsi,cb,handle, oplus_display_brightness, 1);
+		//oppo_lcm_dc_backlight(dsi,cb,handle, oppo_display_brightness, 1);
 		for (i = 0; i < sizeof(lcm_finger_HBM_on_setting)/sizeof(struct LCM_setting_table); i++){
 			cb(dsi, handle, lcm_finger_HBM_on_setting[i].para_list, lcm_finger_HBM_on_setting[i].count);
 		}

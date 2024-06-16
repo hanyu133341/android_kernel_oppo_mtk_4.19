@@ -1,8 +1,8 @@
 /***************************************************************
 ** Copyright (C),  2020,  OPLUS Mobile Comm Corp.,  Ltd
 ** OPLUS_BUG_STABILITY
-** File : oplus_display_onscreenfingerprint.h
-** Description : oplus_display_onscreenfingerprint. implement
+** File : oppo_display_onscreenfingerprint.h
+** Description : oppo_display_onscreenfingerprint. implement
 ** Version : 1.0
 ** Date : 2020/05/13
 **
@@ -19,13 +19,13 @@
 //#include <soc/oplus/system/oplus_mm_kevent_fb.h>
 #endif /* OPLUS_FEATURE_MM_FEEDBACK */
 #include <linux/delay.h>
-/* #include <soc/oplus/oplus_project.h> */
+/* #include <soc/oppo/oppo_project.h> */
 #include "ddp_dsi.h"
 #include "fbconfig_kdebug.h"
 #include "oplus_display_onscreenfingerprint.h"
 /*
- * we will create a sysfs which called /sys/kernel/oplus_display,
- * In that directory, oplus display private api can be called
+ * we will create a sysfs which called /sys/kernel/oppo_display,
+ * In that directory, oppo display private api can be called
  */
 int notify_display_fpd(bool mode);
 void fpd_notify_check_trig(void);
@@ -50,8 +50,8 @@ unsigned long HBM_pre_mode = 0;
 struct timespec hbm_time_on;
 struct timespec hbm_time_off;
 long hbm_on_start = 0;
-extern bool oplus_fp_notify_up_delay;
-extern bool oplus_fp_notify_down_delay;
+extern bool oppo_fp_notify_up_delay;
+extern bool oppo_fp_notify_down_delay;
 
 //#ifdef OPLUS_FEATURE_ONSCREENFINGERPRINT
 static int fpd_notify_worker_kthread(void *data)
@@ -151,7 +151,7 @@ void fpd_notify(void)
  {
 	 bool ret = 0;
 
-	 if (oplus_fp_notify_down_delay && ((cfg->hbm_en & 0x2) > 0)) {
+	 if (oppo_fp_notify_down_delay && ((cfg->hbm_en & 0x2) > 0)) {
 		/* #ifdef OPLUS_FEATURE_RAMLESS_AOD */
 		if (oplus_display_aod_ramless_support) {
 			if (!primary_display_is_video_mode()) {
@@ -160,7 +160,7 @@ void fpd_notify(void)
 			}
 		}
 		/* #endif */ /* OPLUS_FEATURE_RAMLESS_AOD */
-		 oplus_fp_notify_down_delay = false;
+		 oppo_fp_notify_down_delay = false;
 		 fpd_notify_init();
 		 if (cfg->present_fence_idx != (unsigned int)-1) {
 			 ret = 1;
@@ -246,9 +246,9 @@ int oplus_display_panel_set_finger_print(void *buf)
 		}
 		fingerprint_op_mode = (uint8_t)(*finger_print);
 		if (fingerprint_op_mode == 1) {
-			oplus_fp_notify_down_delay = true;
+			oppo_fp_notify_down_delay = true;
 		} else {
-			oplus_fp_notify_up_delay = true;
+			oppo_fp_notify_up_delay = true;
 			ds_rec_fpd = false;
 			doze_rec_fpd = false;
 		}
@@ -288,18 +288,18 @@ int primary_display_set_hbm_wait_ramless(bool en)
 	if (!primary_display_is_video_mode()) {
 		cmdqRecReset(qhandle_wait);
 		cmdqRecWait(qhandle_wait, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_handle_clear_dirty(qhandle_wait);
+		oppo_cmdq_handle_clear_dirty(qhandle_wait);
 
 		_cmdq_insert_wait_frame_done_token_mira(qhandle_wait);
 		disp_lcm_set_hbm_wait_ramless(en, pgc->plcm, qhandle_wait);
 
 		cmdqRecSetEventToken(qhandle_wait, CMDQ_SYNC_TOKEN_CABC_EOF);
-		oplus_cmdq_flush_config_handle_mira(qhandle_wait, 1);
+		oppo_cmdq_flush_config_handle_mira(qhandle_wait, 1);
 	} else {
 		mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl, MMPROFILE_FLAG_PULSE, 1, 2);
 		disp_lcm_set_hbm_wait_ramless(en, pgc->plcm, qhandle_wait);
 
-		oplus_cmdq_flush_config_handle_mira(qhandle_wait, 1);
+		oppo_cmdq_flush_config_handle_mira(qhandle_wait, 1);
 		DISPMSG("[BL]qhandle_hbm ret=%d\n", ret);
 	}
 

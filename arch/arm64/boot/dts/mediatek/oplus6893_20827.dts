@@ -208,9 +208,9 @@
 		i2c_addr = <57>;
 		direction = <4>;
 		eint_num = <4>;
-		als_ratio = <94>;
+		//als_ratio = <94>;
 		als_buffer_length =<10>;
-		lcd_type = <2>;
+		//lcd_type = <2>;
 		use_lb_algo = <1>;
 		device_name = "tcs3701";
 		gold_als_factor = <1230>;
@@ -892,6 +892,7 @@
 /* CAMERA specify sensor end */
 
 /* usb typec mux */
+/*
 &pio {
 	c1_active: c1_high {
 		pins_cmd_dat {
@@ -950,7 +951,7 @@
 		};
 	};
 };
-
+*/
 
 
 //&ptn36241g {
@@ -1144,6 +1145,8 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
         charger_pump_support;
         game_switch_support;
         smart_gesture_support;
+	black_gesture_indep_support;
+	sportify_aod_gesture_support;
         headset_pump_support;
         fw_update_app_support;
         fingerprint_underscreen_support;
@@ -1190,7 +1193,7 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 /* TOUCH end */
 
 /*#include "mediatek/cust_mt6893_touch.dtsi"*/
-#include "mediatek/cust_oplus20817_camera.dtsi"
+#include "mediatek/cust_oppo20817_camera.dtsi"
 #include <oplus6893_20827/cust.dtsi>
 #include "mediatek/cust_mt6893_oplus_charge_20827.dtsi"
 /* #ifdef OPLUS_ARCH_EXTENDS */

@@ -483,6 +483,24 @@ enum DSI_MODE_CON {
 struct mtk_panel_ext *mtk_dsi_get_panel_ext(struct mtk_ddp_comp *comp);
 static s32 mtk_dsi_poll_for_idle(struct mtk_dsi *dsi, struct cmdq_pkt *handle);
 
+#ifdef OPLUS_BUG_STABILITY
+/* 2022/11/30, add for fixing pf timeout issue */
+bool mtk_dsi_is_enabled(struct mtk_ddp_comp *comp)
+{
+	struct mtk_dsi *dsi = NULL;
+
+	if (comp) {
+		dsi = container_of(comp, struct mtk_dsi, ddp_comp);
+	}
+
+	if (dsi) {
+		return dsi->output_en;
+	}
+
+	return false;
+}
+#endif
+
 static inline struct mtk_dsi *encoder_to_dsi(struct drm_encoder *e)
 {
 	return container_of(e, struct mtk_dsi, encoder);
@@ -2316,6 +2334,10 @@ static void mtk_output_en_doze_switch(struct mtk_dsi *dsi)
 		}
 
 		if (!mtk_dsi_is_cmd_mode(&dsi->ddp_comp)) {
+			#ifdef OPLUS_BUG_STABILITY
+			/* 2022/11/30, add for fixing pf timeout issue */
+			mtk_dsi_set_interrupt_enable(dsi);
+			#endif
 			mtk_dsi_set_vm_cmd(dsi);
 			mtk_dsi_calc_vdo_timing(dsi);
 			mtk_dsi_config_vdo_timing(dsi);
@@ -2983,6 +3005,14 @@ static void mtk_output_dsi_enable(struct mtk_dsi *dsi,
 		//#ifdef OPLUS_FEATURE_AOD
 		prev_power_mode = power_mode;
 		//#endif
+		#ifdef OPLUS_BUG_STABILITY
+		/* 2022/11/30, add for fixing pf timeout issue */
+		if (mtk_crtc && ext->params && ext->params->oplus_panel_cv_switch
+			&& dsi->doze_enabled) {
+			atomic_set(&mtk_crtc->pf_event, 1);
+			wake_up_interruptible(&mtk_crtc->present_fence_wq);
+		}
+		#endif
 		return;
 	}
 
@@ -3177,6 +3207,15 @@ static void mtk_output_dsi_enable(struct mtk_dsi *dsi,
 	dsi->doze_enabled = new_doze_state;
 	#ifdef OPLUS_BUG_STABILITY
 	prev_power_mode = power_mode;
+	#endif
+
+	#ifdef OPLUS_BUG_STABILITY
+	/* 2022/11/30, add for fixing pf timeout issue */
+	if (mtk_crtc && ext->params && ext->params->oplus_panel_cv_switch
+		&& dsi->doze_enabled) {
+		atomic_set(&mtk_crtc->pf_event, 1);
+		wake_up_interruptible(&mtk_crtc->present_fence_wq);
+	}
 	#endif
 	return;
 err_dsi_power_off:
@@ -6682,7 +6721,10 @@ void mtk_dsi_set_mmclk_by_datarate(struct mtk_dsi *dsi,
 		mutex_unlock(&set_mmclk_lock);
 		return;
 	}
-
+	if (mtk_crtc->panel_ext->params->oplus_ofp_mipi_switch_config) {
+		if (ext->params->dsc_params.enable)
+			bpp = ext->params->dsc_params.bit_per_channel * 3;
+	}
 	compress_rate = mtk_dsi_get_dsc_compress_rate(dsi);
 
 	if (!data_rate) {
@@ -6713,7 +6755,11 @@ void mtk_dsi_set_mmclk_by_datarate(struct mtk_dsi *dsi,
 		pixclk = data_rate * dsi->lanes * compress_rate;
 		if (data_rate && ext->params->is_cphy)
 			pixclk = pixclk * 16 / 7;
-		pixclk = pixclk / bpp / 100;
+		if (mtk_crtc->panel_ext->params->oplus_ofp_mipi_switch_config){
+			pixclk = pixclk * bubble_rate / bpp / 100 / 100;
+		}else {
+			pixclk = pixclk / bpp / 100;
+		}
 	}
 	if (mtk_crtc->is_dual_pipe && ext->params->lcm_cmd_if != MTK_PANEL_DUAL_PORT)
 		pixclk /= 2;
@@ -6746,6 +6792,10 @@ unsigned long long mtk_dsi_get_frame_hrt_bw_base_by_datarate(
 	unsigned int data_rate = mtk_dsi_default_rate(dsi);
 	u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
 
+	if (mtk_crtc && dsi && (mtk_crtc->panel_ext->params->oplus_ofp_mipi_switch_config)) {
+		/* bit_per_channel = oplus_bit_per_channel */
+		bpp = mtk_crtc->panel_ext->params->oplus_bit_per_channel * 3;
+	}
 #ifdef CONFIG_MTK_MT6382_BDG
 	data_rate = data_rate * bdg_rxtx_ratio / 100;
 #endif
@@ -6879,6 +6929,14 @@ skip_change_mipi:
 		return;
 	}
 	mtk_dsi_poll_for_idle(dsi, cmdq_handle2);
+	if (mtk_crtc->panel_ext->params->oplus_ofp_mipi_switch_waite_frame) {
+		DDPPR_ERR("%s: wait 1 te\n", __func__);
+		cmdq_pkt_clear_event(cmdq_handle2,
+					mtk_crtc->gce_obj.event[EVENT_TE]);
+		if (mtk_drm_lcm_is_connect())
+			cmdq_pkt_wfe(cmdq_handle2,
+					mtk_crtc->gce_obj.event[EVENT_TE]);
+	}
 	cmdq_pkt_set_event(cmdq_handle2,
 		mtk_crtc->gce_obj.event[EVENT_CABC_EOF]);
 	cmdq_pkt_set_event(cmdq_handle2,
@@ -8102,7 +8160,7 @@ static int mtk_dsi_probe(struct platform_device *pdev)
 	irq_set_status_flags(irq_num, IRQ_TYPE_LEVEL_HIGH);
 	ret = devm_request_irq(
 		&pdev->dev, irq_num, dsi->driver_data->irq_handler,
-		IRQF_TRIGGER_NONE | IRQF_SHARED, dev_name(&pdev->dev), dsi);
+		IRQF_TRIGGER_NONE | IRQF_SHARED | IRQF_PERF_AFFINE, dev_name(&pdev->dev), dsi);
 	if (ret) {
 		DDPAEE("%s:%d, failed to request irq:%d ret:%d\n",
 				__func__, __LINE__,

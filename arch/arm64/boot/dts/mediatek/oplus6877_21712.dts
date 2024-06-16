@@ -623,7 +623,7 @@
 	};
 /* sensor end */
 
-/* OPLUS_BUG_STABILITY oplus project start */
+/* OPLUS_BUG_STABILITY oppo project start */
 	oplus_project:oplus_project {
 		compatible = "oplus,oplus_project";
 	};
@@ -655,7 +655,7 @@
 			match-projects = <21712 20182 20355>;
 		};
 	};
-/* OPLUS_BUG_STABILITY oplus project end */
+/* OPLUS_BUG_STABILITY oppo project end */
 
 	kpd_volume_down:kpd_volume_down {
 			compatible = "mediatek, VOLUME_DOWN-eint";

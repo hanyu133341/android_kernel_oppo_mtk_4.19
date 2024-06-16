@@ -894,6 +894,8 @@
         irq_need_dev_resume_ok;
         health_monitor_v2_support;
         black_gesture_support;
+	black_gesture_indep_support;
+	sportify_aod_gesture_support;
         fw_edge_limit_support;
         pressure_report_support;
         charger_pump_support;
@@ -1148,7 +1150,7 @@ jiiov_fp_irq_active: jiiov_fp_irq_active {
 //#endif /*OPLUS_FEATURE_FINGERPRINT*/
 
 /*#include "mediatek/cust_mt6893_touch.dtsi"*/
-#include "mediatek/cust_oplus21881_camera.dtsi"
+#include "mediatek/cust_oppo21881_camera.dtsi"
 #include <oplus6893_21881/cust.dtsi>
 
 /* #ifdef OPLUS_ARCH_EXTENDS */

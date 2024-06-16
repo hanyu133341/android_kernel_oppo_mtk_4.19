@@ -323,6 +323,15 @@
 		compatible = "mediatek, VOOC_EINT_NEW_FUNCTION";
 	};
 
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <65000>;
+		track,wired_fast_chg_scheme = <1>;
+	};
+
 /* ifdef OPLUS_FEATURE_CHG_BASIC */
 /* add for usb eye pattern */
 	mediatek_phy_tuning:mediatek_phy_tuning {
@@ -331,9 +340,11 @@
 			eye-vrt = <6>;
 			eye-term = <6>;
 			eye-rev6 = <2>;
+			eye-disc = <0xF>;
 			host-eye-vrt = <7>;
 			host-eye-term = <7>;
 			host-eye-rev6 = <3>;
+			host-eye-disc = <0xF>;
 		};
 	};
 /* endif */
@@ -2393,8 +2404,8 @@
 	dischg_enable: dischg_enable {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;		//check
-			slew-rate = <1>;							//0:input direction 1:output direction
-			bias-pull-up;
+			output-enable;							//0:input direction 1:output direction
+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
 			output-high;
 		};
 	};
@@ -2402,8 +2413,8 @@
 	dischg_disable: dischg_disable {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO51__FUNC_GPIO51>;		//check
-			slew-rate = <1>;
-			bias-pull-down;
+			output-enable;
+			bias-pull-down = <MTK_PUPD_SET_R1R0_01>;
 			output-low;
 		};
 	};

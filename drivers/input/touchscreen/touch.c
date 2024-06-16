@@ -14,6 +14,7 @@
 #include <linux/slab.h>
 #include <linux/input.h>
 #include <linux/serio.h>
+#include "oplus_touchscreen/Synaptics/S3508/synaptics_s3508.h"
 #include "oplus_touchscreen/tp_devices.h"
 #include "oplus_touchscreen/touchpanel_common.h"
 #include <soc/oplus/system/oplus_project.h>
@@ -42,7 +43,7 @@ int ret = 0;
 static bool is_tp_type_got_in_match = false;    /*indicate whether the tp type is specified in the dts*/
 
 
-/*if can not compile success, please update vendor/oplus_touchsreen*/
+/*if can not compile success, please update vendor/oppo_touchsreen*/
 struct tp_dev_name tp_dev_names[] =
 {
 	{TP_OFILM, "OFILM"},
@@ -124,17 +125,17 @@ bool __init tp_judge_ic_match(char *tp_ic_name)
 	switch(prj_id)
 	{
 	case 20131:
-		if(strstr(saved_command_line, "20131_tianma_nt37701_1080p_dsi_cmd")) {
-			pr_info("tp judge ic match 20131 20131_tianma_nt37701_1080p_dsi_cmd\n");
+		if(strstr(saved_command_line, "oppo20131_tianma_nt37701_1080p_dsi_cmd")) {
+			pr_info("tp judge ic match 20131 oppo20131_tianma_nt37701_1080p_dsi_cmd\n");
 			return true;
-		} else if (strstr(saved_command_line, "20131_tianma_nt37701_32_1080p_dsi_cmd")) {
-			pr_info("tp judge ic match 20131 20131_tianma_nt37701_32_1080p_dsi_cmd\n");
+		} else if (strstr(saved_command_line, "oppo20131_tianma_nt37701_32_1080p_dsi_cmd")) {
+			pr_info("tp judge ic match 20131 oppo20131_tianma_nt37701_32_1080p_dsi_cmd\n");
 			return true;
-		} else if (strstr(saved_command_line, "20131_boe_nt37800_1080p_dsi_cmd")) {
-			pr_info("tp judge ic match 20131 20131_boe_nt37800_1080p_dsi_cmd\n");
+		} else if (strstr(saved_command_line, "oppo20131_boe_nt37800_1080p_dsi_cmd")) {
+			pr_info("tp judge ic match 20131 oppo20131_boe_nt37800_1080p_dsi_cmd\n");
 			return true;
-		} else if (strstr(saved_command_line, "20131_samsung_ana6705_1080p_dsi_cmd")) {
-			pr_info("tp judge ic match 20131 20131_samsung_ana6705_1080p_dsi_cmd\n");
+		} else if (strstr(saved_command_line, "oppo20131_samsung_ana6705_1080p_dsi_cmd")) {
+			pr_info("tp judge ic match 20131 oppo20131_samsung_ana6705_1080p_dsi_cmd\n");
 			return true;
 		}
 		pr_info("tp judge ic match failed 20131\n");
@@ -240,6 +241,35 @@ bool __init tp_judge_ic_match(char *tp_ic_name)
 			return true;
 		}
 		pr_info("tp judge ic match failed 20015\n");
+		return false;
+	case 20608:
+	case 20609:
+	case 0x2060A:
+	case 0x2060B:
+	case 0x206F0:
+	case 0x206FF:
+	case 20796:
+	case 20795:
+	case 0x2070B:
+	case 0x2070C:
+	case 0x2070E:
+	case 21625:
+	case 0x216A0:
+	case 0x216A1:
+	case 0x216B5:
+	case 0x216B6:
+	case 21747:
+	case 21748:
+	case 21749:
+		pr_info("[TP] case 20609\n");
+		if (strstr(tp_ic_name, "novatek,nf_nt36672c") && strstr(saved_command_line, "oplus20609_nt36672c_tm_cphy_dsi_vdo_lcm_drv")) {
+			pr_info("[TP] touch judge ic = novatek,nf_nt36672c,TIANMA\n");
+			return true;
+		}
+		if (strstr(tp_ic_name, "ilitek,ili7807s") && strstr(saved_command_line, "oplus20609_ili7807s_tm_cphy_dsi_vdo_lcm_drv")) {
+			pr_info("[TP] touch judge ic = ilitek,ili9882n(ili7807s),TIANMA\n");
+			return true;
+		}
 		return false;
 	case 21251:
 	case 21253:
@@ -466,27 +496,27 @@ bool  tp_judge_ic_match_commandline(struct panel_info *panel_data)
 			tp_used_index = nt36672c;
 			g_tp_dev_vendor = TP_JDI;
 		}
-		if (strstr(saved_command_line, "20625_nt35625b_boe_hlt_b3_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20625_nt35625b_boe_hlt_b3_vdo_lcm_drv")) {
 			pr_info("[TP] touch ic = novatek,nf_nt36525b\n");
 			g_tp_dev_vendor = TP_INX;
 			tp_used_index = nt36525b_boe;
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_truly_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_truly_hd_vdo_lcm_drv")) {
 			pr_info("[TP] touch ic = tchip,ilitek\n");
 			g_tp_dev_vendor = TP_CDOT;
 			tp_used_index = ili9882n_cdot;
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_boe_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_boe_hd_vdo_lcm_drv")) {
 			pr_info("[TP] touch ic = tchip,ilitek,HLT\n");
 			g_tp_dev_vendor = TP_HLT;
 			tp_used_index = ili9882n_hlt;
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_innolux_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_innolux_hd_vdo_lcm_drv")) {
 			pr_info("[TP] touch ic = tchip,ilitek,INX\n");
 			g_tp_dev_vendor = TP_INX;
 			tp_used_index = ili9882n_inx;
 		}
-		if (strstr(saved_command_line, "20015_hx83102_truly_vdo_hd_dsi_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_hx83102_truly_vdo_hd_dsi_lcm_drv")) {
 			pr_info("[TP] touch ic = himax,hx83102d_nf,TRULY\n");
 			g_tp_dev_vendor = TP_TRULY;
 			tp_used_index = himax_83102d;
@@ -599,6 +629,39 @@ bool  tp_judge_ic_match_commandline(struct panel_info *panel_data)
 			g_tp_dev_vendor = TP_INX;
 		}
 		break;
+	case 20608:
+	case 20609:
+	case 0x2060A:
+	case 0x2060B:
+	case 0x206F0:
+	case 0x206FF:
+	case 20796:
+	case 20795:
+	case 0x2070B:
+	case 0x2070C:
+	case 0x2070E:
+	case 21625:
+	case 0x216A0:
+	case 0x216A1:
+	case 0x216B5:
+	case 0x216B6:
+	case 21747:
+	case 21748:
+	case 21749:
+		pr_info("[TP] case 20609\n");
+		is_tp_type_got_in_match = true;
+
+		if (strstr(saved_command_line, "oplus20609_nt36672c_tm_cphy_dsi_vdo_lcm_drv")) {
+			pr_info("[TP] touch ic = novatek,nf_nt6672c\n");
+			g_tp_dev_vendor = TP_TIANMA;
+			tp_used_index = nt36672c;
+		}
+		if (strstr(saved_command_line, "oplus20609_ili7807s_tm_cphy_dsi_vdo_lcm_drv")) {
+			pr_info("[TP] touch ic = novatek,ili9882n(ili7807s)\n");
+			g_tp_dev_vendor = TP_TIANMA;
+			tp_used_index = ili9882n_inx;
+		}
+		break;
 	default:
 		pr_info("other project, no need process here!\n");
 		break;
@@ -705,15 +768,15 @@ int tp_util_get_vendor(struct hw_resource *hw_res, struct panel_info *panel_data
 	if (prj_id == 20615 || prj_id == 20662 || prj_id == 20619 || prj_id == 21609|| prj_id == 21651) {
 		memcpy(panel_data->manufacture_info.version, "focalt_", 7);
 	}
-	if(strstr(saved_command_line, "20131_tianma_nt37701_1080p_dsi_cmd")) {
+	if(strstr(saved_command_line, "oppo20131_tianma_nt37701_1080p_dsi_cmd")) {
 		hw_res->TX_NUM = 18;
 		hw_res->RX_NUM = 40;
 		vendor = "TIANMA";
-	} else if (strstr(saved_command_line, "20131_tianma_nt37701_32_1080p_dsi_cmd")) {
+	} else if (strstr(saved_command_line, "oppo20131_tianma_nt37701_32_1080p_dsi_cmd")) {
 	    vendor = "TIANMA";
-	} else if (strstr(saved_command_line, "20131_boe_nt37800_1080p_dsi_cmd")) {
+	} else if (strstr(saved_command_line, "oppo20131_boe_nt37800_1080p_dsi_cmd")) {
 	    vendor = "BOE";
-	} else if (strstr(saved_command_line, "20131_samsung_ana6705_1080p_dsi_cmd")) {
+	} else if (strstr(saved_command_line, "oppo20131_samsung_ana6705_1080p_dsi_cmd")) {
 		vendor = "SAMSUNG";
 	}
 
@@ -723,19 +786,19 @@ int tp_util_get_vendor(struct hw_resource *hw_res, struct panel_info *panel_data
 		if (strstr(saved_command_line, "nt36672c")) {
 			vendor = "JDI";
 		}
-		if (strstr(saved_command_line, "20625_nt35625b_boe_hlt_b3_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20625_nt35625b_boe_hlt_b3_vdo_lcm_drv")) {
 			vendor = "INX";
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_truly_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_truly_hd_vdo_lcm_drv")) {
 			vendor = "CDOT";
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_boe_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_boe_hd_vdo_lcm_drv")) {
 			vendor = "HLT";
 		}
-		if (strstr(saved_command_line, "20015_ili9882n_innolux_hd_vdo_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_ili9882n_innolux_hd_vdo_lcm_drv")) {
 			vendor = "INX";
 		}
-		if (strstr(saved_command_line, "20015_hx83102_truly_vdo_hd_dsi_lcm_drv")) {
+		if (strstr(saved_command_line, "oppo20015_hx83102_truly_vdo_hd_dsi_lcm_drv")) {
 			vendor = "TRULY";
 		}
 		pr_info("[TP] we config this for FW name vendor:%s\n", vendor);
@@ -770,19 +833,19 @@ int tp_util_get_vendor(struct hw_resource *hw_res, struct panel_info *panel_data
 				prj_id, panel_data->chip_name, vendor);
 		}
 
-	if (strstr(saved_command_line, "19551_samsung_ams644vk01_1080p_dsi_cmd"))
+	if (strstr(saved_command_line, "oppo19551_samsung_ams644vk01_1080p_dsi_cmd"))
 	{
 		memcpy(panel_data->manufacture_info.version, "0xbd2860000", 11); //For 19550 19551 19553 19556 19597
 	}
-	if (strstr(saved_command_line, "19357_samsung_ams644va04_1080p_dsi_cmd"))
+	if (strstr(saved_command_line, "oppo19357_samsung_ams644va04_1080p_dsi_cmd"))
 	{
 		memcpy(panel_data->manufacture_info.version, "0xfa1920000", 11); //For 19357 19358 19359 19354
 	}
-	if (strstr(saved_command_line, "19537_samsung_ams643xf01_1080p_dsi_cmd"))
+	if (strstr(saved_command_line, "oppo19537_samsung_ams643xf01_1080p_dsi_cmd"))
 	{
 		memcpy(panel_data->manufacture_info.version, "0xdd3400000", 11); //For 19536 19537 19538 19539
 	}
-	if (strstr(saved_command_line, "20291_samsung_ams643xy01_1080p_dsi_vdo"))
+	if (strstr(saved_command_line, "oppo20291_samsung_ams643xy01_1080p_dsi_vdo"))
 	{
 		memcpy(panel_data->manufacture_info.version, "0xFA270000", 11); //For 20291 20292 20293 20294 20295
 	}
@@ -1026,7 +1089,7 @@ int tp_util_get_vendor(struct hw_resource *hw_res, struct panel_info *panel_data
 	case 20619:
 	case 21609:
 	case 21651:
-		pr_info("[TP] enter case oplus_20615\n");
+		pr_info("[TP] enter case 20615/20662/20619/21609/21651\n");
 		snprintf(panel_data->fw_name, MAX_FW_NAME_LENGTH,
 				"tp/20615/FW_%s_%s.img",
 				"FT3518", vendor);
@@ -1438,7 +1501,85 @@ int tp_util_get_vendor(struct hw_resource *hw_res, struct panel_info *panel_data
 			panel_data->firmware_headfile.firmware_size = sizeof(FW_2163B_TD4160_TRULY);
 		}
 		break;
-
+	case 20608:
+	case 20609:
+	case 0x2060A:
+	case 0x2060B:
+	case 0x206F0:
+	case 0x206FF:
+	case 20796:
+	case 20795:
+	case 0x2070B:
+	case 0x2070C:
+	case 0x2070E:
+	case 21747:
+	case 21748:
+	case 21749:
+		pr_info("[TP] enter case 20609\n");
+		if (tp_used_index == nt36672c) {
+			snprintf(panel_data->fw_name, MAX_FW_NAME_LENGTH,
+					 "tp/20609/FW_%s_%s.bin",
+					 "NF_NT36672C", vendor);
+			if (panel_data->test_limit_name) {
+				snprintf(panel_data->test_limit_name, MAX_LIMIT_DATA_LENGTH,
+						 "tp/20609/LIMIT_%s_%s.img",
+						 "NF_NT36672C", vendor);
+			}
+			panel_data->manufacture_info.fw_path = panel_data->fw_name;
+			memcpy(panel_data->manufacture_info.version, "RA627_TM_NT_", 12);
+			panel_data->firmware_headfile.firmware_data = FW_20609_NT36672C_TIANMA;
+			panel_data->firmware_headfile.firmware_size = sizeof(FW_20609_NT36672C_TIANMA);
+		}
+		if (tp_used_index == ili9882n_inx) {
+			snprintf(panel_data->fw_name, MAX_FW_NAME_LENGTH,
+					 "tp/20609/FW_%s_%s.bin",
+					 "NF_ILI7807S", vendor);
+			if (panel_data->test_limit_name) {
+				snprintf(panel_data->test_limit_name, MAX_LIMIT_DATA_LENGTH,
+						 "tp/20609/LIMIT_%s_%s.img",
+						 "NF_ILI7807S", vendor);
+			}
+			panel_data->manufacture_info.fw_path = panel_data->fw_name;
+			memcpy(panel_data->manufacture_info.version, "RA627_TM_ILI_", 13);
+			panel_data->firmware_headfile.firmware_data = FW_20609_ILI7807S_TIANMA;
+			panel_data->firmware_headfile.firmware_size = sizeof(FW_20609_ILI7807S_TIANMA);
+		}
+		break;
+	case 21625:
+	case 0x216A0:
+	case 0x216A1:
+	case 0x216B5:
+	case 0x216B6:
+		pr_info("[TP] enter case 21625\n");
+		if (tp_used_index == nt36672c) {
+			snprintf(panel_data->fw_name, MAX_FW_NAME_LENGTH,
+					 "tp/21625/FW_%s_%s.bin",
+					 "NF_NT36672C", vendor);
+			if (panel_data->test_limit_name) {
+				snprintf(panel_data->test_limit_name, MAX_LIMIT_DATA_LENGTH,
+						 "tp/21625/LIMIT_%s_%s.img",
+						 "NF_NT36672C", vendor);
+			}
+			panel_data->manufacture_info.fw_path = panel_data->fw_name;
+			memcpy(panel_data->manufacture_info.version, "AB151_TM_NT_", 12);
+			panel_data->firmware_headfile.firmware_data = FW_20609_NT36672C_TIANMA;
+			panel_data->firmware_headfile.firmware_size = sizeof(FW_20609_NT36672C_TIANMA);
+		}
+		if (tp_used_index == ili9882n_inx) {
+			snprintf(panel_data->fw_name, MAX_FW_NAME_LENGTH,
+					 "tp/21625/FW_%s_%s.bin",
+					 "NF_ILI7807S", vendor);
+			if (panel_data->test_limit_name) {
+				snprintf(panel_data->test_limit_name, MAX_LIMIT_DATA_LENGTH,
+						 "tp/21625/LIMIT_%s_%s.img",
+						 "NF_ILI7807S", vendor);
+			}
+			panel_data->manufacture_info.fw_path = panel_data->fw_name;
+			memcpy(panel_data->manufacture_info.version, "AB151_TM_ILI_", 13);
+			panel_data->firmware_headfile.firmware_data = FW_20609_ILI7807S_TIANMA;
+			panel_data->firmware_headfile.firmware_size = sizeof(FW_20609_ILI7807S_TIANMA);
+		}
+		break;
 	case 20181:
 	case 20355:
 	case 21081:

@@ -409,8 +409,6 @@ int mtk_dbgtop_dfd_timeout(int value)
 {
 	unsigned int tmp;
 
-	pr_debug("%s: before MTK_DBGTOP_LATCH_CTL2(0x%x)\n", __func__,
-		readl(IOMEM(MTK_DBGTOP_LATCH_CTL2)));
 	value <<= MTK_DBGTOP_DFD_TIMEOUT_SHIFT;
 	value &= MTK_DBGTOP_DFD_TIMEOUT_MASK;
 	/* break if dfd timeout >= target value */

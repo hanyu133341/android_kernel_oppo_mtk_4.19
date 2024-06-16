@@ -1317,7 +1317,7 @@ ssize_t oplus_ofp_set_aod_light_mode_attr(struct kobject *obj,
 	return count;
 }
 
-MODULE_AUTHOR("Liuhe Zhong");
-MODULE_DESCRIPTION("OPLUS ofp device");
+MODULE_AUTHOR("Liuhe Zhong <zhongliuhe@oppo.com>");
+MODULE_DESCRIPTION("OPPO ofp device");
 MODULE_LICENSE("GPL v2");
 #endif

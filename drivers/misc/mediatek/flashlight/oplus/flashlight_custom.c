@@ -156,7 +156,11 @@ int Oplus_get_max_duty_torch_custom(int default_max_level)
 	if (is_project(20817) || is_project(20827)
 		|| is_project(20831) || is_project(21881) || is_project(21882)) {
 		return MT6360_LEVEL_TORCH_20817;
-	}else {
+	} else if (is_project(20291) || is_project(20292)
+		|| is_project(20293) || is_project(20294)
+		|| is_project(20295)) {
+		return MT6360_LEVEL_TORCH_20291;
+	} else {
 		return default_max_level;
 	}
 }
@@ -167,7 +171,11 @@ int Oplus_get_max_duty_num_custom(int default_max_level)
 	if (is_project(20817) || is_project(20827)
 		|| is_project(20831) || is_project(21881) || is_project(21882)) {
 		return MT6360_LEVEL_NUM_20817;
-	}else {
+	} else if (is_project(20291) || is_project(20292)
+		|| is_project(20293) || is_project(20294)
+		|| is_project(20295)) {
+		return MT6360_LEVEL_NUM_20291;
+	} else {
 		return default_max_level;
 	}
 }

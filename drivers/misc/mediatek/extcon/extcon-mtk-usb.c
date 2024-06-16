@@ -45,11 +45,11 @@ extern int oplus_get_otg_online_status(void);
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
 /* Add for OTG */
-#ifdef CONFIG_OPLUS_CHARGER_MTK6853
+
 /* Add for single_bat_svooc OTG */
 extern int is_vooc_support_single_batt_svooc(void);
 extern void vooc_enable_cp_for_otg(int en);
-#endif
+
 extern bool oplus_otgctl_by_buckboost(void);
 extern int oplus_otg_enable_by_buckboost(void);
 extern int oplus_otg_disable_by_buckboost(void);
@@ -289,12 +289,12 @@ static int mtk_usb_extcon_set_vbus_v1(bool is_on) {
 	if (is_on) {
 #ifdef OPLUS_FEATURE_CHG_BASIC
 /* Modify for OTG */
-#ifdef CONFIG_OPLUS_CHARGER_MTK6853
+
 		printk("typec vbus_on\n");
 		if (is_vooc_support_single_batt_svooc() == true){
 			vooc_enable_cp_for_otg(1);
 		}
-#endif
+
 		if (oplus_otgctl_by_buckboost()) {
 			oplus_otg_enable_by_buckboost();
 		} else {
@@ -321,11 +321,11 @@ static int mtk_usb_extcon_set_vbus_v1(bool is_on) {
 		} else {
 			charger_dev_enable_otg(primary_charger, false);
 		}
-#ifdef CONFIG_OPLUS_CHARGER_MTK6853
+
 		if (is_vooc_support_single_batt_svooc() == true){
 			vooc_enable_cp_for_otg(0);
 		}
-#endif
+
 #else /* Modify for OTG */
 		charger_dev_enable_otg(primary_charger, false);
 #endif /* Modify for OTG */

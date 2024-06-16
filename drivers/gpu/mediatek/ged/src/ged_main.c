@@ -41,6 +41,10 @@
 #include "ged_ge.h"
 #include "ged_gpu_tuner.h"
 
+#ifdef GED_SKI_SUPPORT
+#include "ged_ski.h"
+#endif
+
 /**
  * ===============================================
  * SECTION : Local functions declaration
@@ -173,41 +177,42 @@ static long ged_dispatch(struct file *pFile,
 
 	/* We make sure the both size are GE 0 integer.
 	 */
-	if (psBridgePackageKM->i32InBufferSize > 0
-		&& psBridgePackageKM->i32OutBufferSize > 0) {
+	if (psBridgePackageKM->i32InBufferSize > 0 &&
+		psBridgePackageKM->i32OutBufferSize > 0) {
+		int32_t inputBufferSize =
+				psBridgePackageKM->i32InBufferSize;
 
-		if (psBridgePackageKM->i32InBufferSize > 0) {
-			int32_t inputBufferSize =
-					psBridgePackageKM->i32InBufferSize;
-
-			if (GED_BRIDGE_COMMAND_GE_ALLOC ==
-					GED_GET_BRIDGE_ID(
-					psBridgePackageKM->ui32FunctionID)) {
-				inputBufferSize = sizeof(int) +
-				sizeof(uint32_t) * GE_ALLOC_STRUCT_NUM;
-			}
-
-			if (inputBufferSize <= KMALLOC_MAX_SIZE)
-				pvIn = kmalloc(inputBufferSize, GFP_KERNEL);
-
-			if (pvIn == NULL)
-				goto dispatch_exit;
-
-			if (ged_copy_from_user(pvIn,
-				psBridgePackageKM->pvParamIn,
-				inputBufferSize) != 0) {
-				GED_LOGE("Failed to ged_copy_from_user\n");
+		if (GED_BRIDGE_COMMAND_GE_ALLOC ==
+				GED_GET_BRIDGE_ID(
+				psBridgePackageKM->ui32FunctionID)) {
+			inputBufferSize = sizeof(int) +
+			sizeof(uint32_t) * GE_ALLOC_STRUCT_NUM;
+			// hardcode region_num = GE_ALLOC_STRUCT_NUM,
+			// need check input buffer size
+			if (psBridgePackageKM->i32InBufferSize <
+				inputBufferSize) {
+				GED_LOGE("Failed to region_num, it must be %d\n",
+					GE_ALLOC_STRUCT_NUM);
 				goto dispatch_exit;
 			}
 		}
 
-		if (psBridgePackageKM->i32OutBufferSize > 0) {
-			pvOut = kzalloc(psBridgePackageKM->i32OutBufferSize,
-				GFP_KERNEL);
+		if (inputBufferSize <= KMALLOC_MAX_SIZE)
+			pvIn = kmalloc(inputBufferSize, GFP_KERNEL);
+		if (pvIn == NULL)
+			goto dispatch_exit;
 
-			if (pvOut == NULL)
-				goto dispatch_exit;
+		if (ged_copy_from_user(pvIn,
+			psBridgePackageKM->pvParamIn,
+			inputBufferSize) != 0) {
+			GED_LOGE("Failed to ged_copy_from_user\n");
+			goto dispatch_exit;
 		}
+
+		pvOut = kzalloc(psBridgePackageKM->i32OutBufferSize,
+			GFP_KERNEL);
+		if (pvOut == NULL)
+			goto dispatch_exit;
 
 		/* Make sure that the UM will never break the KM.
 		 * Check IO size are both matched the size of IO sturct.
@@ -316,11 +321,9 @@ static long ged_dispatch(struct file *pFile,
 			break;
 		}
 
-		if (psBridgePackageKM->i32OutBufferSize > 0) {
-			if (ged_copy_to_user(psBridgePackageKM->pvParamOut,
+		if (ged_copy_to_user(psBridgePackageKM->pvParamOut,
 			pvOut, psBridgePackageKM->i32OutBufferSize) != 0) {
-				goto dispatch_exit;
-			}
+			goto dispatch_exit;
 		}
 	}
 
@@ -476,6 +479,14 @@ static int ged_pdrv_probe(struct platform_device *pdev)
 		goto ERROR;
 	}
 
+#ifdef GED_SKI_SUPPORT
+	err = ged_ski_init();
+	if (unlikely(err != GED_OK)) {
+		GED_LOGE("Failed to init SKI!\n");
+		goto ERROR;
+	}
+#endif
+
 #ifndef GED_BUFFER_LOG_DISABLE
 	ghLogBuf_GPU = ged_log_buf_alloc(512, 128 * 512,
 		GED_LOG_BUF_TYPE_RINGBUFFER, "GPU_FENCE", NULL);
@@ -570,6 +581,10 @@ static void ged_exit(void)
 	ged_log_buf_free(ghLogBuf_GPU);
 	ghLogBuf_GPU = 0;
 #endif /* GED_BUFFER_LOG_DISABLE */
+
+#ifdef GED_SKI_SUPPORT
+	ged_ski_exit();
+#endif
 
 	ged_gpu_tuner_exit();
 

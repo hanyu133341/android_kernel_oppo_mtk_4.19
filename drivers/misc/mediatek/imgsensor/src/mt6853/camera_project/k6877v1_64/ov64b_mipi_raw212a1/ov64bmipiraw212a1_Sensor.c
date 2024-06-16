@@ -2214,23 +2214,23 @@ static kal_uint32 get_default_framerate_by_scenario(
 static kal_uint32 set_test_pattern_mode(kal_bool enable)
 {
     LOG_INF("Jesse+ enable: %d\n", enable);
-     if (enable) { // for solid color
-
-        write_cmos_sensor(0x3019, 0xf0);
-        write_cmos_sensor(0x4308, 0x01);
-        write_cmos_sensor(0x4300, 0x00);
-        write_cmos_sensor(0x4302, 0x00);
-        write_cmos_sensor(0x4304, 0x00);
-        write_cmos_sensor(0x4306, 0x00);
-
-        } else {
-        write_cmos_sensor(0x3019, 0xd2);
-        write_cmos_sensor(0x4308, 0x00);
-        write_cmos_sensor(0x4300, 0x00);
-        write_cmos_sensor(0x4302, 0x00);
-        write_cmos_sensor(0x4304, 0x00);
-        write_cmos_sensor(0x4306, 0x00);
-        }
+    if (enable) { // for solid color
+        write_cmos_sensor(0x3208, 0x00);
+        write_cmos_sensor(0x430b, 0x00);
+        write_cmos_sensor(0x430c, 0x00);
+        write_cmos_sensor(0x4310, 0x00);
+        write_cmos_sensor(0x4311, 0x00);
+        write_cmos_sensor(0x3208, 0x10);
+        write_cmos_sensor(0x3208, 0xa0);
+    } else {
+        write_cmos_sensor(0x3208, 0x00);
+        write_cmos_sensor(0x430b, 0xff);
+        write_cmos_sensor(0x430c, 0xff);
+        write_cmos_sensor(0x4310, 0xff);
+        write_cmos_sensor(0x4311, 0xff);
+        write_cmos_sensor(0x3208, 0x10);
+        write_cmos_sensor(0x3208, 0xa0);
+    }
 
     spin_lock(&imgsensor_drv_lock);
     imgsensor.test_pattern = enable;

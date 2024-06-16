@@ -648,7 +648,7 @@ static int tianma_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 	return 0;
 }
 
-static int oplus_esd_backlight_check(void *dsi, dcs_write_gce cb,
+static int oppo_esd_backlight_check(void *dsi, dcs_write_gce cb,
                 void *handle)
 {
         char bl_tb0[] = {0x51, 0x07, 0xff};
@@ -746,7 +746,7 @@ static int panel_ext_reset(struct drm_panel *panel, int on)
 static struct mtk_panel_funcs ext_funcs = {
 	.reset = panel_ext_reset,
 	.set_backlight_cmdq = tianma_setbacklight_cmdq,
-	.esd_backlight_recovery = oplus_esd_backlight_check,
+	.esd_backlight_recovery = oppo_esd_backlight_check,
 	.ext_param_set = mtk_panel_ext_param_set,
 	.ext_param_get = mtk_panel_ext_param_get,
 	.panel_poweron = lcm_panel_poweron,

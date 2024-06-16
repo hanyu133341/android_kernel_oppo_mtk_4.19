@@ -1194,6 +1194,7 @@ static struct LCM_setting_table lcm_normal_to_aod_sam[] = {
 static int panel_doze_enable(struct drm_panel *panel, void *dsi, dcs_write_gce cb, void *handle)
 {
 	unsigned int i=0;
+//#ifdef VENDOR_EDIT
 	pr_err("debug for lcm %s\n", __func__);
 	aod_state = true;
 //#endif
@@ -1603,7 +1604,7 @@ static bool panel_no_video_cmd_switch_state(struct drm_panel *panel)
 }
 #endif
 
-static int lcm_get_aod_state()
+static int lcm_get_aod_state(void)
 {
 	return aod_state;
 }

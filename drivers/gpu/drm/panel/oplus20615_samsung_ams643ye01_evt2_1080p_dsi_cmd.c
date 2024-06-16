@@ -165,7 +165,6 @@ static struct LCM_setting_table lcm_aod_to_normal[] = {
         /*seed Setting*/
 	/*seed seeting*/
         {REGFLAG_CMD,3,{0xF0,0x5A,0x5A}},
-        {REGFLAG_DELAY,20,{}},
         {REGFLAG_CMD,4,{0x72,0x2C,0x21,0X00}},
         {REGFLAG_CMD,2,{0x5D,0x46}},
         {REGFLAG_CMD,2,{0xF8,0x00}},
@@ -173,7 +172,6 @@ static struct LCM_setting_table lcm_aod_to_normal[] = {
         {REGFLAG_CMD,3,{0xB0,0x16,0x62}},
         {REGFLAG_CMD,22,{0x62, 0xE0, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF}},
         {REGFLAG_CMD,4,{0x72,0x2C,0x01,0X00}},
-        {REGFLAG_DELAY,17,{}},
         {REGFLAG_CMD,3,{0xF0,0xA5,0xA5}},
 /*
         {REGFLAG_DELAY,17,{}},
@@ -817,9 +815,10 @@ static struct mtk_panel_params ext_params = {
 	},
 	.data_rate = 520,
 	.hbm_en_time = 2,
-	.hbm_dis_time = 1,
+	.hbm_dis_time = 2,
 	.oplus_hbm_on_sync_with_flush = 1,
 	.oplus_display_global_dre = 1,
+	.oplus_disable_hdr_d65 = 1,
 #ifdef CONFIG_MTK_ROUND_CORNER_SUPPORT
 	.round_corner_en = 1,
 	.corner_pattern_height = ROUND_CORNER_H_TOP,
@@ -840,6 +839,7 @@ static struct mtk_panel_params ext_params = {
 	.vendor = "AMS644VA04_MTK04_20615",
 	.manufacture = "samsung1024",
 	.dsc_output_fhd = true,
+	.oplus_bypass_color_flag = true,
 };
 
 static struct mtk_panel_params ext_params_120hz = {
@@ -893,9 +893,10 @@ static struct mtk_panel_params ext_params_120hz = {
        },
 	.data_rate = 800,
 	.hbm_en_time = 2,
-	.hbm_dis_time = 1,
+	.hbm_dis_time = 2,
 	.oplus_hbm_on_sync_with_flush = 1,
 	.oplus_display_global_dre = 1,
+	.oplus_disable_hdr_d65 = 1,
 #ifdef CONFIG_MTK_ROUND_CORNER_SUPPORT
 	.round_corner_en = 1,
 	.corner_pattern_height = ROUND_CORNER_H_TOP,
@@ -916,12 +917,15 @@ static struct mtk_panel_params ext_params_120hz = {
 	.vendor = "AMS644VA04_MTK04_20615",
         .manufacture = "samsung1024",
 	.dsc_output_fhd = true,
+	.oplus_bypass_color_flag = true,
 };
 static int mtk_panel_ext_param_set(struct drm_panel *panel,
 			 unsigned int mode)
 {
 	struct mtk_panel_ext *ext = find_panel_ext(panel);
 	int ret = 0;
+	if (ext == NULL)
+        	return 1;
 	if (mode == 0)
 		ext->params = &ext_params;
 	else if (mode == 1)

@@ -1712,8 +1712,8 @@ static void set_mirror_flip(kal_uint8 image_mirror)
 	value_3821 = read_cmos_sensor(0x3821);
 	switch (image_mirror) {
 	case IMAGE_NORMAL:
-		write_cmos_sensor(0x3820, value_3820&(~(1<<2)));//bit2Çå0
-		write_cmos_sensor(0x3821, value_3821|(1<<2));//bit2ÖÃ1
+		write_cmos_sensor(0x3820, value_3820&(~(1<<2)));//bit2Ã‡Ã¥0
+		write_cmos_sensor(0x3821, value_3821|(1<<2));//bit2Ã–Ãƒ1
 		break;
 
 	case IMAGE_V_MIRROR:

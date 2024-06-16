@@ -76,7 +76,9 @@ struct imgsensor_struct {
 /* SENSOR PRIVATE STRUCT FOR CONSTANT*/
 struct imgsensor_info_struct {
     kal_uint32 sensor_id;           //record sensor id defined in Kd_imgsensor.h
+    #ifdef VENDOR_EDIT
     kal_uint16 module_id;
+    #endif
     kal_uint32 checksum_value;      //checksum value for Camera Auto Test
     struct imgsensor_mode_struct pre;       //preview scenario relative information
     struct imgsensor_mode_struct cap;       //capture scenario relative information

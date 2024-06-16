@@ -31,6 +31,7 @@
 #include <mt-plat/upmu_common.h>
 #include <mt-plat/mtk_boot.h>
 #ifdef OPLUS_FEATURE_CHG_BASIC
+#include "../../../../../power/oplus/oplus_chg_track.h"
 #include <linux/delay.h>
 #endif
 
@@ -69,6 +70,8 @@
 #endif
 
 #ifdef OPLUS_FEATURE_CHG_BASIC
+extern int is_vooc_support_single_batt_svooc(void);
+extern bool oplus_chg_get_voocphy_support(void);
 extern bool oplus_chg_wake_update_work(void);
 extern void oplus_chg_set_charger_type_unknown(void);
 extern int oplus_get_flashlight_temp_val_cal(int *temp_uv);
@@ -227,10 +230,6 @@ enum mt6360_pmu_chg_type {
 	MT6360_CHG_TYPE_DCP,
 	MT6360_CHG_TYPE_CDP,
 	MT6360_CHG_TYPE_MAX,
-};
-
-static const char *mt6360_chg_status_name[MT6360_CHG_STATUS_MAX] = {
-	"ready", "progress", "done", "fault",
 };
 
 static const struct mt6360_chg_platform_data def_platform_data = {
@@ -538,7 +537,8 @@ static int mt6360_psy_chg_type_changed(struct mt6360_pmu_chg_info *mpci)
 #endif /* CONFIG_MT6360_PMU_CHARGER_TYPE_DETECT */
 
 #if defined(CONFIG_MACH_MT6877) || defined(CONFIG_MACH_MT6893) \
-	|| defined(CONFIG_MACH_MT6885) || defined(CONFIG_MACH_MT6785)
+	|| defined(CONFIG_MACH_MT6885) || defined(CONFIG_MACH_MT6785) \
+	|| defined(CONFIG_MACH_MT6853)
 static int DPDM_Switch_TO_CHG_upstream(struct mt6360_pmu_chg_info *mpci,
 						bool switch_to_chg)
 {
@@ -569,7 +569,8 @@ static int mt6360_set_usbsw_state(struct mt6360_pmu_chg_info *mpci, int state)
 
 	/* Switch D+D- to AP/MT6360 */
 #if defined(CONFIG_MACH_MT6877) || defined(CONFIG_MACH_MT6893) \
-	|| defined(CONFIG_MACH_MT6885) || defined(CONFIG_MACH_MT6785)
+	|| defined(CONFIG_MACH_MT6885) || defined(CONFIG_MACH_MT6785) \
+	|| defined(CONFIG_MACH_MT6853)
 	if (state == MT6360_USBSW_CHG)
 		DPDM_Switch_TO_CHG_upstream(mpci, true);
 	else
@@ -1672,8 +1673,18 @@ static int mt6360_enable_power_path(struct charger_device *chg_dev,
 	struct mt6360_pmu_chg_info *mpci = charger_get_data(chg_dev);
 
 	dev_dbg(mpci->dev, "%s: en = %d\n", __func__, en);
+#ifdef OPLUS_FEATURE_CHG_BASIC
+	if ((true == is_mtksvooc_project && is_vooc_support_single_batt_svooc() == false) || true == oplus_chg_get_voocphy_support()) {
+		return mt6360_pmu_reg_update_bits(mpci->mpi, MT6360_PMU_CHG_CTRL1,
+				MT6360_MASK_FORCE_SLEEP, 0xff);
+	} else {
+		return mt6360_pmu_reg_update_bits(mpci->mpi, MT6360_PMU_CHG_CTRL1,
+						MT6360_MASK_FORCE_SLEEP, en ? 0 : 0xff);
+	}
+#else
 	return mt6360_pmu_reg_update_bits(mpci->mpi, MT6360_PMU_CHG_CTRL1,
 					MT6360_MASK_FORCE_SLEEP, en ? 0 : 0xff);
+#endif /*OPLUS_FEATURE_CHG_BASIC*/
 }
 
 static int mt6360_is_power_path_enabled(struct charger_device *chg_dev,
@@ -2043,69 +2054,6 @@ static int mt6360_get_zcv(struct charger_device *chg_dev, u32 *uV)
 	return 0;
 }
 
-static int mt6360_dump_registers(struct charger_device *chg_dev)
-{
-	struct mt6360_pmu_chg_info *mpci = charger_get_data(chg_dev);
-	int i, ret = 0;
-	int adc_vals[MT6360_ADC_MAX];
-	u32 ichg = 0, aicr = 0, mivr = 0, cv = 0, ieoc = 0;
-	enum mt6360_charging_status chg_stat = MT6360_CHG_STATUS_READY;
-	bool chg_en = false;
-	u8 chg_stat1 = 0, chg_ctrl[2] = {0};
-
-	dev_dbg(mpci->dev, "%s\n", __func__);
-	ret = mt6360_get_ichg(chg_dev, &ichg);
-	ret += mt6360_get_aicr(chg_dev, &aicr);
-	ret += mt6360_get_mivr(chg_dev, &mivr);
-	ret += mt6360_get_cv(chg_dev, &cv);
-	ret += mt6360_get_ieoc(mpci, &ieoc);
-	ret += mt6360_get_charging_status(mpci, &chg_stat);
-	ret += mt6360_is_charger_enabled(mpci, &chg_en);
-	if (ret < 0) {
-		dev_notice(mpci->dev, "%s: parse chg setting fail\n", __func__);
-		return ret;
-	}
-	for (i = 0; i < MT6360_ADC_MAX; i++) {
-		/* Skip unnecessary channel */
-		if (i >= MT6360_ADC_NODUMP)
-			break;
-		ret = iio_read_channel_processed(mpci->channels[i],
-						 &adc_vals[i]);
-		if (ret < 0) {
-			dev_err(mpci->dev,
-				"%s: read [%s] adc fail(%d)\n",
-				__func__, mt6360_adc_chan_list[i], ret);
-			return ret;
-		}
-	}
-	ret = mt6360_pmu_reg_read(mpci->mpi, MT6360_PMU_CHG_STAT1);
-	if (ret < 0)
-		return ret;
-	chg_stat1 = ret;
-
-	ret = mt6360_pmu_reg_block_read(mpci->mpi, MT6360_PMU_CHG_CTRL1,
-					2, chg_ctrl);
-	if (ret < 0)
-		return ret;
-	dev_info(mpci->dev,
-		 "%s: ICHG = %dmA, AICR = %dmA, MIVR = %dmV, IEOC = %dmA, CV = %dmV\n",
-		 __func__, ichg / 1000, aicr / 1000, mivr / 1000, ieoc / 1000,
-		 cv / 1000);
-	dev_info(mpci->dev,
-		 "%s: VBUS = %dmV, IBUS = %dmA, VSYS = %dmV, VBAT = %dmV, IBAT = %dmA\n",
-		 __func__,
-		 adc_vals[MT6360_ADC_VBUSDIV5] / 1000,
-		 adc_vals[MT6360_ADC_IBUS] / 1000,
-		 adc_vals[MT6360_ADC_VSYS] / 1000,
-		 adc_vals[MT6360_ADC_VBAT] / 1000,
-		 adc_vals[MT6360_ADC_IBAT] / 1000);
-	dev_info(mpci->dev, "%s: CHG_EN = %d, CHG_STATUS = %s, CHG_STAT1 = 0x%02X\n",
-		 __func__, chg_en, mt6360_chg_status_name[chg_stat], chg_stat1);
-	dev_info(mpci->dev, "%s: CHG_CTRL1 = 0x%02X, CHG_CTRL2 = 0x%02X\n",
-		 __func__, chg_ctrl[0], chg_ctrl[1]);
-	return 0;
-}
-
 static int mt6360_do_event(struct charger_device *chg_dev, u32 event,
 				   u32 args)
 {
@@ -2277,7 +2225,6 @@ static const struct charger_ops mt6360_chg_ops = {
 	.reset_eoc_state = mt6360_reset_eoc_state,
 	.is_charging_done = mt6360_is_charging_done,
 	.get_zcv = mt6360_get_zcv,
-	.dump_registers = mt6360_dump_registers,
 	/* event */
 	.event = mt6360_do_event,
 	/* TypeC */
@@ -2608,6 +2555,9 @@ static void mt6360_hvdcp_result_check_work(struct work_struct *work)
                 dev_err(mpci->dev, "%s: HVDCP detect\n", __func__);
                 mpci->hvdcp_type = POWER_SUPPLY_TYPE_USB_HVDCP;
                 ret = mt6360_pmu_reg_update_bits(mpci->mpi, MT6360_PMU_DPDM_CTRL, 0x1F, 0x15);
+#ifdef OPLUS_FEATURE_CHG_BASIC
+                oplus_chg_track_record_chg_type_info();
+#endif
                 if (ret < 0)
                         dev_err(mpci->dev, "%s: fail to write dpdm_ctrl\n", __func__);
         } else {
@@ -2650,6 +2600,9 @@ static void mt6360_hvdcp_work(struct work_struct *work)
 		dev_err(mpci->dev, "%s: HVDCP detect\n", __func__);
 		mpci->hvdcp_type = POWER_SUPPLY_TYPE_USB_HVDCP;
 		ret = mt6360_pmu_reg_update_bits(mpci->mpi, MT6360_PMU_DPDM_CTRL, 0x1F, 0x15);
+#ifdef OPLUS_FEATURE_CHG_BASIC
+		oplus_chg_track_record_chg_type_info();
+#endif
 		if (ret < 0)
 			dev_err(mpci->dev, "%s: fail to write dpdm_ctrl\n", __func__);
 	} else {
@@ -3206,7 +3159,7 @@ static int mt6360_set_shipping_mode(struct mt6360_pmu_chg_info *mpci)
 		goto out;
 	}
 
-#if defined(CONFIG_OPLUS_CHARGER_MTK6853) || defined(CONFIG_OPLUS_CHARGER_MTK6877)
+#ifdef OPLUS_FEATURE_CHG_BASIC
 	data = 0xC0;
 #else
 	data = 0x80;

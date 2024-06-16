@@ -411,7 +411,7 @@ pinctrl-names = "default",
 	pinctrl-2 = <&dischg_disable>;
 	pinctrl-3 = <&charger_pins_eint_output0>;
 	pinctrl-4 = <&charger_pins_eint_output1>;
-	//for oplus chg framework:
+	//for oppo chg framework:
 	qcom,smart_charging_screenoff;
 	qcom,pd_input_current_charger_ma = <1500>;
 	qcom,qc_input_current_charger_ma = <1500>;
@@ -1247,10 +1247,10 @@ pinctrl-names = "default",
 	};
 
 	oplus_project:oplus_project {
-		compatible = "oplus,oplus_project";
+		compatible = "oppo,oplus_project";
 	};
 	oplus_devinfo:oplus_devinfo {
-		compatible = "oplus-devinfo";
+		compatible = "oppo-devinfo";
 
 		main-sub {
 			compatible = "hw-match, main-sub";
@@ -1474,6 +1474,27 @@ pinctrl-names = "default",
         Hw,sim_det = <&pio 77 0x00>;
     };
 //#endif /* OPLUS_FEATURE_TP_BASIC */
+
+	oplus,track-charge {
+                compatible = "oplus,track-charge";
+                track,fast_chg_break_t_thd = <1000>;
+                track,general_chg_break_t_thd = <200>;
+                track,voocphy_type = <2>;
+                track,wired_max_power = <33000>;
+                track,wired_fast_chg_scheme = <4>;
+        };
+
+        mediatek_phy_tuning: mediatek_phy_tuning {
+                phy_tuning {
+                        compatible = "mediatek,phy_tuning";
+                        eye-vrt = <6>;
+                        eye-term = <6>;
+                        eye-rev6 = <3>;
+                        host-eye-vrt = <6>;
+                        host-eye-term = <6>;
+                        host-eye-rev6 = <3>;
+                };
+        };
 };
 
 /* GPS GPIO standardization start */
@@ -1546,13 +1567,13 @@ pinctrl-names = "default",
 	pinctrl-0 = <&gpio_id0_default>;
 	//goodix_3626 {
 		//oplus,fp-id = <1>; /* fp id mapping table */
-		//vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		//vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		//eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		//chip-name = "G_3626";  /* /proc/fp_id, will be displayed in engineer menu  */
 	//};
 	fpc_id {
 		oplus,fp-id = <0>; /* fp id mapping table */
-		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <19>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "F_1542_REAL";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};

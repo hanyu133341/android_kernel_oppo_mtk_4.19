@@ -107,6 +107,8 @@ enum wusb3801_mode {
 	REVERSE_CHG_SOURCE,
 };
 
+extern int register_device_proc(char *name, char *version, char *vendor);
+
 static int wusb3801_read_device(void *client, u32 reg, int len, void *dst)
 {
 	struct i2c_client *i2c = (struct i2c_client *)client;
@@ -1098,6 +1100,22 @@ static ssize_t typec_cc_orientation_show(struct device *dev,
 DEVICE_ATTR(typec_cc_orientation, S_IRUGO, typec_cc_orientation_show, NULL);
 #endif /*  __TEST_CC_PATCH__	 */
 
+static void register_typec_devinfo(void)
+{
+#ifndef CONFIG_DISABLE_OPLUS_FUNCTION
+	int ret = 0;
+	char *version;
+	char *manufacture;
+
+	version = "wusb3801";
+	manufacture = "Will Semiconductor Ltd.";
+
+	ret = register_device_proc("typec", version, manufacture);
+	if (ret)
+		pr_err("register_typec_devinfo fail\n");
+#endif
+}
+
 static int wusb3801_i2c_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
@@ -1119,6 +1137,8 @@ static int wusb3801_i2c_probe(struct i2c_client *client,
 		if (chip_id < 0)
 			return chip_id;
 	}
+
+	register_typec_devinfo();
 
 	chip = devm_kzalloc(&client->dev, sizeof (*chip), GFP_KERNEL);
 	if (!chip)

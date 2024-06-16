@@ -1,9 +1,9 @@
 /************************************************************************************
-** File: - android\kernel\include\soc\oplus\mmkey_log.h
-** Copyright (C), 2008-2015, OPLUS Mobile Comm Corp., Ltd
+** File: - android\kernel\include\soc\oppo\mmkey_log.h
+** Copyright (C), 2008-2015, OPPO Mobile Comm Corp., Ltd
 **
 ** Description:
-**      oplus key log multimedia issue id header file
+**      oppo key log multimedia issue id header file
 ** Version: 1.0
 ** --------------------------- Revision History: --------------------------------
 **  <author><data>      <desc>

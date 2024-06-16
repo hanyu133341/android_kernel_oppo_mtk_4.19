@@ -475,6 +475,17 @@
        };
 };
 
+&odm {
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <2>;
+		track,wired_max_power = <33000>;
+		track,wired_fast_chg_scheme = <4>;
+	};
+};
+
 &lk_charger {
         support_tuv_authentication;
 };
@@ -1171,6 +1182,8 @@ pinctrl-names = "default",
 		pressure_report_support;
 		health_monitor_v2_support;
 		fw_update_app_support;
+		exception_upload_support;
+		shutdown_support;
 
 		touchpanel,button-type = <4>;
 	};
@@ -1400,9 +1413,9 @@ pinctrl-names = "default",
 	};
 	vibrator0:vibrator@0 {
 		compatible = "mediatek,vibrator";
-		vib_timer = <25>;
-		vib_limit = <9>;
-		vib_vol= <9>;
+		vib_timer = <30>;
+		vib_limit = <0>;
+		vib_vol= <11>;
 	};
 	sensor_fb: sensor_fb {
 		compatible = "oplus,sensor-feedback";

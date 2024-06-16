@@ -724,7 +724,7 @@ static int chg_sched(struct task_struct *tsk, bool enter)
 }
 
 /* TODO use task comm may not safe. */
-inline is_allocator_svc(struct task_struct *tsk)
+inline int is_allocator_svc(struct task_struct *tsk)
 {
 	return (tsk->tgid == alloc_svc_tgid);
 }
@@ -1970,7 +1970,7 @@ static int ion_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
 
 	if (ion_iommu_heap_type(buffer) ||
 	    buffer->heap->type == (int)ION_HEAP_TYPE_SYSTEM) {
-		IONMSG("%s iommu device, to cache sync\n", __func__);
+		//IONMSG("%s iommu device, to cache sync\n", __func__);
 
 		mutex_lock(&buffer->lock);
 		list_for_each_entry(a, &buffer->attachments, list) {
@@ -1993,7 +1993,7 @@ static int ion_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
 
 	if (ion_iommu_heap_type(buffer) ||
 	    buffer->heap->type == (int)ION_HEAP_TYPE_SYSTEM) {
-		IONMSG("%s iommu device, to cache sync\n", __func__);
+		//IONMSG("%s iommu device, to cache sync\n", __func__);
 
 		mutex_lock(&buffer->lock);
 		list_for_each_entry(a, &buffer->attachments, list) {

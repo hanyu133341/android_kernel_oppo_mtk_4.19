@@ -1403,7 +1403,7 @@ static void read_module_data(void)
     for(i = 2; i < 8; i++) {
        gImgEepromInfo.camNormdata[2][i] = Eeprom_1ByteDataRead(0x04+i, 0xA2);
     }
-    for (i = 0; i < OPLUS_CAMERASN_LENS; i ++) {
+    for (i = 0; i < OPPO_CAMERASN_LENS; i ++) {
        gImgEepromInfo.camNormdata[2][8+i] = Eeprom_1ByteDataRead(0xB0+i, 0xA2);
     }
     /*Read stereo eeprom data*/

@@ -200,6 +200,7 @@ static struct SENSOR_WINSIZE_INFO_STRUCT imgsensor_winsize_info[6] = {
     {1600, 1200, 0, 0, 1600, 1200, 1600, 1200, 0000, 0000, 1600, 1200, 0, 0, 1600, 1200}  /* custom 24fps */
 };
 
+// #ifdef VENDOR_EDIT
 //
 // static kal_uint16 read_module_id(void)
 // {

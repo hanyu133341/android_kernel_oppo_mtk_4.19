@@ -105,14 +105,14 @@ TRACE_EVENT(ccci_skb_rx,
 #define DPMA_DRB_LOG(fmt, args...) \
 do { \
 	ccci_dump_write(0, CCCI_DUMP_DPMA_DRB, 0, fmt, ##args); \
-	pr_info("[ccci]" fmt, ##args); \
+	pr_debug("[ccci]" fmt, ##args); \
 } while (0)
 
 #define DPMA_DRB_LOG_TIME(fmt, args...) \
 do { \
 	ccci_dump_write(0, CCCI_DUMP_DPMA_DRB|CCCI_DUMP_TIME_FLAG, \
 			0, fmt, ##args); \
-	pr_info("[ccci]" fmt, ##args); \
+	pr_debug("[ccci]" fmt, ##args); \
 } while (0)
 
 #define DPMA_DRB_DATA_INFO(fmt, args...) \
@@ -449,7 +449,7 @@ static void dump_drb_queue_data(unsigned int qno)
 	i = 0;
 	while (i < count) {
 		DPMA_DRB_DATA_INFO("%08X(%04d): %016llX %016llX %016llX %016llX %016llX %016llX %016llX %016llX\n",
-			(u32)data_64ptr, (i * 8),
+			(uintptr_t)data_64ptr, (i * 8),
 			*data_64ptr, *(data_64ptr + 1),
 			*(data_64ptr + 2), *(data_64ptr + 3),
 			*(data_64ptr + 4), *(data_64ptr + 5),
@@ -462,7 +462,7 @@ static void dump_drb_queue_data(unsigned int qno)
 	if (mod64 > 0) {
 		data_8ptr = (u8 *)data_64ptr;
 
-		DPMA_DRB_DATA_INFO("%08X(%04d):", (u32)data_8ptr, count * 8);
+		DPMA_DRB_DATA_INFO("%08X(%04d):", (uintptr_t)data_8ptr, count * 8);
 
 		for (i = 0; i < mod64; i++) {
 			if ((i % 8) == 0)
@@ -922,7 +922,7 @@ static int dpmaif_net_rx_push_thread(void *arg)
 		skb = ccci_skb_dequeue(&queue->skb_list);
 		if (!skb)
 			continue;
-#ifdef MT6297
+#if defined(MT6297) && defined(CONFIG_MTK_ECCCI_NET_SPEED_MONITOR)
 		mtk_ccci_add_dl_pkt_size(skb->len);
 #endif
 #ifndef CCCI_KMODULE_ENABLE
@@ -3097,7 +3097,7 @@ retry:
 		tx_force_md_assert("HW_REG_CHK_FAIL");
 		ret = 0;
 	}
-#ifdef MT6297
+#if defined(MT6297) && defined(CONFIG_MTK_ECCCI_NET_SPEED_MONITOR)
 	if (ret == 0)
 		mtk_ccci_add_ul_pkt_size(total_size);
 #endif
@@ -4319,10 +4319,11 @@ void dpmaif_hw_reset(unsigned char md_id)
 
 	/* pre- DPMAIF HW reset: bus-protect */
 #ifdef MT6297
-	regmap_read(dpmaif_ctrl->plat_val.infra_ao_base, 0, &reg_value);
+	//#ifdef OPLUS_BUG_COMPATIBILITY
+	reg_value = ccci_read32(infra_ao_mem_base, 0);
 	reg_value &= ~INFRA_PROT_DPMAIF_BIT;
-	regmap_write(dpmaif_ctrl->plat_val.infra_ao_base,
-		0,reg_value);
+	ccci_write32(infra_ao_mem_base, 0, reg_value);
+	//#endif OPLUS_BUG_COMPATIBILITY
 	CCCI_REPEAT_LOG(md_id, TAG, "%s:set prot:0x%x\n", __func__, reg_value);
 #else
 	regmap_write(dpmaif_ctrl->plat_val.infra_ao_base,
@@ -4343,6 +4344,8 @@ void dpmaif_hw_reset(unsigned char md_id)
 	CCCI_NORMAL_LOG(md_id, TAG,
 		"infra_topaxi_protecten_1: 0x%x\n", reg_value);
 #endif
+	udelay(500);
+
 	/* DPMAIF HW reset */
 	CCCI_DEBUG_LOG(md_id, TAG, "%s:rst dpmaif\n", __func__);
 	/* reset dpmaif hw: AO Domain */
@@ -4356,6 +4359,8 @@ void dpmaif_hw_reset(unsigned char md_id)
 #endif
 	regmap_write(dpmaif_ctrl->plat_val.infra_ao_base,
 		INFRA_RST0_REG_AO, reg_value);
+	udelay(500);
+
 	CCCI_BOOTUP_LOG(md_id, TAG, "%s:clear reset\n", __func__);
 	/* reset dpmaif clr */
 #ifndef MT6297
@@ -4367,6 +4372,8 @@ void dpmaif_hw_reset(unsigned char md_id)
 	regmap_write(dpmaif_ctrl->plat_val.infra_ao_base,
 		INFRA_RST1_REG_AO, reg_value);
 	CCCI_BOOTUP_LOG(md_id, TAG, "%s:done\n", __func__);
+
+	udelay(500);
 
 	/* reset dpmaif hw: PD Domain */
 #ifdef MT6297
@@ -4380,6 +4387,9 @@ void dpmaif_hw_reset(unsigned char md_id)
 	regmap_write(dpmaif_ctrl->plat_val.infra_ao_base,
 		INFRA_RST0_REG_PD, reg_value);
 	CCCI_BOOTUP_LOG(md_id, TAG, "%s:clear reset\n", __func__);
+
+	udelay(500);
+
 	/* reset dpmaif clr */
 #ifndef MT6297
 	reg_value = regmap_read(dpmaif_ctrl->plat_val.infra_ao_base,
@@ -4769,7 +4779,7 @@ int ccci_dpmaif_hif_init(struct device *dev)
 		&ccci_hif_dpmaif_ops);
 	register_syscore_ops(&dpmaif_sysops);
 
-#ifdef MT6297
+#if defined(MT6297) && defined(CONFIG_MTK_ECCCI_NET_SPEED_MONITOR)
 	mtk_ccci_speed_monitor_init();
 #endif
 	atomic_set(&dpmaif_ctrl->suspend_flag, 0);

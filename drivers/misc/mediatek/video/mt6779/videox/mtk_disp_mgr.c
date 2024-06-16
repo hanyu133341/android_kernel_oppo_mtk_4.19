@@ -91,8 +91,8 @@
  * modify for fingerprint notify frigger
  */
 #include <linux/fb.h>
-extern bool oplus_fp_notify_down_delay;
-extern bool oplus_fp_notify_up_delay;
+extern bool oppo_fp_notify_down_delay;
+extern bool oppo_fp_notify_up_delay;
 extern void fingerprint_send_notify(struct fb_info *fbi, uint8_t fingerprint_op_mode);
 extern bool ds_rec_fpd;
 extern bool doze_rec_fpd;
@@ -1126,7 +1126,7 @@ long __frame_config(unsigned long arg)
 		* add for fingerprint notify frigger
 		*/
 		if (oplus_display_fppress_support) {
-			if (oplus_fp_notify_down_delay && ((cfg->hbm_en & 0x2) > 0)) {
+			if (oppo_fp_notify_down_delay && ((cfg->hbm_en & 0x2) > 0)) {
 				/*
 				* modify for ramless aod fingerprint unlock,
 				* no uiready should be sent on ramless aod cmd mode
@@ -1134,7 +1134,7 @@ long __frame_config(unsigned long arg)
 				if (oplus_display_aod_ramless_support && !primary_display_is_video_mode()) {
 					printk("ramless aod cmd mode, do not send uiready1\n");
 				} else {
-					oplus_fp_notify_down_delay = false;
+					oppo_fp_notify_down_delay = false;
 					fingerprint_send_notify(NULL, 1);
 				}
 			}
@@ -1156,8 +1156,8 @@ long __frame_config(unsigned long arg)
 	/*
 	* add for fingerprint notify frigger
 	*/
-	if (oplus_fp_notify_up_delay && ((cfg->hbm_en & 0x2) == 0)) {
-		oplus_fp_notify_up_delay = false;
+	if (oppo_fp_notify_up_delay && ((cfg->hbm_en & 0x2) == 0)) {
+		oppo_fp_notify_up_delay = false;
 		fingerprint_send_notify(NULL, 0);
 	}
 /* #endif */

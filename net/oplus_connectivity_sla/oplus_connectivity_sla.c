@@ -737,15 +737,14 @@ static int mark_game_app_skb(struct nf_conn *ct, struct sk_buff *skb,
 		if (iph &&
 			(IPPROTO_UDP == iph->protocol ||
 				IPPROTO_TCP == iph->protocol)) {
-
-			//WZRY can not switch tcp packets
+			/*For WZRY, switch tcp and udp packets*/
+			/*
 			if (GAME_WZRY == game_index &&
 				IPPROTO_TCP == iph->protocol) {
 				return SLA_SKB_ACCEPT;
 			}
-
+			*/
 			ct_mark	= get_ct_mark(ct) & MARK_MASK;
-
 			if (GAME_CJZC == game_index &&
 				IPPROTO_TCP == iph->protocol &&
 				((XT_STATE_BIT(ctinfo) & XT_STATE_BIT(IP_CT_ESTABLISHED)) ||
@@ -908,12 +907,12 @@ static int sla_mark_skb(struct sk_buff *skb, const struct nf_hook_state *state)
 #if 0
 
 //calc white list app cell bytes
-	if (ct->oplus_app_type >= WHITE_APP_BASE &&
-		ct->oplus_app_type < DUAL_STA_APP_BASE) {
+	if (ct->oppo_app_type >= WHITE_APP_BASE &&
+		ct->oppo_app_type < DUAL_STA_APP_BASE) {
 		ct_mark = ct->mark & MARK_MASK;
 
 		if (CELL_MARK == ct_mark) {
-			index = ct->oplus_app_type - WHITE_APP_BASE;
+			index = ct->oppo_app_type - WHITE_APP_BASE;
 
 			if (index < WHITE_APP_NUM) {
 				white_app_list.cell_bytes[index] += skb->len;

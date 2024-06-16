@@ -150,7 +150,7 @@ pinctrl-names = "default", "dischg_enable", "dischg_disable";
 	pinctrl-1 = <&dischg_enable>;
 	pinctrl-2 = <&dischg_disable>;
 
-	//for oplus chg framework:
+	//for oppo chg framework:
 	qcom,input_current_charger_ma = <2200>;
 	qcom,input_current_usb_ma = <500>;
 	qcom,input_current_cdp_ma = <1500>;
@@ -878,10 +878,10 @@ pinctrl-names = "default", "dischg_enable", "dischg_disable";
 		vib_vol= <11>;
 	};
 	oplus_project:oplus_project {
-		compatible = "oplus,oplus_project";
+		compatible = "oppo,oplus_project";
 	};
 	oplus_devinfo:oplus_devinfo {
-		compatible = "oplus-devinfo";
+		compatible = "oppo-devinfo";
 
 		main-sub {
 			compatible = "hw-match, main-sub";
@@ -1177,13 +1177,13 @@ pinctrl-names = "default", "dischg_enable", "dischg_disable";
 	pinctrl-0 = <&gpio_id0_default>;
 	goodix_3626 {
 		oplus,fp-id = <1>; /* fp id mapping table */
-		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <16>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "G_3626";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};
 	fpc_id {
 		oplus,fp-id = <0>; /* fp id mapping table */
-		vendor-chip = <17>; /* please refer to the struct fp_vendor_t in oplus_fp_commmon.n */
+		vendor-chip = <17>; /* please refer to the struct fp_vendor_t in oppo_fp_commmon.n */
 		eng-menu = "-1,-1"; /* represents SNR, inclination test item in engineer menu, and 0/1 means off/on */
 		chip-name = "F_1541";  /* /proc/fp_id, will be displayed in engineer menu  */
 	};

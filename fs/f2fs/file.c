@@ -778,6 +778,8 @@ int f2fs_truncate(struct inode *inode)
 {
 	int err;
 
+        struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+
 	if (unlikely(f2fs_cp_error(F2FS_I_SB(inode))))
 		return -EIO;
 
@@ -803,7 +805,7 @@ int f2fs_truncate(struct inode *inode)
 			return err;
 	}
 
-	err = f2fs_truncate_blocks(inode, i_size_read(inode), true);
+	err = f2fs_truncate_blocks(inode, i_size_read(inode), READ_ONCE(sbi->cp_rwsem.owner) != current);
 	if (err)
 		return err;
 

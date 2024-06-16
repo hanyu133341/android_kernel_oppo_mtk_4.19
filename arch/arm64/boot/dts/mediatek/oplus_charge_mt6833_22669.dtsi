@@ -387,9 +387,10 @@
 	qcom,vbatt_pdqc_to_5v_thr = <3400>;
 
 	qcom,dual_charger_support = <1>;
-	qcom,slave_pct = <30>;
-	qcom,slave_chg_enable_ma = <2400>;
-	qcom,slave_chg_disable_ma = <2200>;
+	qcom,slave_pct = <50>;
+	qcom,slave_chg_enable_ma = <2000>;
+	qcom,slave_chg_disable_ma = <1700>;
+	qcom,old_smart_charge_standard;    /*New items are not available*/
 
 	qcom,step1_current_ma = <3400>;		/*3400ma*/
 	qcom,step2_current_ma = <3400>;		/*3400ma*/
@@ -512,14 +513,24 @@
 };
 
 &odm {
-	usbphy_tuning: usbphy_tuning {
-		compatible = "mediatek,phy_tuning";
-		u2_vrt_ref = <7>;
-		u2_term_ref = <7>;
-		u2_enhance = <3>;
-		host_u2_vrt_ref = <6>;
-		host_u2_term_ref = <7>;
-		host_u2_enhance = <3>;
+	mediatek_phy_tuning: mediatek_phy_tuning {
+		phy_tuning {
+			compatible = "mediatek,phy_tuning";
+			eye-vrt = <7>;
+			eye-term = <7>;
+			eye-rev6 = <3>;
+			host-eye-vrt = <7>;
+			host-eye-term = <6>;
+			host-eye-rev6 = <3>;
+		};
 	};
+
+        oplus,track-charge {
+                compatible = "oplus,track-charge";
+                track,fast_chg_break_t_thd = <1000>;
+                track,general_chg_break_t_thd = <200>;
+                track,wired_max_power = <18000>;
+                track,wired_fast_chg_scheme = <6>;
+        };
 };
 //#endif /*OPLUS_FEATURE_CHG_BASIC*/

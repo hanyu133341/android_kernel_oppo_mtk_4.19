@@ -8,7 +8,7 @@
  * Description     : file to set flashlight ntc as a mtk thermal zone
  * -------------Rivision History-----------------------------------------
  * <version>      <date>            <author>                                      <Modify.desc>
- * OPLUS Mobile Comm Proprietary and Confidential.
+ * OPPO Mobile Comm Proprietary and Confidential.
  *************************************************************************/
 
 #include <linux/version.h>

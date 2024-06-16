@@ -123,8 +123,9 @@
 		touchpanel,touchmajor-limit = <128 216>;
 		touchpanel,elimination-range = <20 200 200>;
 		//touchpanel,int-mode = <1>; /*0: interrupt and disable, 1:interrupt and not disable*/
-		touchpanel,smooth-level = <0 90 105 120 135 160>;
-		touchpanel,sensitive-level = <0 20 16 13 10 5>;
+		touchpanel,smooth-level = <0 110 115 120 140 155>;
+		touchpanel,smooth-level-charging = <0 110 115 120 140 155>;
+		touchpanel,sensitive-level = <0 19 16 14 13 10>;
 		touchpanel,tp-index = <0>;
 		touchpanel,high-frame-rate-time = <60>;
 
@@ -141,20 +142,26 @@
 		prevention,makeup_cnt_weight = <4 1 2 2 2>;
 		prevention,large_corner_range = <1920 4800>;
 		prevention,large_corner_judge_condition = <500 300 1600 6 6>;
-		prevention,trx_reject_condition = <7 6 6>;
-		prevention,trx_strict_reject_condition = <6 5 5>;
+		prevention,trx_reject_condition = <8 7 7>;
+		prevention,trx_strict_reject_condition = <7 6 6>;
 		prevention,large_judge_time_ms = <500 50 30>;
 		prevention,large_exit_condition = <15 12 2>;
 		prevention,single_channel_width = <512 512>;
 		prevention,normal_tap_condition = <10 300>;
-		prevention,long_edge_condition = <230 100 180 120>;
+		prevention,long_edge_condition = <230 100 180 80>;
 		prevention,long_strict_edge_condition = <170 80>;
 		prevention,long_fingerhold_condition = <50 6 4 4>;
-		prevention,short_edge_condition = <230 100 180 120>;
+		prevention,short_edge_condition = <230 100 180 80>;
 		prevention,short_strict_edge_condition = <160 60>;
 		prevention,large_strict_exit_condition = <5 5>;
 		prevention,top_corner_config = <800 2400 760>;
 		prevention,edge_swipe_config = <480 1600>;
+
+		prevention,curved_screen_V4;
+		prevention,long_fingerhold_condition2 = <1120 3200 0 0>;
+		prevention,top_corner_config2 =<3 80 420 2400 0>;
+		prevention,hor_long_top_corner_config =<480 3200 0 0>;
+		prevention,top_middle_config =<17280 1600 1600 0>;
 
 		/* SW Support Feature Control */
 		//esd_handle_support;
@@ -184,6 +191,8 @@
 		irq_need_dev_resume_ok;
 		sportify_aod_gesture_support;
 		black_gesture_indep_support;
+		thermal_detect_support;
+		exception_upload_support;
 
 		/*
 		 *Virtual Key Config:
@@ -753,7 +762,7 @@
 	};
 /* sensor end */
 
-/* OPLUS_BUG_STABILITY oplus project start */
+/* OPLUS_BUG_STABILITY oppo project start */
 	oplus_project:oplus_project {
 		compatible = "oplus,oplus_project";
 	};
@@ -777,7 +786,7 @@
 			match-projects = <22612 22693 22694 0x226B1>;
         };
 	};
-/* OPLUS_BUG_STABILITY oplus project end */
+/* OPLUS_BUG_STABILITY oppo project end */
 
 	mediatek_mtp_interface:mediatek_mtp_interface {
 		mtp_interface {
@@ -1174,7 +1183,7 @@
 	mediatek,host-eye-vrt = <7>; /* 0~7 */
 	mediatek,host-eye-term = <7>; /* 0~7 */
 	mediatek,host-eye-rev6 = <3>; /* 0~3 */
-	mediatek,host-eye-disc = <9>; /* 0~8 */
+	mediatek,host-eye-disc = <0xa>; /* 0~8 */
 };
 &extcon_usb {
 	vbus-current = <1300000>;

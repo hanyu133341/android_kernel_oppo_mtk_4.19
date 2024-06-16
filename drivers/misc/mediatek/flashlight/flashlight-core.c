@@ -75,7 +75,7 @@ static int pt_is_low(int pt_low_vol, int pt_low_bat, int pt_over_cur);
 #endif
 
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
-#include <soc/oplus/system/oplus_project.h>
+#include <soc/oplus/system/oppo_project.h>
 extern const struct flashlight_device_id flashlight_id_dual[];
 extern const struct flashlight_device_id flashlight_id_single[];
 extern const struct flashlight_device_id flashlight_id_zhaoyun[];
@@ -392,7 +392,7 @@ int flashlight_dev_register(
 		is_project(19541) || is_project(20291) ||
 		is_project(20292) || is_project(20293) ||
 		is_project(20294) || is_project(20295) ||
-		is_project(22693) || is_project(22694) || is_project(22612)) {
+		is_project(22693) || is_project(22694) || is_project(22612) || is_project(0x226B1)) {
 		flashlight_id = flashlight_id_single;
 		flashlight_device_num = 1;
 	} else {

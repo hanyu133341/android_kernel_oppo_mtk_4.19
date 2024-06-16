@@ -44,6 +44,9 @@ static kal_uint32 streaming_control(kal_bool enable);
 #define LOG_INF(format, args...)	pr_debug(PFX "[%s] " format, __func__, ##args)
 #define LOG_ERR(format, args...) pr_err(PFX "[%s] " format, __func__, ##args)
 
+//add for ITS--sensor_fusion,Modify for OFFSET
+#define DOMESTIC_OFFSET -2377800
+
 
 static DEFINE_SPINLOCK(imgsensor_drv_lock);
 
@@ -3018,7 +3021,7 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
 				return ERROR_MSDK_IS_ACTIVATED;
 		}
 		case SENSOR_FEATURE_GET_OFFSET_TO_START_OF_EXPOSURE:
-			*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = -8970000;
+			*(MUINT32 *)(uintptr_t)(*(feature_data + 1)) = DOMESTIC_OFFSET;
 			break;
 #endif
 	default:

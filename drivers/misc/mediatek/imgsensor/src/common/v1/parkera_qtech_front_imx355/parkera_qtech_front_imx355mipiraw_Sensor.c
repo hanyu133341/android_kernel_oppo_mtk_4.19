@@ -33,6 +33,7 @@
 #define LOG_INF(format, args...) pr_debug(PFX "[%s] " format, __func__, ##args)
 #define EEPROM_WRITE_ID 0xA8
 
+//#ifdef VENDOR_EDIT
 static kal_uint32 streaming_control(kal_bool enable);
 
 extern enum IMGSENSOR_RETURN Eeprom_DataInit(
@@ -1023,6 +1024,7 @@ static void write_cmos_sensor_8(kal_uint16 addr, kal_uint8 para)
 	iWriteRegI2C(pusendcmd, 3, imgsensor.i2c_write_id);
 }
 #if 0
+//#ifdef VENDOR_EDIT
 static kal_uint16 read_module_id(void)
 {
 	kal_uint16 get_byte=0;
@@ -1518,6 +1520,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 					| read_cmos_sensor_8(0x0017)) + 2);
 			if (*sensor_id == imgsensor_info.sensor_id) {
                 // #if 0
+                //#ifdef VENDOR_EDIT
                 // read_eeprom_SN();
 		    	// read_eeprom_CamInfo();
                 imgsensor_info.module_id = read_module_id();

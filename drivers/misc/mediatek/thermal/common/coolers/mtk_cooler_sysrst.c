@@ -91,12 +91,18 @@ struct thermal_cooling_device *cdev, unsigned long state)
 		 * for thermal protection.
 		 */
 
+//REQ30019539125 2022/10/21,reasnoble temperature
+		if (mtk_thermal_get_temp(MTK_THERMAL_SENSOR_CPU) < 130000) {
+			tscpu_printk("%s,reasnoble temperature CPU T=%d, BTS T=%d\n", __func__,
+			mtk_thermal_get_temp(MTK_THERMAL_SENSOR_CPU),
+			mtk_thermal_get_temp(MTK_THERMAL_SENSOR_AP));
 #ifndef OPLUS_FEATURE_CHG_BASIC
 			if (get_eng_version() != HIGH_TEMP_AGING)
 				BUG();
 			else
 				tscpu_printk("should reset bypass \n");
 #endif
+		}
 #endif
 
 	}

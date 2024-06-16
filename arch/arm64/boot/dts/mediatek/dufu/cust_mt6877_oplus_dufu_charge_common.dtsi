@@ -166,9 +166,15 @@
 
 	qcom,removed_bat_decidegc = <190>;  /*<-19C*/
 
-	qcom,cold_bat_decidegc = <20>;  /*-2C~0C*/
-	qcom,temp_cold_vfloat_mv = <3980>;
-	qcom,temp_cold_fastchg_current_ma = <300>;
+	qcom,cold_bat_decidegc = <100>;  /*-10C~0C*/
+	qcom,temp_cold_vfloat_mv = <4435>;
+	qcom,temp_cold_fastchg_current_ma = <650>;
+	qcom,temp_cold_fastchg_current_ma_high = <850>;
+	qcom,temp_cold_fastchg_current_ma_low = <650>;
+	qcom,pd_temp_cold_fastchg_current_ma_high = <850>;
+	qcom,pd_temp_cold_fastchg_current_ma_low = <650>;
+	qcom,qc_temp_cold_fastchg_current_ma_high = <850>;
+	qcom,qc_temp_cold_fastchg_current_ma_low = <650>;
 
 	qcom,little_cold_bat_decidegc = <0>;    /*0C~5C*/
 	qcom,temp_little_cold_vfloat_mv = <4435>;
@@ -217,7 +223,7 @@
 	qcom,short_c_bat_vfloat_mv = <3800>;
 	qcom,short_c_bat_fastchg_current_ma = <512>;
 
-	qcom,cold_vfloat_sw_limit = <3930>;
+	qcom,cold_vfloat_sw_limit = <4385>;
 	qcom,little_cold_vfloat_sw_limit = <4385>;
 	qcom,cool_vfloat_sw_limit = <4385>;
 	qcom,little_cool_vfloat_sw_limit = <4385>;
@@ -234,7 +240,7 @@
 	qcom,vbatt_hv_thr = <4600>;
 
 	qcom,vfloat_step_mv = <8>;
-	qcom,cold_vfloat_over_sw_limit = <3990>;
+	qcom,cold_vfloat_over_sw_limit = <4445>;
 	qcom,little_cold_vfloat_over_sw_limit = <4445>;
 	qcom,cool_vfloat_over_sw_limit = <4445>;
 	qcom,little_cool_vfloat_over_sw_limit = <4445>;
@@ -423,6 +429,7 @@
 
 		qcom,vooc_little_cold_full_voltage = <4430>;
 		qcom,vooc_cool_full_voltage = <4430>;
+		qcom,vooc_warm_full_voltage = <4130>;
 		qcom,vooc_1time_full_voltage = <4480>;
 		qcom,vooc_ntime_full_voltage = <4480>;
 		qcom,low_curr_full_t1 = <120>;
@@ -446,8 +453,14 @@
 		qcom,vooc_normal_low_temp = <250>;
 		qcom,vooc_strategy_normal_current = <100>;
 		qcom,vooc_normal_to_little_cool_current = <100>;
-		qcom,vooc_batt_over_high_temp = <440>;
-		qcom,vooc_batt_over_low_temp = <0>;
+		qcom,vooc_batt_over_high_temp = <510>;
+		qcom,vooc-low-temp = <0>;
+		qcom,vooc-high-temp = <500>;
+		qcom,vooc-low-soc = <0>;
+		qcom,vooc-high-soc = <90>;
+		qcom,vooc-normal-high-temp = <430>;
+		qcom,vooc-warm-allow-vol = <4000>;
+		qcom,vooc-warm-allow-soc = <50>;
 
 		qcom,vooc_strategy1_batt_high_temp0 = <385>;
 		qcom,vooc_strategy1_batt_high_temp1 = <395>;
@@ -459,16 +472,16 @@
 		qcom,vooc_strategy1_high_current0 = <30>;
 		qcom,vooc_strategy1_high_current1 = <30>;
 		qcom,vooc_strategy1_high_current2 = <20>;
-		qcom,vooc_strategy1_low_current2 = <20>;
+		qcom,vooc_strategy1_low_current2 = <30>;
 		qcom,vooc_strategy1_low_current1 = <30>;
-		qcom,vooc_strategy1_low_current0 = <30>;
+		qcom,vooc_strategy1_low_current0 = <100>;
 
-		qcom,voocphy_ibat_over_current = <11500>;
+		qcom,voocphy_ibat_over_current = <7500>;
 		qcom,voocphy_cp_max_ibus = <3500>;
 
 		qcom,voocphy_freq_mincore = <980000>;
-		qcom,voocphy_freq_midcore = <1300000>;
-		qcom,voocphy_freq_maxcore = <1300000>;
+		qcom,voocphy_freq_midcore = <1418000>;
+		qcom,voocphy_freq_maxcore = <1418000>;
 		qcom,voocphy_current_change_timeout = <100>;
 
 		svooc_batt_sys_curve = <0 0 1 1 1 1 0	// 3000mA
@@ -508,6 +521,7 @@
 								 4450 20 0 0 0
 								 4470 15 0 0 0
 								 4480 10 1 0 0>;
+				strategy_temp_warm =	<4130 12 1 0 0>;
 			};
 
 			strategy_soc_50_to_75 {
@@ -530,6 +544,7 @@
 								 4450 20 0 0 0
 								 4470 15 0 0 0
 								 4480 10 1 0 0>;
+				strategy_temp_warm =	<4130 12 1 0 0>;
 			};
 
 			strategy_soc_75_to_85 {
@@ -540,6 +555,7 @@
 								 4480 10 1 0 0>;
 				strategy_temp_normal_high =	<4470 15 0 0 0
 								 4480 10 1 0 0>;
+				strategy_temp_warm =	<4130 12 1 0 0>;
 			};
 
 			strategy_soc_85_to_90 {
@@ -548,6 +564,7 @@
 				strategy_temp_little_cool =	<4480 10 1 0 0>;
 				strategy_temp_normal_low =	<4480 10 1 0 0>;
 				strategy_temp_normal_high =	<4480 10 1 0 0>;
+				strategy_temp_warm =	<4130 12 1 0 0>;
 			};
 		};
 
@@ -562,6 +579,7 @@
 								 4480 20 1 0 0>;
 				strategy_temp_normal_high =	<4475 30 0 0 0
 								 4480 20 1 0 0>;
+				strategy_temp_warm =	<4130 24 1 0 0>;
 			};
 
 			strategy_soc_50_to_75 {
@@ -574,6 +592,7 @@
 								 4480 20 1 0 0>;
 				strategy_temp_normal_high =	<4475 30 0 0 0
 								 4480 20 1 0 0>;
+				strategy_temp_warm =	<4130 24 1 0 0>;
 			};
 
 			strategy_soc_75_to_85 {
@@ -584,6 +603,7 @@
 								 4480 20 1 0 0>;
 				strategy_temp_normal_high =	<4475 30 0 0 0
 								 4480 20 1 0 0>;
+				strategy_temp_warm =	<4130 24 1 0 0>;
 			};
 
 			strategy_soc_85_to_90 {
@@ -592,6 +612,7 @@
 				strategy_temp_little_cool =	<4480 20 1 0 0>;
 				strategy_temp_normal_low =	<4480 20 1 0 0>;
 				strategy_temp_normal_high =	<4480 20 1 0 0>;
+				strategy_temp_warm =	<4130 24 1 0 0>;
 			};
 		};
 	};
@@ -687,14 +708,27 @@
 };
 
 &odm {
-	usbphy_tuning: usbphy_tuning {
-		compatible = "mediatek,phy_tuning";
-		u2_vrt_ref = <5>;
-		u2_term_ref = <7>;
-		u2_enhance = <3>;
-		host_u2_vrt_ref = <5>;
-		host_u2_term_ref = <7>;
-		host_u2_enhance = <3>;
+	mediatek_phy_tuning: mediatek_phy_tuning {
+		phy_tuning {
+			compatible = "mediatek,phy_tuning";
+			eye-vrt = <6>;
+			eye-term = <6>;
+			eye-rev6 = <3>;
+			eye-disc = <0xc>;
+			host-eye-vrt = <6>;
+			host-eye-term = <6>;
+			host-eye-rev6 = <3>;
+			host-eye-disc = <0xc>;
+		};
+	};
+
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <2>;
+		track,wired_max_power = <33000>;
+		track,wired_fast_chg_scheme = <4>;
 	};
 };
 

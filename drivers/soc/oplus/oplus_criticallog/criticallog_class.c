@@ -161,7 +161,7 @@ static void __exit criticallog_class_exit(void)
 module_init(criticallog_class_init);
 module_exit(criticallog_class_exit);
 
-MODULE_AUTHOR("Zhaoan.Xu");
+MODULE_AUTHOR("Zhaoan.Xu<xuzhaoan@oppo.com>");
 MODULE_DESCRIPTION("criticallog class driver");
 MODULE_LICENSE("GPL");
 //#endif /*OPLUS_FEATURE_MODEM_MINIDUMP*/

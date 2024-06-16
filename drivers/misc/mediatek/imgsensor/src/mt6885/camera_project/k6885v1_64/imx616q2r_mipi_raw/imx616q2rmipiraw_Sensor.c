@@ -2387,7 +2387,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 					deviceInfo_register_value = 0x01;
 				}
 				#endif
-				/*if (is_project(OPLUS_18151) || is_project(OPLUS_19011) || is_project(OPLUS_19301)) {
+				/*if (is_project(OPPO_18151) || is_project(OPPO_19011) || is_project(OPPO_19301)) {
 					pr_info("18151/19011/19301: imx616q2r set mirrorflip\n");
 					imgsensor.mirror = IMAGE_HV_MIRROR;
 					imgsensor_info.sensor_output_dataformat = SENSOR_OUTPUT_FORMAT_RAW_4CELL_HW_BAYER_B;

@@ -261,7 +261,7 @@ static void read_EepromQSC(void)
         gImgEepromInfo.camNormdata[1][i] = Eeprom_1ByteDataRead(0x04+i, 0xA8);
     }
 #if 0
-    for (i = 0; i < OPLUS_CAMERASN_LENS; i ++) {
+    for (i = 0; i < OPPO_CAMERASN_LENS; i ++) {
         gImgEepromInfo.camNormdata[1][8+i] = Eeprom_1ByteDataRead(0xB0+i, 0xA8);
     }
 #endif
@@ -2713,6 +2713,7 @@ static kal_uint32 set_test_pattern_mode(kal_uint32 modes, struct SET_SENSOR_PATT
         }
 	} else {
 		write_cmos_sensor(0x0600, 0x0000); /*No pattern*/
+		write_cmos_sensor(0x0601, 0x0000);
 	}
 
 	spin_lock(&imgsensor_drv_lock);

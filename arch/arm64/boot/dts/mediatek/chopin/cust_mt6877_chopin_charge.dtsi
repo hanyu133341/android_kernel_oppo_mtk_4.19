@@ -891,13 +891,24 @@
 	mediatek_phy_tuning: mediatek_phy_tuning {
 		phy_tuning {
 			compatible = "mediatek,phy_tuning";
-			eye-vrt = <3>;
+			eye-vrt = <7>;
 			eye-term = <7>;
-			eye-rev6 = <3>;
-			host-eye-vrt = <6>;
-			host-eye-term = <6>;
-			host-eye-rev6 = <3>;
+			eye-rev6 = <2>;
+			eye-disc = <0xf>;
+			host-eye-vrt = <7>;
+			host-eye-term = <7>;
+			host-eye-rev6 = <2>;
+			host-eye-disc = <0xf>;
 		};
+	};
+
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <65000>;
+		track,wired_fast_chg_scheme = <1>;
 	};
 };
 

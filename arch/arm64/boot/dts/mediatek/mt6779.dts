@@ -1044,6 +1044,7 @@ firmware_class.path=/vendor/firmware loop.max_part=7";
 				//#endif
 				mode-ftm = <BOOT_FACTORY>;
 				//#endif
+				mode-edl = <BOOT_EDL>;
 			};
 		};
 

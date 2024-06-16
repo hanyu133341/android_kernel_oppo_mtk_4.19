@@ -262,7 +262,8 @@ MINT32 imgsensor_sensor_open(struct IMGSENSOR_SENSOR *psensor)
 		} else {
 			psensor_inst->state = IMGSENSOR_STATE_OPEN;
 			if (is_project(21015) || is_project(21217) || is_project(20609) || is_project(0x2060A) || is_project(0x2060B)
-			|| is_project(0x2070C) || is_project(20796) || is_project(20795) || is_project(0x206FF)) {
+			|| is_project(0x2070C) || is_project(20796) || is_project(20795) || is_project(0x206FF)
+			|| is_project(20181) || is_project(21081) || is_project(0x212A1) || is_project(20355) || is_project(21851) || is_project(21876)) {
 				Oplusimgsensor_powerstate_notify(1);
 			}
 		}

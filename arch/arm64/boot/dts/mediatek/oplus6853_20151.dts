@@ -664,7 +664,14 @@
 	cp_low_current_new_function:cp_low_current_new_function {
 		compatible = "mediatek,  CP_LOW_CURRENT_EINT_NEW_FUNCTION";
 	};*/
-
+	oplus,track-charge {
+		compatible = "oplus,track-charge";
+		track,fast_chg_break_t_thd = <1000>;
+		track,general_chg_break_t_thd = <200>;
+		track,voocphy_type = <4>;
+		track,wired_max_power = <30000>;
+		track,wired_fast_chg_scheme = <5>;
+	};
 };
 
 &charger {
@@ -1121,7 +1128,7 @@
 		// type of tp_dev ,TP-SAMSUNG = 8;
 		platform_support_project = <20151 20301 20302>;
 		platform_support_project_dir = <20151 20151 20151>;
-		platform_support_project_commandline = "20151_samsung_ams643_1080p_dsi_vdo_lcm_drv","20151_samsung_ams643_1080p_dsi_vdo_lcm_drv","20151_samsung_ams643_1080p_dsi_vdo_lcm_drv";
+		platform_support_project_commandline = "oppo20151_samsung_ams643_1080p_dsi_vdo_lcm_drv","oppo20151_samsung_ams643_1080p_dsi_vdo_lcm_drv","oppo20151_samsung_ams643_1080p_dsi_vdo_lcm_drv";
 
 		touchpanel,max-num-support = <10>;
 		touchpanel,tx-rx-num = <16 34>;
@@ -1730,6 +1737,16 @@ gpio_goodix_cs_func: gpio_goodix_cs_func {
 };
 //#endif
 /* FINGERPRINT end */
+
+&mmc1 {
+    cd-gpios = <&pio 12 0>;
+    status = "okay";
+    vmmc-supply = <&mt_pmic_vmch_ldo_reg>;
+};
+&mt6360_ldo {
+    sdcard_det_en = <1>;
+    sdcard_hlact = <0>;
+};
 
 //#ifdef OPLUS_FEATURE_SWTP
 &swtp {
